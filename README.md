@@ -1,20 +1,19 @@
-# doc-project
-
-> This project is still in it's inception phase. We are working on the
-  documentation, vision, name and planning.
+# AnyScribble
 
 ## What?
-With this project we try to create a tool that allows developers to
-write books or documentation for their project the way they are used to.
+AnyScribble is a tool set that allows developers to write documentation,
+guides or books without leaving their comfort zone. You simply write
+your documentation in an IDE-like environment and publish it using the
+tools you are already familiar with.
 
 ## Why?
 Because development is fun but most of us never get around to actually
-documenting or writing about the projects. doc-project should motivate
+documenting or writing about the projects. AnyScribble should motivate
 developers to write more by integrating it into a workspace they are
 familiar with.
 
 ## How?
-doc-project consists of several components. The main part is the editor
+AnyScribble consists of several components. The main part is the editor
 an environment that allows a developer to easily write their content
 and set up a distribution.
 
