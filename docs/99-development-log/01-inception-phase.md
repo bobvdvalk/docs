@@ -9,6 +9,9 @@ so we can discuss the name. So far we have the following options:
   likes the sound.
 * ~~**OmniDoc**: Meaning all round documentation.~~ Denied because of 
   [OmniDocs].
+* **PolyDocumentor**
+* **Omniscribble**
+* **AnyScribble**
 
 No reason to hurry the name just yet. We are still in the inception
 phase.
