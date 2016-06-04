@@ -16,5 +16,18 @@ so we can discuss the name. So far we have the following options:
 No reason to hurry the name just yet. We are still in the inception
 phase.
 
+## Available tools
+I have also been doing some research to see what kind of tools we can use.
+
+* [RichTextFX] or [AceEditor]
+* [Pandoc]
+* [Java Github API]
+* [JGit]
+
+[RichTextFX]: https://github.com/TomasMikula/RichTextFX/
+[AceEditor]: https://ace.c9.io/#nav=about
+[Pandoc]: http://pandoc.org/installing.html
+[Java Github API]: http://github-api.kohsuke.org/
+[JGit]: http://www.eclipse.org/jgit/
 [OmniDocs]: http://www.newgensoft.com/cloud/enterprise-content-management-ecm-omnidocs-cloud/
 [@bobvdvalk]: https://github.com/bobvdvalk
