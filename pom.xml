@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    AnyScribble - Writing for Developers by Developers
+    Copyright © 2016 Thomas Biesaart (thomas.biesaart@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -11,6 +30,7 @@
 
     <name>AnyScribble</name>
     <description>Writing for Developers by Developers</description>
+    <inceptionYear>2016</inceptionYear>
 
     <issueManagement>
         <url>https://github.com/thomasbiesaart/anyscribble/issues</url>
@@ -54,6 +74,13 @@
         <module>anyscribble-editor</module>
     </modules>
 
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -61,6 +88,92 @@
                 <artifactId>commons</artifactId>
                 <version>1.5.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.eclipse.jgit</groupId>
+                <artifactId>org.eclipse.jgit</artifactId>
+                <version>4.3.1.201605051710-r</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kohsuke</groupId>
+                <artifactId>github-api</artifactId>
+                <version>1.76</version>
+            </dependency>
+            <dependency>
+                <groupId>com.anyscribble</groupId>
+                <artifactId>anyscribble-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>3.0.rc1</version>
+                    <configuration>
+                        <header>com/mycila/maven/plugin/license/templates/GPL-3.txt</header>
+                        <properties>
+                            <owner>Thomas Biesaart</owner>
+                            <email>thomas.biesaart@gmail.com</email>
+                        </properties>
+                        <excludes>
+                            <exclude>**/README</exclude>
+                            <exclude>src/test/resources/**</exclude>
+                            <exclude>src/main/resources/**</exclude>
+                        </excludes>
+                        <strictCheck>true</strictCheck>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>add-license-header-clean</id>
+                            <goals>
+                                <goal>format</goal>
+                            </goals>
+                            <phase>clean</phase>
+                        </execution>
+                        <execution>
+                            <id>add-license-header-package</id>
+                            <goals>
+                                <goal>format</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                        <execution>
+                            <id>check-license-header</id>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <phase>verify</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.9.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>2.0.2-beta</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
 </project>

@@ -26,7 +26,7 @@ Any significant decisions about this project can be found in
 the [Development Logs].
 
 ## License
-This project is licensed under the [Apache License, Version 2.0].
+This project is licensed under the [GNU GENERAL PUBLIC LICENSE].
 
-[Apache License, Version 2.0]: http://www.apache.org/licenses/LICENSE-2.0
+[GNU GENERAL PUBLIC LICENSE]: http://www.gnu.org/licenses/gpl.txt
 [Development Logs]: docs/99-development-log/00-index.md
