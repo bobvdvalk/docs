@@ -14,16 +14,7 @@ phase.
 ### Available tools
 I have also been doing some research to see what kind of tools we can 
 use.
-
-* [RichTextFX] or [AceEditor]
-* [Pandoc]
-* [Java Github API]
-* [JGit]
+See [Issue 2].
 
 [Issue 1]: https://github.com/thomasbiesaart/doc-project/issues/1
-[RichTextFX]: https://github.com/TomasMikula/RichTextFX/
-[AceEditor]: https://ace.c9.io/#nav=about
-[Pandoc]: http://pandoc.org/installing.html
-[Java Github API]: http://github-api.kohsuke.org/
-[JGit]: http://www.eclipse.org/jgit/
-[@bobvdvalk]: https://github.com/bobvdvalk
+[Issue 2]: https://github.com/thomasbiesaart/doc-project/issues/2
