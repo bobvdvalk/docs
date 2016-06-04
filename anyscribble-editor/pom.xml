@@ -38,4 +38,37 @@
             <artifactId>anyscribble-core</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>AnyScribble</finalName>
+        <plugins>
+            <plugin>
+                <groupId>com.zenjava</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>8.1.4</version>
+                <configuration>
+                    <mainClass>com.anyscribble.ide.AnyScribbleApplication</mainClass>
+                    <needShortcut>true</needShortcut>
+                    <needMenu>true</needMenu>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- required before build-native -->
+                        <id>create-jfxjar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build-jar</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>create-native</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build-native</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

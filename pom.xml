@@ -50,6 +50,11 @@
         <developerConnection>scm:git:git@github.com:kevinsawicki/github-maven-example.git</developerConnection>
     </scm>
 
+    <organization>
+        <name>AnyScribble</name>
+        <url>http://anyscribble.com</url>
+    </organization>
+
     <developers>
         <developer>
             <email>thomas.biesaart@gmail.com</email>
