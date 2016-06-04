@@ -17,10 +17,14 @@
  */
 package com.anyscribble.ide;
 
+import com.anyscribble.core.AnyScribble;
+import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import me.biesaart.utils.Log;
+import org.slf4j.Logger;
 
 /**
  * This class represents the main loader of the editor application.
@@ -29,7 +33,14 @@ import javafx.stage.Stage;
  * @author Thomas Biesaart
  */
 public class AnyScribbleApplication extends Application {
+    private static final Logger LOGGER = Log.get();
+
     public void start(Stage primaryStage) throws Exception {
+        LOGGER.info("Starting Application");
+        Injector injector = AnyScribble.createInjector();
+        injector.getInstance(AnyScribble.class);
+
+        LOGGER.info("Loading Interface");
         Scene scene = new Scene(new TextArea("Hello World"));
         primaryStage.setScene(scene);
         primaryStage.show();

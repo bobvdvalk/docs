@@ -31,4 +31,15 @@
 
     <artifactId>anyscribble-core</artifactId>
     <name>AnyScribble Core</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>me.biesaart</groupId>
+            <artifactId>commons</artifactId>
+        </dependency>
+    </dependencies>
 </project>
