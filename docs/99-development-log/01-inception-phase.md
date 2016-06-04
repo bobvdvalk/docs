@@ -1,6 +1,6 @@
 # Inception Phase
 
-## June 4th 2015
+## June 4th 2016
 We just created the repository and set up the documentation. 
 
 ### Project Name
@@ -21,3 +21,8 @@ See [Issue 2](https://github.com/thomasbiesaart/anyscribble/issues/2).
 We have picked a name: AnyScribble. I will now organize the repository
 and start working on some concepts and visions.
 
+## June 5th 2016
+So the project structure has been set up and we have our name. It is now
+time to start taking a look at what the minimum viable product will be.
+
+This concludes the inception phase rather quickly.
