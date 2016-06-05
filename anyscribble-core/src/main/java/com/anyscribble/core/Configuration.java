@@ -1,17 +1,17 @@
 /**
  * AnyScribble Core - Writing for Developers by Developers
  * Copyright © 2016 Thomas Biesaart (thomas.biesaart@gmail.com)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -53,7 +53,7 @@ class Configuration {
      * @return the path to the pandoc executable
      * @throws PandocNotFoundException if no pandoc installation was found
      */
-    public synchronized static Path findPandoc() {
+    static synchronized Path findPandoc() {
         if (!scannedLocation) {
             LOGGER.debug("Locating pandoc executable");
             if (System.getProperty(PANDOC_BIN_KEY) != null) {
@@ -61,22 +61,7 @@ class Configuration {
                 // Load the system property
                 pandocLocation = Paths.get(System.getProperty(PANDOC_BIN_KEY));
             } else if (System.getenv("path") != null) {
-                // Scan the path variable
-                for (String path : System.getenv("path").split(File.pathSeparator)) {
-                    try {
-                        Path javaPath = Paths.get(path);
-
-                        for (String extension : PANDOC_EXTENSIONS) {
-                            Path exec = javaPath.resolve("pandoc." + extension);
-                            if (Files.exists(exec)) {
-                                LOGGER.debug("Found pandoc instance at {}", exec);
-                                pandocLocation = exec;
-                            }
-                        }
-                    } catch (InvalidPathException e) {
-                        LOGGER.warn("Failed to parse " + path + " as a path.\n" + e.getReason(), e);
-                    }
-                }
+                pandocLocation = scanPathVariable();
             }
             // Set the flag so we do not scan again
             scannedLocation = true;
@@ -87,5 +72,33 @@ class Configuration {
         }
 
         return pandocLocation;
+    }
+
+    private static Path scanPathVariable() {
+        // Scan the path variable
+        for (String path : System.getenv("path").split(File.pathSeparator)) {
+            try {
+                Path javaPath = Paths.get(path);
+
+                Path exec = scanFolder(javaPath);
+                if (exec != null) {
+                    return exec;
+                }
+            } catch (InvalidPathException e) {
+                LOGGER.warn("Failed to parse " + path + " as a path.\n" + e.getReason(), e);
+            }
+        }
+        return null;
+    }
+
+    private static Path scanFolder(Path javaPath) {
+        for (String extension : PANDOC_EXTENSIONS) {
+            Path exec = javaPath.resolve("pandoc." + extension);
+            if (Files.exists(exec)) {
+                LOGGER.debug("Found pandoc instance at {}", exec);
+                return exec;
+            }
+        }
+        return null;
     }
 }
