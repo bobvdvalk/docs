@@ -134,6 +134,11 @@
                 <artifactId>log4j-1.2-api</artifactId>
                 <version>${log4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.fxmisc.richtext</groupId>
+                <artifactId>richtextfx</artifactId>
+                <version>0.6.10</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

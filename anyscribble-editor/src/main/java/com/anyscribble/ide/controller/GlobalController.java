@@ -18,12 +18,17 @@
 package com.anyscribble.ide.controller;
 
 import com.anyscribble.ide.InjectionFXMLLoader;
+import com.anyscribble.ide.editor.EditorTabFactory;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ResourceBundle;
 
 /**
@@ -31,14 +36,19 @@ import java.util.ResourceBundle;
  *
  * @author Thomas Biesaart
  */
+@Singleton
 public class GlobalController implements Initializable {
     @FXML
     private BorderPane rootPane;
+    @FXML
+    private TabPane editorTabPane;
     private final InjectionFXMLLoader injectionFXMLLoader;
+    private final EditorTabFactory editorTabFactory;
 
     @Inject
-    GlobalController(InjectionFXMLLoader injectionFXMLLoader) {
+    GlobalController(InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory) {
         this.injectionFXMLLoader = injectionFXMLLoader;
+        this.editorTabFactory = editorTabFactory;
     }
 
     @Override
@@ -47,5 +57,15 @@ public class GlobalController implements Initializable {
         rootPane.setLeft(
                 injectionFXMLLoader.load(getClass().getResource("/com/anyscribble/ide/left-panel.fxml"))
         );
+    }
+
+    public void openTab(Path file) {
+        Tab tab = editorTabFactory.getTab(file)
+                .orElseGet(() -> {
+                    Tab newTab = editorTabFactory.buildTab(file);
+                    editorTabPane.getTabs().add(newTab);
+                    return newTab;
+                });
+        editorTabPane.getSelectionModel().select(tab);
     }
 }

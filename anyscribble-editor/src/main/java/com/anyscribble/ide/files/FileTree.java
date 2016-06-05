@@ -17,12 +17,15 @@
  */
 package com.anyscribble.ide.files;
 
+import com.anyscribble.ide.controller.GlobalController;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
 
@@ -42,8 +45,11 @@ public class FileTree extends TreeView<Path> {
     private final Image folderIcon = new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icons/folder.png"));
     private final Image fileIcon = new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icons/file-text.png"));
     private final Image projectIcon = new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icons/project.png"));
+    private final GlobalController globalController;
 
-    public FileTree() {
+    @Inject
+    public FileTree(GlobalController globalController) {
+        this.globalController = globalController;
         setId("fileTree");
         setCellFactory(Cell::new);
         setRoot(rootNode);
@@ -79,8 +85,6 @@ public class FileTree extends TreeView<Path> {
                     } catch (IOException e) {
                         LOGGER.error("Could not expand!", e);
                     }
-                } else {
-                    // TODO: Open File
                 }
             });
             setExpanded(false);
@@ -94,6 +98,15 @@ public class FileTree extends TreeView<Path> {
 
     private class Cell extends TreeCell<Path> {
         public Cell(TreeView<Path> pathTreeView) {
+            addEventFilter(
+                    MouseEvent.MOUSE_CLICKED,
+                    event -> {
+                        if (!isEmpty() && event.getClickCount() == 2 && Files.isRegularFile(getItem())) {
+                            // Open this file
+                            globalController.openTab(getItem());
+                        }
+                    }
+            );
         }
 
         @Override

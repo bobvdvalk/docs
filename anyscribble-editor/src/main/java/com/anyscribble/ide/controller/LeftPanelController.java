@@ -29,6 +29,11 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
+/**
+ * This class represents the controller for the left side-panel.
+ *
+ * @author Thomas Biesaart
+ */
 public class LeftPanelController implements Initializable {
     @FXML
     private VBox leftPanel;

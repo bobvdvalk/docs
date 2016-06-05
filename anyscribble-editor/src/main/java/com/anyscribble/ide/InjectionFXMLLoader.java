@@ -54,6 +54,10 @@ public class InjectionFXMLLoader {
         return injector.getInstance(aClass);
     }
 
+    public synchronized FXMLLoader getLoader() {
+        return fxmlLoaderProvider.get();
+    }
+
     /**
      * Load an fxml file using dependency injection.
      *
@@ -62,7 +66,7 @@ public class InjectionFXMLLoader {
      * @return the node
      */
     public synchronized <T> T load(URL fxmlResource) {
-        FXMLLoader fxmlLoader = fxmlLoaderProvider.get();
+        FXMLLoader fxmlLoader = getLoader();
         fxmlLoader.setLocation(fxmlResource);
         try {
             return fxmlLoader.load();

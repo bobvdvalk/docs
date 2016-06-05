@@ -5,4 +5,4 @@ Any significant discussions will be documented here.
 This log is split into several phases:
 
 * [Inception Phase](01-inception-phase.md)
-* [Planning Phase][02-planning-phase.md]
+* [MVP Phase][02-mvp-phase.md]
