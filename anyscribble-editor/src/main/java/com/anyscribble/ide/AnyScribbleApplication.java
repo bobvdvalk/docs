@@ -21,10 +21,11 @@ import com.anyscribble.core.AnyScribble;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
+
+import java.io.IOException;
 
 /**
  * This class represents the main loader of the editor application.
@@ -34,14 +35,22 @@ import org.slf4j.Logger;
  */
 public class AnyScribbleApplication extends Application {
     private static final Logger LOGGER = Log.get();
+    private static final String ANYSCRIBBLE_FXML_PATH = "/com/anyscribble/ide/anyscribble.fxml";
 
-    public void start(Stage primaryStage) throws Exception {
-        LOGGER.info("Starting Application");
-        Injector injector = AnyScribble.createInjector();
-        injector.getInstance(AnyScribble.class);
+    @Override
+    public void start(Stage primaryStage) throws IOException {
+        LOGGER.info("Configuring Injection");
+        Injector injector = AnyScribble.createInjector(
+                new InjectorConfig(primaryStage)
+        );
+        InjectionFXMLLoader fxmlLoader = injector.getInstance(InjectionFXMLLoader.class);
 
         LOGGER.info("Loading Interface");
-        Scene scene = new Scene(new TextArea("Hello World"));
+        Scene scene = new Scene(
+                fxmlLoader.load(getClass().getResource(ANYSCRIBBLE_FXML_PATH))
+        );
+
+        primaryStage.setTitle(Resource.APPLICATION_TITLE);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

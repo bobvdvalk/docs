@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.anyscribble.ide.Resource?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<BorderPane fx:id="rootPane" stylesheets="/com/anyscribble/ide/style.css" xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/8" fx:controller="com.anyscribble.ide.controller.GlobalController">
+
+    <top>
+        <!-- This section will contain the global toolbar -->
+    </top>
+    <left>
+        <VBox fx:id="leftPanelContainer">
+
+        </VBox>
+    </left>
+    <center>
+        <TabPane fx:id="editorTabPane">
+        </TabPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER">
+            <Text fx:id="copyrightNotice" textAlignment="CENTER">
+                <text>
+                    <Resource fx:constant="COPYRIGHT_NOTICE"/>
+                </text>
+            </Text>
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -1,0 +1,9 @@
+
+#rootPane {
+    -fx-min-width: 600;
+    -fx-min-height: 500;
+}
+
+#copyrightNotice {
+    -fx-text-alignment: center;
+}

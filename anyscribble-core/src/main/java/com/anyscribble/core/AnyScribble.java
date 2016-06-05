@@ -17,10 +17,7 @@
  */
 package com.anyscribble.core;
 
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
+import com.google.inject.*;
 
 import java.nio.file.Path;
 
@@ -46,8 +43,8 @@ public class AnyScribble {
      *
      * @return the injector
      */
-    public static Injector createInjector() {
-        return createInjector(Guice.createInjector());
+    public static Injector createInjector(Module... modules) {
+        return createInjector(Guice.createInjector(modules));
     }
 
     /**
