@@ -52,6 +52,8 @@ public class AnyScribbleApplication extends Application {
 
         primaryStage.setTitle(Resource.APPLICATION_TITLE);
         primaryStage.setScene(scene);
+        primaryStage.setMinHeight(600);
+        primaryStage.setMinWidth(800);
         primaryStage.show();
     }
 

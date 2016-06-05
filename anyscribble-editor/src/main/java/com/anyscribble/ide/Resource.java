@@ -37,6 +37,19 @@ public class Resource {
     public static final String VERSION = getVersion();
     public static final String APPLICATION_TITLE = getString("title", VERSION);
     public static final String COPYRIGHT_NOTICE = getString("copyright");
+    public static final String MENU_FILE = getString("menu.file");
+    public static final String MENU_FILE_NEW = getString("menu.file.new");
+    public static final String MENU_FILE_OPEN = getString("menu.file.open");
+    public static final String MENU_FILE_SAVE = getString("menu.file.save");
+    public static final String MENU_FILE_SAVE_AS = getString("menu.file.saveas");
+    public static final String MENU_EDIT = getString("menu.edit");
+    public static final String MENU_EDIT_COPY = getString("menu.edit.copy");
+    public static final String MENU_EDIT_CUT = getString("menu.edit.cut");
+    public static final String MENU_EDIT_PASTE = getString("menu.edit.paste");
+    public static final String MENU_EDIT_PREFERENCES = getString("menu.edit.preferences");
+    public static final String MENU_HELP = getString("menu.help");
+    public static final String MENU_HELP_ABOUT = getString("menu.help.about");
+    public static final String MENU_HELP_CONTACT = getString("menu.help.contact");
 
     /**
      * Get a message from the resource bundle.

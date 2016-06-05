@@ -1,22 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
 
-<?import com.anyscribble.ide.Resource?>
-<?import javafx.scene.control.TabPane?>
+    AnyScribble Editor - Writing for Developers by Developers
+    Copyright © 2016 Thomas Biesaart (thomas.biesaart@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<?import com.anyscribble.ide.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <BorderPane fx:id="rootPane" stylesheets="/com/anyscribble/ide/style.css" xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/8" fx:controller="com.anyscribble.ide.controller.GlobalController">
 
     <top>
-        <!-- This section will contain the global toolbar -->
+        <MenuBar>
+            <Menu>
+                <text>
+                    <Resource fx:constant="MENU_FILE"/>
+                </text>
+                <MenuItem accelerator="SHORTCUT+N">
+                    <text>
+                        <Resource fx:constant="MENU_FILE_NEW"/>
+                    </text>
+                </MenuItem>
+                <MenuItem accelerator="SHORTCUT+O">
+                    <text>
+                        <Resource fx:constant="MENU_FILE_OPEN"/>
+                    </text>
+                </MenuItem>
+                <MenuItem accelerator="SHORTCUT+S">
+                    <text>
+                        <Resource fx:constant="MENU_FILE_SAVE"/>
+                    </text>
+                </MenuItem>
+                <MenuItem accelerator="SHORTCUT+SHIFT+S">
+                    <text>
+                        <Resource fx:constant="MENU_FILE_SAVE_AS"/>
+                    </text>
+                </MenuItem>
+            </Menu>
+            <Menu>
+                <text>
+                    <Resource fx:constant="MENU_EDIT"/>
+                </text>
+                <MenuItem accelerator="SHORTCUT+C">
+                    <text>
+                        <Resource fx:constant="MENU_EDIT_COPY"/>
+                    </text>
+                </MenuItem>
+                <MenuItem accelerator="SHORTCUT+X">
+                    <text>
+                        <Resource fx:constant="MENU_EDIT_CUT"/>
+                    </text>
+                </MenuItem>
+                <MenuItem accelerator="SHORTCUT+P">
+                    <text>
+                        <Resource fx:constant="MENU_EDIT_PASTE"/>
+                    </text>
+                </MenuItem>
+                <MenuItem accelerator="SHORTCUT+SHIFT+S">
+                    <text>
+                        <Resource fx:constant="MENU_EDIT_PREFERENCES"/>
+                    </text>
+                </MenuItem>
+            </Menu>
+            <Menu>
+                <text>
+                    <Resource fx:constant="MENU_HELP"/>
+                </text>
+                <MenuItem>
+                    <text>
+                        <Resource fx:constant="MENU_HELP_ABOUT"/>
+                    </text>
+                </MenuItem>
+                <MenuItem accelerator="F1">
+                    <text>
+                        <Resource fx:constant="MENU_HELP_CONTACT"/>
+                    </text>
+                </MenuItem>
+            </Menu>
+        </MenuBar>
     </top>
-    <left>
-        <VBox fx:id="leftPanelContainer">
-
-        </VBox>
-    </left>
     <center>
         <TabPane fx:id="editorTabPane">
         </TabPane>

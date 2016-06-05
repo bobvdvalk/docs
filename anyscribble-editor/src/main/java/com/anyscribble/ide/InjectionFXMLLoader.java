@@ -19,6 +19,7 @@ package com.anyscribble.ide;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import javafx.fxml.FXMLLoader;
 import me.biesaart.utils.Log;
@@ -35,14 +36,17 @@ import java.net.URL;
 @Singleton
 public class InjectionFXMLLoader {
     private static final Logger LOGGER = Log.get();
-    private final FXMLLoader fxmlLoader;
     private final Injector injector;
+    private final Provider<FXMLLoader> fxmlLoaderProvider;
 
     @Inject
-    public InjectionFXMLLoader(FXMLLoader fxmlLoader, Injector injector) {
-        this.fxmlLoader = fxmlLoader;
+    public InjectionFXMLLoader(Provider<FXMLLoader> fxmlLoaderProvider, Injector injector) {
         this.injector = injector;
-        fxmlLoader.setControllerFactory(this::buildController);
+        this.fxmlLoaderProvider = () -> {
+            FXMLLoader loader = fxmlLoaderProvider.get();
+            loader.setControllerFactory(this::buildController);
+            return loader;
+        };
     }
 
     private Object buildController(Class<?> aClass) {
@@ -58,6 +62,7 @@ public class InjectionFXMLLoader {
      * @return the node
      */
     public synchronized <T> T load(URL fxmlResource) {
+        FXMLLoader fxmlLoader = fxmlLoaderProvider.get();
         fxmlLoader.setLocation(fxmlResource);
         try {
             return fxmlLoader.load();

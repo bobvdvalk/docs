@@ -17,35 +17,35 @@
  */
 package com.anyscribble.ide.controller;
 
-import com.anyscribble.ide.InjectionFXMLLoader;
+
+import com.anyscribble.ide.files.FileTree;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
-/**
- * This class represents the controller for the highest level of the interface.
- *
- * @author Thomas Biesaart
- */
-public class GlobalController implements Initializable {
+public class LeftPanelController implements Initializable {
     @FXML
-    private BorderPane rootPane;
-    private final InjectionFXMLLoader injectionFXMLLoader;
+    private VBox leftPanel;
+    private final FileTree fileTree;
 
     @Inject
-    GlobalController(InjectionFXMLLoader injectionFXMLLoader) {
-        this.injectionFXMLLoader = injectionFXMLLoader;
+    public LeftPanelController(FileTree fileTree) {
+        this.fileTree = fileTree;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Load the left panel
-        rootPane.setLeft(
-                injectionFXMLLoader.load(getClass().getResource("/com/anyscribble/ide/left-panel.fxml"))
+        VBox.setVgrow(fileTree, Priority.ALWAYS);
+        leftPanel.getChildren().setAll(
+                fileTree
         );
+
+        fileTree.addProject(Paths.get("docs"));
     }
 }

@@ -163,10 +163,11 @@
                         </properties>
                         <excludes>
                             <exclude>**/README</exclude>
-                            <exclude>src/test/resources/**</exclude>
-                            <exclude>src/main/resources/**</exclude>
                         </excludes>
                         <strictCheck>true</strictCheck>
+                        <mapping>
+                            <fxml>XML_STYLE</fxml>
+                        </mapping>
                     </configuration>
                     <executions>
                         <execution>

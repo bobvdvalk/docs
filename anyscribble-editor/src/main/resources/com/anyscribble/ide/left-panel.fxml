@@ -18,15 +18,10 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<Configuration status="WARN">
-    <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger - %msg%n"/>
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Root level="all">
-            <AppenderRef ref="Console"/>
-        </Root>
-    </Loggers>
-</Configuration>
+
+<?import javafx.scene.layout.VBox?>
+<VBox fx:id="leftPanel" xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/8"
+      fx:controller="com.anyscribble.ide.controller.LeftPanelController">
+
+</VBox>
