@@ -89,9 +89,9 @@ public class GlobalController implements Initializable {
         );
 
         // Disable close project menu item when no node is selected
-        fileTree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            closeProjectMenuItem.setDisable(newValue == null);
-        });
+        fileTree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+                closeProjectMenuItem.setDisable(newValue == null)
+        );
 
         // Open all previously open tabs
         preferences.getList(EditorTabFactory.PREFERENCE_OPEN_TABS)

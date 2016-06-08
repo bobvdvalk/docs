@@ -104,12 +104,10 @@ public class FileTree extends TreeView<Path> {
         // Show the dialog
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.YES) {
-            if (result.get() == ButtonType.YES) {
-                // Remove the project
-                rootNode.getChildren().remove(node);
-                getSelectionModel().clearSelection();
-                saveProjectsToPreferences();
-            }
+            // Remove the project
+            rootNode.getChildren().remove(node);
+            getSelectionModel().clearSelection();
+            saveProjectsToPreferences();
         }
     }
 
@@ -181,11 +179,9 @@ public class FileTree extends TreeView<Path> {
             addEventFilter(
                     MouseEvent.MOUSE_CLICKED,
                     event -> {
-                        if (!isEmpty() && event.getClickCount() == 2 && Files.isRegularFile(getItem())) {
+                        if (!isEmpty() && event.getClickCount() == 2 && Files.isRegularFile(getItem()) && openFileConsumer != null) {
                             // Open this file
-                            if (openFileConsumer != null) {
-                                openFileConsumer.accept(getItem());
-                            }
+                            openFileConsumer.accept(getItem());
                         }
                     }
             );
