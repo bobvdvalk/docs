@@ -88,11 +88,12 @@ public class FileTree extends TreeView<Path> {
         }
 
         // Find the project node
-        while (node.getParent() != null && node.getParent().getParent() != null) {
-            node = node.getParent();
+        TreeItem<Path> projectItem = node;
+        while (projectItem.getParent() != null && projectItem.getParent().getParent() != null) {
+            projectItem = projectItem.getParent();
         }
 
-        Path project = node.getValue();
+        Path project = projectItem.getValue();
 
         Alert alert = new Alert(
                 Alert.AlertType.CONFIRMATION,
@@ -105,7 +106,7 @@ public class FileTree extends TreeView<Path> {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.YES) {
             // Remove the project
-            rootNode.getChildren().remove(node);
+            rootNode.getChildren().remove(projectItem);
             getSelectionModel().clearSelection();
             saveProjectsToPreferences();
         }

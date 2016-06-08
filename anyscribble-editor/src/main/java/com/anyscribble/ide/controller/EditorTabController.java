@@ -88,15 +88,15 @@ public class EditorTabController implements AutoCloseable, Initializable {
         codeArea.setParagraphGraphicFactory(
                 LineNumberFactory.get(codeArea)
         );
-        codeArea.redoAvailableProperty().addListener((observable, oldValue, newValue) -> {
-            toolbarRedoBtn.setDisable(!newValue);
-        });
-        codeArea.undoAvailableProperty().addListener((observable, oldValue, newValue) -> {
-            toolbarUndoBtn.setDisable(!newValue);
-        });
-        codeArea.textProperty().addListener((observable, oldValue, newValue) -> {
-            saveTimeline.playFromStart();
-        });
+        codeArea.redoAvailableProperty().addListener((observable, oldValue, newValue) ->
+                toolbarRedoBtn.setDisable(!newValue)
+        );
+        codeArea.undoAvailableProperty().addListener((observable, oldValue, newValue) ->
+                toolbarUndoBtn.setDisable(!newValue)
+        );
+        codeArea.textProperty().addListener((observable, oldValue, newValue) ->
+                saveTimeline.playFromStart()
+        );
     }
 
     private void save() {
