@@ -37,6 +37,8 @@
             <Button fx:id="toolbarH4Btn" text="H4"/>
             <Button fx:id="toolbarH5Btn" text="H5"/>
             <Button fx:id="toolbarCodeBtn" text="&lt;/&gt;" onAction="#toggleSelectionCode"/>
+            <Button fx:id="toolbarUndoBtn" text="&lt;-" disable="true" onAction="#undo"/>
+            <Button fx:id="toolbarRedoBtn" text="-&gt;" disable="true" onAction="#redo"/>
         </ToolBar>
     </top>
     <center>

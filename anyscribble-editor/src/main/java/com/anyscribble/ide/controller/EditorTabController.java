@@ -1,17 +1,17 @@
 /**
  * AnyScribble Editor - Writing for Developers by Developers
  * Copyright © 2016 Thomas Biesaart (thomas.biesaart@gmail.com)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -42,11 +42,9 @@ import java.util.ResourceBundle;
 public class EditorTabController implements AutoCloseable, Initializable {
     private static final Logger LOGGER = Log.get();
     @FXML
-    private Button toolbarItalicBtn;
+    private Button toolbarUndoBtn;
     @FXML
-    private Button toolbarStrikeBtn;
-    @FXML
-    private Button toolbarBoldBtn;
+    private Button toolbarRedoBtn;
     @FXML
     private CodeArea codeArea;
     private Path currentFile;
@@ -81,6 +79,12 @@ public class EditorTabController implements AutoCloseable, Initializable {
         codeArea.setParagraphGraphicFactory(
                 LineNumberFactory.get(codeArea)
         );
+        codeArea.redoAvailableProperty().addListener((observable, oldValue, newValue) -> {
+            toolbarRedoBtn.setDisable(!newValue);
+        });
+        codeArea.undoAvailableProperty().addListener((observable, oldValue, newValue) -> {
+            toolbarUndoBtn.setDisable(!newValue);
+        });
     }
 
     public void toggleSelectionBold() {
@@ -126,5 +130,13 @@ public class EditorTabController implements AutoCloseable, Initializable {
         }
         codeArea.selectRange(selectionPos, selectionPos);
         codeArea.requestFocus();
+    }
+
+    public void undo() {
+        codeArea.undo();
+    }
+
+    public void redo() {
+        codeArea.redo();
     }
 }
