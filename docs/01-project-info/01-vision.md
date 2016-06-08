@@ -27,4 +27,3 @@ Since this is the main goal of the project it is the most important value.
 A tool should boost productivity. If a feature seems cumbersome or
 impeding we should reconsider it. If a feature will improve the productivity
 of a developer then it definitely belongs in this project.
-

@@ -17,10 +17,13 @@
  */
 package com.anyscribble.ide.controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.IndexRange;
+import javafx.util.Duration;
 import me.biesaart.utils.IOUtils;
 import me.biesaart.utils.Log;
 import org.fxmisc.richtext.CodeArea;
@@ -32,6 +35,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
 
 /**
@@ -49,6 +53,12 @@ public class EditorTabController implements AutoCloseable, Initializable {
     private CodeArea codeArea;
     private Path currentFile;
     private boolean closed;
+    private final Timeline saveTimeline = new Timeline(
+            new KeyFrame(
+                    Duration.seconds(1),
+                    e -> save()
+            )
+    );
 
     public void loadFile(Path path) {
         currentFile = path;
@@ -60,6 +70,7 @@ public class EditorTabController implements AutoCloseable, Initializable {
             codeArea.clear();
             codeArea.appendText(IOUtils.toString(data));
             codeArea.getUndoManager().forgetHistory();
+            saveTimeline.stop();
         } catch (IOException e) {
             LOGGER.error("Failed to refresh from disk", e);
         }
@@ -85,6 +96,25 @@ public class EditorTabController implements AutoCloseable, Initializable {
         codeArea.undoAvailableProperty().addListener((observable, oldValue, newValue) -> {
             toolbarUndoBtn.setDisable(!newValue);
         });
+        codeArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            saveTimeline.playFromStart();
+        });
+    }
+
+    private void save() {
+        // Always end on newline
+        if (!codeArea.getText().endsWith("\n")) {
+            IndexRange range = codeArea.getSelection();
+            codeArea.appendText("\n");
+            codeArea.selectRange(range.getStart(), range.getEnd());
+        }
+        try (InputStream data = IOUtils.toInputStream(codeArea.getText())) {
+            LOGGER.info("Saving {}", currentFile);
+            Files.createDirectories(currentFile.getParent());
+            Files.copy(data, currentFile, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            LOGGER.error("Failed to save " + currentFile, e);
+        }
     }
 
     public void toggleSelectionBold() {

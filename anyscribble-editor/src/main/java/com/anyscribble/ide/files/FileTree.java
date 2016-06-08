@@ -17,6 +17,7 @@
  */
 package com.anyscribble.ide.files;
 
+import com.anyscribble.ide.Preferences;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javafx.scene.control.TreeCell;
@@ -25,9 +26,13 @@ import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import me.biesaart.utils.Log;
+import me.biesaart.utils.StringUtils;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -36,29 +41,61 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 
 @Singleton
 public class FileTree extends TreeView<Path> {
+    private static final String PREFERENCE_PROJECTS = "open.projects";
     private final TreeItem<Path> rootNode = new TreeItem<>(Paths.get("."));
     private static final Logger LOGGER = Log.get();
     private final Image folderIcon = new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icons/folder.png"));
     private final Image fileIcon = new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icons/file-text.png"));
     private final Image projectIcon = new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icons/project.png"));
+    private final Preferences preferences;
     private Consumer<Path> openFileConsumer;
 
     @Inject
-    public FileTree() {
+    public FileTree(Preferences preferences) {
+        this.preferences = preferences;
         setId("fileTree");
         setCellFactory(Cell::new);
         setRoot(rootNode);
         rootNode.setExpanded(true);
+        VBox.setVgrow(this, Priority.ALWAYS);
+        setShowRoot(false);
+
+        // Open all projects
+        openProjectsFromPreferences();
     }
+
 
     public void addProject(Path projectRoot) {
         rootNode.getChildren().add(
                 new PathTree(projectRoot)
         );
+        saveProjectsToPreferences();
+    }
+
+    private void saveProjectsToPreferences() {
+        String projects = StringUtils.join(
+                rootNode.getChildren().stream().map(TreeItem::getValue).toArray(),
+                File.pathSeparator
+        );
+
+        preferences.put(PREFERENCE_PROJECTS, projects);
+    }
+
+    private void openProjectsFromPreferences() {
+        preferences.get(PREFERENCE_PROJECTS).ifPresent(projects -> {
+            rootNode.getChildren().clear();
+            for (String stringPath : projects.split(Pattern.quote(File.pathSeparator))) {
+                Path path = Paths.get(stringPath);
+                if (Files.isDirectory(path)) {
+                    addProject(path);
+                }
+            }
+        });
     }
 
     public void setOpenFileConsumer(Consumer<Path> openFileConsumer) {

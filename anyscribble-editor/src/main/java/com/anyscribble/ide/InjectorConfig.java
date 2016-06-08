@@ -18,6 +18,7 @@
 package com.anyscribble.ide;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import javafx.stage.Stage;
 
 /**
@@ -35,5 +36,10 @@ class InjectorConfig extends AbstractModule {
     @Override
     protected void configure() {
         bind(Stage.class).toInstance(primaryStage);
+    }
+
+    @Provides
+    Preferences preferences() {
+        return Preferences.getUserPreferences("anyscribble");
     }
 }

@@ -43,16 +43,6 @@
                         <Resource fx:constant="MENU_FILE_OPEN"/>
                     </text>
                 </MenuItem>
-                <MenuItem accelerator="SHORTCUT+S">
-                    <text>
-                        <Resource fx:constant="MENU_FILE_SAVE"/>
-                    </text>
-                </MenuItem>
-                <MenuItem accelerator="SHORTCUT+SHIFT+S">
-                    <text>
-                        <Resource fx:constant="MENU_FILE_SAVE_AS"/>
-                    </text>
-                </MenuItem>
             </Menu>
             <Menu>
                 <text>

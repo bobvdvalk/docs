@@ -23,11 +23,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 /**
@@ -48,11 +46,8 @@ public class LeftPanelController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        VBox.setVgrow(fileTree, Priority.ALWAYS);
         leftPanel.getChildren().setAll(
                 fileTree
         );
-
-        fileTree.addProject(Paths.get("docs"));
     }
 }

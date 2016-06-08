@@ -18,6 +18,7 @@
 package com.anyscribble.ide.controller;
 
 import com.anyscribble.ide.InjectionFXMLLoader;
+import com.anyscribble.ide.Preferences;
 import com.anyscribble.ide.Resource;
 import com.anyscribble.ide.editor.EditorTabFactory;
 import com.anyscribble.ide.files.FileTree;
@@ -40,6 +41,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 /**
@@ -54,16 +56,19 @@ public class GlobalController implements Initializable {
     private BorderPane rootPane;
     @FXML
     private TabPane editorTabPane;
+    private final Preferences preferences;
     private final InjectionFXMLLoader injectionFXMLLoader;
     private final EditorTabFactory editorTabFactory;
     private final FileTree fileTree;
     private final DirectoryChooser openProjectDirectoryChooser;
 
     @Inject
-    GlobalController(InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory, FileTree fileTree) {
+    GlobalController(Preferences preferences, InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory, FileTree fileTree) {
+        this.preferences = preferences;
         this.injectionFXMLLoader = injectionFXMLLoader;
         this.editorTabFactory = editorTabFactory;
         this.fileTree = fileTree;
+        fileTree.setOpenFileConsumer(this::openTab);
         openProjectDirectoryChooser = new DirectoryChooser();
         openProjectDirectoryChooser.setTitle(Resource.PROJECT_NEW_TITLE);
     }
@@ -74,6 +79,15 @@ public class GlobalController implements Initializable {
         rootPane.setLeft(
                 injectionFXMLLoader.load(getClass().getResource("/com/anyscribble/ide/left-panel.fxml"))
         );
+
+        // Open all previously open tabs
+        preferences.getList(EditorTabFactory.PREFERENCE_OPEN_TABS)
+                .ifPresent(
+                        list -> list.stream()
+                                .map(Paths::get)
+                                .filter(Files::isReadable)
+                                .forEach(this::openTab)
+                );
     }
 
     /**

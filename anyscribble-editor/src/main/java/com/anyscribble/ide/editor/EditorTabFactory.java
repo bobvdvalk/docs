@@ -41,6 +41,7 @@ import java.util.Optional;
 @Singleton
 public class EditorTabFactory {
     private static final Logger LOGGER = Log.get();
+    public static final String PREFERENCE_OPEN_TABS = "openTabs";
     private final InjectionFXMLLoader fxmlLoader;
     private Map<Path, EditorTabData> controllerCache = new HashMap<>();
 
