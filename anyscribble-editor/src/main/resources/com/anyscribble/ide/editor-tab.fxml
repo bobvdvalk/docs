@@ -19,15 +19,27 @@
 
 -->
 
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import org.fxmisc.richtext.CodeArea?>
 <BorderPane fx:id="editorTab" xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/8"
             fx:controller="com.anyscribble.ide.controller.EditorTabController">
 
+    <top>
+        <ToolBar fx:id="editorToolBar">
+            <Button text="B" onAction="#toggleSelectionBold"/>
+            <Button text="I" onAction="#toggleSelectionItalic"/>
+            <Button text="~" onAction="#toggleSelectionStrikeThrough"/>
+            <Button fx:id="toolbarH1Btn" text="H1"/>
+            <Button fx:id="toolbarH2Btn" text="H2"/>
+            <Button fx:id="toolbarH3Btn" text="H3"/>
+            <Button fx:id="toolbarH4Btn" text="H4"/>
+            <Button fx:id="toolbarH5Btn" text="H5"/>
+            <Button fx:id="toolbarCodeBtn" text="&lt;/&gt;" onAction="#toggleSelectionCode"/>
+        </ToolBar>
+    </top>
     <center>
-        <CodeArea fx:id="codeArea">
-
-        </CodeArea>
+        <CodeArea fx:id="codeArea"/>
     </center>
 </BorderPane>

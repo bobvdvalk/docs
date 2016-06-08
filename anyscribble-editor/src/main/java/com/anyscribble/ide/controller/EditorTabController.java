@@ -18,23 +18,35 @@
 package com.anyscribble.ide.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.IndexRange;
 import me.biesaart.utils.IOUtils;
 import me.biesaart.utils.Log;
 import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ResourceBundle;
 
 /**
  * This controller is responsible for all ui operations inside the editor tab.
  *
  * @author Thomas Biesaart
  */
-public class EditorTabController implements AutoCloseable {
+public class EditorTabController implements AutoCloseable, Initializable {
     private static final Logger LOGGER = Log.get();
+    @FXML
+    private Button toolbarItalicBtn;
+    @FXML
+    private Button toolbarStrikeBtn;
+    @FXML
+    private Button toolbarBoldBtn;
     @FXML
     private CodeArea codeArea;
     private Path currentFile;
@@ -49,6 +61,7 @@ public class EditorTabController implements AutoCloseable {
         try (InputStream data = Files.newInputStream(currentFile)) {
             codeArea.clear();
             codeArea.appendText(IOUtils.toString(data));
+            codeArea.getUndoManager().forgetHistory();
         } catch (IOException e) {
             LOGGER.error("Failed to refresh from disk", e);
         }
@@ -61,5 +74,57 @@ public class EditorTabController implements AutoCloseable {
 
     public boolean isClosed() {
         return closed;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        codeArea.setParagraphGraphicFactory(
+                LineNumberFactory.get(codeArea)
+        );
+    }
+
+    public void toggleSelectionBold() {
+        insertAroundSelection("**");
+    }
+
+    public void toggleSelectionItalic() {
+        insertAroundSelection("*");
+    }
+
+    public void toggleSelectionStrikeThrough() {
+        insertAroundSelection("~~");
+    }
+
+    public void toggleSelectionCode() {
+        insertAroundSelection("```", "```", true);
+    }
+
+    private void insertAroundSelection(String text) {
+        insertAroundSelection(text, text, false);
+    }
+
+    private void insertAroundSelection(String before, String after, boolean newLine) {
+        // Insert selection
+        IndexRange selection = codeArea.getSelection();
+        String text = codeArea.getSelectedText();
+        String prependText = before;
+        String appendText = after;
+
+        if (newLine) {
+            prependText = "\n" + prependText + "\n";
+            appendText = "\n" + appendText + "\n";
+        }
+
+        // Insert the text
+        codeArea.replaceText(selection, prependText + text + appendText);
+
+        // Move caret inside block
+        int selectionPos = selection.getStart() + before.length();
+        if (newLine) {
+            // Correct for the first newline
+            selectionPos++;
+        }
+        codeArea.selectRange(selectionPos, selectionPos);
+        codeArea.requestFocus();
     }
 }
