@@ -14,4 +14,8 @@ I implemented some UI operations like open file and open folder.
 I also added the start of a editor toolbar. They still need icons and
 the header levels still have to be implemented.
 
-No updates on the settings system.
+I implemented a basic settings system that will save all preferences
+to the user's home folder. I wanted to use the java.util.prefs.Preferences
+system first but oracle can't honestly expect all users to edit their
+registry?
+[Check out the issue](http://stackoverflow.com/questions/5354838/java-java-util-preferences-failing)
