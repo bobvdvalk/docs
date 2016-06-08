@@ -18,16 +18,27 @@
 package com.anyscribble.ide.controller;
 
 import com.anyscribble.ide.InjectionFXMLLoader;
+import com.anyscribble.ide.Resource;
 import com.anyscribble.ide.editor.EditorTabFactory;
+import com.anyscribble.ide.files.FileTree;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import me.biesaart.utils.Log;
+import org.slf4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
 
@@ -38,17 +49,23 @@ import java.util.ResourceBundle;
  */
 @Singleton
 public class GlobalController implements Initializable {
+    private static final Logger LOGGER = Log.get();
     @FXML
     private BorderPane rootPane;
     @FXML
     private TabPane editorTabPane;
     private final InjectionFXMLLoader injectionFXMLLoader;
     private final EditorTabFactory editorTabFactory;
+    private final FileTree fileTree;
+    private final DirectoryChooser openProjectDirectoryChooser;
 
     @Inject
-    GlobalController(InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory) {
+    GlobalController(InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory, FileTree fileTree) {
         this.injectionFXMLLoader = injectionFXMLLoader;
         this.editorTabFactory = editorTabFactory;
+        this.fileTree = fileTree;
+        openProjectDirectoryChooser = new DirectoryChooser();
+        openProjectDirectoryChooser.setTitle(Resource.PROJECT_NEW_TITLE);
     }
 
     @Override
@@ -59,6 +76,11 @@ public class GlobalController implements Initializable {
         );
     }
 
+    /**
+     * Open a new tab or select an already exist tab that matches the specified file.
+     *
+     * @param file the file that should be opened
+     */
     public void openTab(Path file) {
         Tab tab = editorTabFactory.getTab(file)
                 .orElseGet(() -> {
@@ -67,5 +89,56 @@ public class GlobalController implements Initializable {
                     return newTab;
                 });
         editorTabPane.getSelectionModel().select(tab);
+    }
+
+    /**
+     * Open a folder selection dialog and create a new project.
+     */
+    public void openProject() {
+        File folder = openProjectDirectoryChooser.showDialog(rootPane.getScene().getWindow());
+        if (folder != null) {
+            Path directory = folder.toPath();
+            if (directory.getFileName() == null) {
+                Alert alert = new Alert(
+                        Alert.AlertType.ERROR,
+                        Resource.ERROR_INVALID_PROJECT_ROOT.get(directory)
+                );
+
+                alert.setTitle(Resource.PROJECT_NEW_TITLE);
+
+                alert.show();
+            } else {
+                fileTree.addProject(folder.toPath());
+            }
+        }
+    }
+
+    /**
+     * Open a save dialog to create a new file.
+     */
+    public void newFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Markdown (*.markdown)", "*.markdown", "*.md")
+        );
+        TreeItem<Path> select = fileTree.getSelectionModel().getSelectedItem();
+        if (select != null) {
+            Path path = select.getValue();
+            if (!Files.isDirectory(path)) {
+                path = path.getParent();
+            }
+            fileChooser.setInitialDirectory(path.toFile());
+        }
+        File file = fileChooser.showSaveDialog(rootPane.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                Files.createFile(file.toPath());
+                openTab(file.toPath());
+            } catch (IOException e) {
+                LOGGER.error("Failed to create file.", e);
+            }
+        }
+
     }
 }

@@ -33,12 +33,12 @@
                 <text>
                     <Resource fx:constant="MENU_FILE"/>
                 </text>
-                <MenuItem accelerator="SHORTCUT+N">
+                <MenuItem accelerator="SHORTCUT+N" onAction="#newFile">
                     <text>
                         <Resource fx:constant="MENU_FILE_NEW"/>
                     </text>
                 </MenuItem>
-                <MenuItem accelerator="SHORTCUT+O">
+                <MenuItem accelerator="SHORTCUT+O" onAction="#openProject">
                     <text>
                         <Resource fx:constant="MENU_FILE_OPEN"/>
                     </text>
@@ -97,8 +97,7 @@
         </MenuBar>
     </top>
     <center>
-        <TabPane fx:id="editorTabPane">
-        </TabPane>
+        <TabPane fx:id="editorTabPane"/>
     </center>
     <bottom>
         <HBox alignment="CENTER">

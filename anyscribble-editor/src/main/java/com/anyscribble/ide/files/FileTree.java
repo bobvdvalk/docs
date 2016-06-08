@@ -17,7 +17,6 @@
  */
 package com.anyscribble.ide.files;
 
-import com.anyscribble.ide.controller.GlobalController;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javafx.scene.control.TreeCell;
@@ -36,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 
 @Singleton
@@ -45,11 +45,10 @@ public class FileTree extends TreeView<Path> {
     private final Image folderIcon = new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icons/folder.png"));
     private final Image fileIcon = new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icons/file-text.png"));
     private final Image projectIcon = new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icons/project.png"));
-    private final GlobalController globalController;
+    private Consumer<Path> openFileConsumer;
 
     @Inject
-    public FileTree(GlobalController globalController) {
-        this.globalController = globalController;
+    public FileTree() {
         setId("fileTree");
         setCellFactory(Cell::new);
         setRoot(rootNode);
@@ -60,6 +59,10 @@ public class FileTree extends TreeView<Path> {
         rootNode.getChildren().add(
                 new PathTree(projectRoot)
         );
+    }
+
+    public void setOpenFileConsumer(Consumer<Path> openFileConsumer) {
+        this.openFileConsumer = openFileConsumer;
     }
 
     private class ProjectItem extends PathTree {
@@ -76,18 +79,22 @@ public class FileTree extends TreeView<Path> {
             setValue(projectRoot);
             expandedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    try (DirectoryStream<Path> stream = Files.newDirectoryStream(getValue())) {
-                        List<TreeItem<Path>> result = new ArrayList<>();
-                        for (Path child : stream) {
-                            result.add(new PathTree(child));
-                        }
-                        getChildren().setAll(result);
-                    } catch (IOException e) {
-                        LOGGER.error("Could not expand!", e);
-                    }
+                    refreshChildren();
                 }
             });
             setExpanded(false);
+        }
+
+        private void refreshChildren() {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(getValue())) {
+                List<TreeItem<Path>> result = new ArrayList<>();
+                for (Path child : stream) {
+                    result.add(new PathTree(child));
+                }
+                getChildren().setAll(result);
+            } catch (IOException e) {
+                LOGGER.error("Could not expand!", e);
+            }
         }
 
         @Override
@@ -103,7 +110,9 @@ public class FileTree extends TreeView<Path> {
                     event -> {
                         if (!isEmpty() && event.getClickCount() == 2 && Files.isRegularFile(getItem())) {
                             // Open this file
-                            globalController.openTab(getItem());
+                            if (openFileConsumer != null) {
+                                openFileConsumer.accept(getItem());
+                            }
                         }
                     }
             );

@@ -20,6 +20,10 @@
     -fx-min-height: 500;
 }
 
+#tabPanePlaceholder {
+    -fx-text-alignment: center;
+}
+
 #copyrightNotice {
     -fx-text-alignment: center;
 }

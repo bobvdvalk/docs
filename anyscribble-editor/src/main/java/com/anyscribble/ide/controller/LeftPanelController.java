@@ -20,6 +20,7 @@ package com.anyscribble.ide.controller;
 
 import com.anyscribble.ide.files.FileTree;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Priority;
@@ -34,6 +35,7 @@ import java.util.ResourceBundle;
  *
  * @author Thomas Biesaart
  */
+@Singleton
 public class LeftPanelController implements Initializable {
     @FXML
     private VBox leftPanel;

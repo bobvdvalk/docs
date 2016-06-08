@@ -42,6 +42,6 @@
         </ToolBar>
     </top>
     <center>
-        <CodeArea fx:id="codeArea"/>
+        <CodeArea fx:id="codeArea" wrapText="true"/>
     </center>
 </BorderPane>

@@ -50,6 +50,8 @@ public class Resource {
     public static final String MENU_HELP = getString("menu.help");
     public static final String MENU_HELP_ABOUT = getString("menu.help.about");
     public static final String MENU_HELP_CONTACT = getString("menu.help.contact");
+    public static final MessageProvider ERROR_INVALID_PROJECT_ROOT = new MessageProvider("error.project.invalidroot");
+    public static final String PROJECT_NEW_TITLE = getString("project.new.title");
 
     private Resource() {
         throw new IllegalAccessError("Do not make instances of utilities");
@@ -81,5 +83,17 @@ public class Resource {
             version = "Development Version";
         }
         return version;
+    }
+
+    public static class MessageProvider {
+        private final String key;
+
+        private MessageProvider(String key) {
+            this.key = key;
+        }
+
+        public String get(Object... params) {
+            return getString(key, params);
+        }
     }
 }
