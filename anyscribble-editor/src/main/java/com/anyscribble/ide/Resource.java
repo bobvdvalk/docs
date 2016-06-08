@@ -40,17 +40,15 @@ public class Resource {
     public static final String MENU_FILE = getString("menu.file");
     public static final String MENU_FILE_NEW = getString("menu.file.new");
     public static final String MENU_FILE_OPEN = getString("menu.file.open");
-    public static final String MENU_FILE_SAVE = getString("menu.file.save");
-    public static final String MENU_FILE_SAVE_AS = getString("menu.file.saveas");
-    public static final String MENU_EDIT = getString("menu.edit");
-    public static final String MENU_EDIT_COPY = getString("menu.edit.copy");
-    public static final String MENU_EDIT_CUT = getString("menu.edit.cut");
-    public static final String MENU_EDIT_PASTE = getString("menu.edit.paste");
-    public static final String MENU_EDIT_PREFERENCES = getString("menu.edit.preferences");
+    public static final String MENU_FILE_CLOSE_TAB = getString("menu.file.closetab");
+    public static final String MENU_FILE_CLOSE_PROJECT = getString("menu.file.closeproject");
+    public static final String MENU_FILE_EXIT = getString("menu.file.exit");
+    public static final String MENU_FILE_PREFERENCES = getString("menu.file.preferences");
     public static final String MENU_HELP = getString("menu.help");
     public static final String MENU_HELP_ABOUT = getString("menu.help.about");
     public static final String MENU_HELP_CONTACT = getString("menu.help.contact");
     public static final MessageProvider ERROR_INVALID_PROJECT_ROOT = new MessageProvider("error.project.invalidroot");
+    public static final MessageProvider CONFIRM_DELETE_PROJECT = new MessageProvider("confirm.delete.project");
     public static final String PROJECT_NEW_TITLE = getString("project.new.title");
 
     private Resource() {

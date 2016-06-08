@@ -18,6 +18,7 @@
 package com.anyscribble.ide.editor;
 
 import com.anyscribble.ide.InjectionFXMLLoader;
+import com.anyscribble.ide.Preferences;
 import com.anyscribble.ide.controller.EditorTabController;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -31,6 +32,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This class is responsible for building the editor tab.
@@ -44,13 +46,15 @@ public class EditorTabFactory {
     public static final String PREFERENCE_OPEN_TABS = "openTabs";
     private final InjectionFXMLLoader fxmlLoader;
     private Map<Path, EditorTabData> controllerCache = new HashMap<>();
+    private final Preferences preferences;
 
     @Inject
-    EditorTabFactory(InjectionFXMLLoader fxmlLoader) {
+    EditorTabFactory(InjectionFXMLLoader fxmlLoader, Preferences preferences) {
         this.fxmlLoader = fxmlLoader;
+        this.preferences = preferences;
     }
 
-    public Tab buildTab(Path file) {
+    public Tab buildTab(Path file) throws IOException {
         Path normalizedPath = normalized(file);
         Tab tab = new Tab(normalizedPath.getFileName().toString());
         FXMLLoader loader = fxmlLoader.getLoader();
@@ -68,9 +72,23 @@ public class EditorTabFactory {
             controllerCache.put(normalizedPath, new EditorTabData(tab, controller));
         }
 
-        tab.setOnClosed(event -> controllerCache.remove(normalizedPath));
+        tab.setOnClosed(event -> {
+            controllerCache.remove(normalizedPath);
+            saveOpenTabs();
+        });
+
+        saveOpenTabs();
 
         return tab;
+    }
+
+    private void saveOpenTabs() {
+        preferences.putList(
+                PREFERENCE_OPEN_TABS,
+                controllerCache.values().stream()
+                        .map(c -> c.controller.getPath())
+                        .collect(Collectors.toList())
+        );
     }
 
     public Optional<EditorTabController> getController(Path path) {

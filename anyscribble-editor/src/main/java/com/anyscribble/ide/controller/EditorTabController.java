@@ -60,19 +60,17 @@ public class EditorTabController implements AutoCloseable, Initializable {
             )
     );
 
-    public void loadFile(Path path) {
+    public void loadFile(Path path) throws IOException {
         currentFile = path;
         refreshFromDisk();
     }
 
-    private void refreshFromDisk() {
+    private void refreshFromDisk() throws IOException {
         try (InputStream data = Files.newInputStream(currentFile)) {
             codeArea.clear();
             codeArea.appendText(IOUtils.toString(data));
             codeArea.getUndoManager().forgetHistory();
             saveTimeline.stop();
-        } catch (IOException e) {
-            LOGGER.error("Failed to refresh from disk", e);
         }
     }
 
@@ -168,5 +166,9 @@ public class EditorTabController implements AutoCloseable, Initializable {
 
     public void redo() {
         codeArea.redo();
+    }
+
+    public Path getPath() {
+        return currentFile;
     }
 }

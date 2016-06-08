@@ -34,6 +34,8 @@ import java.io.IOException;
  * @author Thomas Biesaart
  */
 public class AnyScribbleApplication extends Application {
+    private static final String PREFERENCE_WINDOW_WIDTH = "windowWidth";
+    private static final String PREFERENCE_WINDOW_HEIGHT = "windowHeight";
     private static final Logger LOGGER = Log.get();
     private static final String ANYSCRIBBLE_FXML_PATH = "/com/anyscribble/ide/anyscribble.fxml";
 
@@ -54,6 +56,20 @@ public class AnyScribbleApplication extends Application {
         primaryStage.setScene(scene);
         primaryStage.setMinHeight(600);
         primaryStage.setMinWidth(800);
+
+        // Persist width
+        Preferences preferences = injector.getInstance(Preferences.class);
+        preferences.get(PREFERENCE_WINDOW_WIDTH).ifPresent(width -> primaryStage.setWidth(Double.parseDouble(width)));
+        primaryStage.widthProperty().addListener((observable, oldValue, newValue) ->
+                preferences.put(PREFERENCE_WINDOW_WIDTH, Double.toString(newValue.doubleValue()))
+        );
+
+        // Persist Height
+        preferences.get(PREFERENCE_WINDOW_HEIGHT).ifPresent(height -> primaryStage.setHeight(Double.parseDouble(height)));
+        primaryStage.heightProperty().addListener((observable, oldValue, newValue) ->
+                preferences.put(PREFERENCE_WINDOW_HEIGHT, Double.toString(newValue.doubleValue()))
+        );
+
         primaryStage.show();
     }
 

@@ -24,12 +24,11 @@ import com.anyscribble.ide.editor.EditorTabFactory;
 import com.anyscribble.ide.files.FileTree;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TreeItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -52,6 +51,10 @@ import java.util.ResourceBundle;
 @Singleton
 public class GlobalController implements Initializable {
     private static final Logger LOGGER = Log.get();
+    @FXML
+    private MenuItem closeProjectMenuItem;
+    @FXML
+    private MenuItem closeTabMenuItem;
     @FXML
     private BorderPane rootPane;
     @FXML
@@ -80,6 +83,16 @@ public class GlobalController implements Initializable {
                 injectionFXMLLoader.load(getClass().getResource("/com/anyscribble/ide/left-panel.fxml"))
         );
 
+        // Disable close tab menu item when no tabs are open
+        editorTabPane.getTabs().addListener((ListChangeListener<Tab>) c ->
+                closeTabMenuItem.setDisable(c.getList().isEmpty())
+        );
+
+        // Disable close project menu item when no node is selected
+        fileTree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            closeProjectMenuItem.setDisable(newValue == null);
+        });
+
         // Open all previously open tabs
         preferences.getList(EditorTabFactory.PREFERENCE_OPEN_TABS)
                 .ifPresent(
@@ -88,6 +101,7 @@ public class GlobalController implements Initializable {
                                 .filter(Files::isReadable)
                                 .forEach(this::openTab)
                 );
+
     }
 
     /**
@@ -97,12 +111,21 @@ public class GlobalController implements Initializable {
      */
     public void openTab(Path file) {
         Tab tab = editorTabFactory.getTab(file)
-                .orElseGet(() -> {
-                    Tab newTab = editorTabFactory.buildTab(file);
-                    editorTabPane.getTabs().add(newTab);
-                    return newTab;
-                });
-        editorTabPane.getSelectionModel().select(tab);
+                .orElseGet(() -> newTab(file));
+        if (tab != null) {
+            editorTabPane.getSelectionModel().select(tab);
+        }
+    }
+
+    private Tab newTab(Path file) {
+        try {
+            Tab newTab = editorTabFactory.buildTab(file);
+            editorTabPane.getTabs().add(newTab);
+            return newTab;
+        } catch (IOException e) {
+            LOGGER.error("Failed to open new tab for " + file, e);
+            return null;
+        }
     }
 
     /**
@@ -154,5 +177,20 @@ public class GlobalController implements Initializable {
             }
         }
 
+    }
+
+    public void closeCurrentTab() {
+        int tab = editorTabPane.getSelectionModel().getSelectedIndex();
+        if (tab >= 0) {
+            editorTabPane.getTabs().remove(tab);
+        }
+    }
+
+    public void exit() {
+        Platform.exit();
+    }
+
+    public void closeCurrentProject() {
+        fileTree.closeProject();
     }
 }

@@ -83,7 +83,7 @@ public class Preferences {
         try {
             LOGGER.debug("Saving properties to {}", targetFile);
             Files.createDirectories(targetFile.getParent());
-            try (OutputStream outputStream = Files.newOutputStream(targetFile, StandardOpenOption.CREATE)) {
+            try (OutputStream outputStream = Files.newOutputStream(targetFile, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
                 properties.storeToXML(outputStream, Resource.APPLICATION_TITLE);
             }
         } catch (IOException e) {
@@ -106,8 +106,8 @@ public class Preferences {
 
     public synchronized void put(String key, String value) {
         properties.put(key, value);
-
         saveTimeline.playFromStart();
+        LOGGER.debug("Put preference {} = {}", key, value);
     }
 
     public synchronized void putList(String key, Iterable<?> value) {
@@ -119,8 +119,20 @@ public class Preferences {
     }
 
     public Optional<List<String>> getList(String key) {
-        return get(key)
-                .map(input -> input.split(Pattern.quote(File.pathSeparator)))
-                .map(Arrays::asList);
+        String value = get(key).orElse(null);
+        if (value == null) {
+            return null;
+        }
+
+        String[] parts = value.split(Pattern.quote(File.pathSeparator));
+
+        List<String> result = new ArrayList<>(parts.length);
+        for (String part : parts) {
+            String cleanPart = part.trim();
+            if (!cleanPart.isEmpty()) {
+                result.add(part);
+            }
+        }
+        return Optional.of(result);
     }
 }

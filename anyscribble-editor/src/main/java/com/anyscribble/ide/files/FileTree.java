@@ -18,11 +18,10 @@
 package com.anyscribble.ide.files;
 
 import com.anyscribble.ide.Preferences;
+import com.anyscribble.ide.Resource;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -40,6 +39,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -75,6 +75,42 @@ public class FileTree extends TreeView<Path> {
                 new PathTree(projectRoot)
         );
         saveProjectsToPreferences();
+    }
+
+    public void closeProject() {
+        TreeItem<Path> item = getSelectionModel().getSelectedItem();
+        closeProject(item);
+    }
+
+    public void closeProject(TreeItem<Path> node) {
+        if (node == null) {
+            return;
+        }
+
+        // Find the project node
+        while (node.getParent() != null && node.getParent().getParent() != null) {
+            node = node.getParent();
+        }
+
+        Path project = node.getValue();
+
+        Alert alert = new Alert(
+                Alert.AlertType.CONFIRMATION,
+                Resource.CONFIRM_DELETE_PROJECT.get(project),
+                ButtonType.YES,
+                ButtonType.CANCEL
+        );
+
+        // Show the dialog
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.YES) {
+            if (result.get() == ButtonType.YES) {
+                // Remove the project
+                rootNode.getChildren().remove(node);
+                getSelectionModel().clearSelection();
+                saveProjectsToPreferences();
+            }
+        }
     }
 
     private void saveProjectsToPreferences() {

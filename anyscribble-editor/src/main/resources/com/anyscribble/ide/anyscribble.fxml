@@ -43,29 +43,25 @@
                         <Resource fx:constant="MENU_FILE_OPEN"/>
                     </text>
                 </MenuItem>
-            </Menu>
-            <Menu>
-                <text>
-                    <Resource fx:constant="MENU_EDIT"/>
-                </text>
-                <MenuItem accelerator="SHORTCUT+C">
+                <MenuItem fx:id="closeTabMenuItem" disable="true" accelerator="SHORTCUT+W" onAction="#closeCurrentTab">
                     <text>
-                        <Resource fx:constant="MENU_EDIT_COPY"/>
+                        <Resource fx:constant="MENU_FILE_CLOSE_TAB"/>
                     </text>
                 </MenuItem>
-                <MenuItem accelerator="SHORTCUT+X">
+                <MenuItem fx:id="closeProjectMenuItem" disable="true" accelerator="SHORTCUT+SHIFT+W"
+                          onAction="#closeCurrentProject">
                     <text>
-                        <Resource fx:constant="MENU_EDIT_CUT"/>
-                    </text>
-                </MenuItem>
-                <MenuItem accelerator="SHORTCUT+P">
-                    <text>
-                        <Resource fx:constant="MENU_EDIT_PASTE"/>
+                        <Resource fx:constant="MENU_FILE_CLOSE_PROJECT"/>
                     </text>
                 </MenuItem>
                 <MenuItem accelerator="SHORTCUT+SHIFT+S">
                     <text>
-                        <Resource fx:constant="MENU_EDIT_PREFERENCES"/>
+                        <Resource fx:constant="MENU_FILE_PREFERENCES"/>
+                    </text>
+                </MenuItem>
+                <MenuItem onAction="#exit">
+                    <text>
+                        <Resource fx:constant="MENU_FILE_EXIT"/>
                     </text>
                 </MenuItem>
             </Menu>

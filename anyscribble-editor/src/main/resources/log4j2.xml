@@ -23,10 +23,16 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger - %msg%n"/>
         </Console>
+        <RollingFile name="File" fileName="${sys:user.home}\test2.log"
+                     filePattern="${sys:user.home}/.anyscribble/%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger - %msg%n"/>
+            <SizeBasedTriggeringPolicy size="500"/>
+        </RollingFile>
     </Appenders>
     <Loggers>
         <Root level="all">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
         </Root>
     </Loggers>
 </Configuration>
