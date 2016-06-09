@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class EditorTabFactory {
     private static final Logger LOGGER = Log.get();
-    public static final String PREFERENCE_OPEN_TABS = "openTabs";
+    public static final String PREFERENCE_OPEN_TABS = "open.tabs";
     private final InjectionFXMLLoader fxmlLoader;
     private Map<Path, EditorTabData> controllerCache = new HashMap<>();
     private final Preferences preferences;
