@@ -1,5 +1,7 @@
 # AnyScribble
 
+[![Join the chat at https://gitter.im/thomasbiesaart/anyscribble](https://badges.gitter.im/thomasbiesaart/anyscribble.svg)](https://gitter.im/thomasbiesaart/anyscribble?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## What?
 AnyScribble is a tool set that allows developers to write documentation,
 guides or books without leaving their comfort zone. You simply write
