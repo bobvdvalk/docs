@@ -160,7 +160,9 @@ public class FileTree extends TreeView<Path> {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(getValue())) {
                 List<TreeItem<Path>> result = new ArrayList<>();
                 for (Path child : stream) {
-                    result.add(new PathTree(child));
+                    if(!child.getFileName().toString().startsWith(".")) {
+                        result.add(new PathTree(child));
+                    }
                 }
                 getChildren().setAll(result);
             } catch (IOException e) {
