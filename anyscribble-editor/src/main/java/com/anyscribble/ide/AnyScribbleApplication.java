@@ -21,6 +21,7 @@ import com.anyscribble.core.AnyScribble;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
@@ -56,6 +57,9 @@ public class AnyScribbleApplication extends Application {
         primaryStage.setScene(scene);
         primaryStage.setMinHeight(600);
         primaryStage.setMinWidth(800);
+        primaryStage.getIcons().add(
+                new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icon.png"))
+        );
 
         // Persist width
         Preferences preferences = injector.getInstance(Preferences.class);

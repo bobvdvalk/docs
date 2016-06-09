@@ -54,11 +54,11 @@
                         <Resource fx:constant="MENU_FILE_CLOSE_PROJECT"/>
                     </text>
                 </MenuItem>
-                <MenuItem accelerator="SHORTCUT+SHIFT+S">
+                <!--MenuItem accelerator="SHORTCUT+SHIFT+S">
                     <text>
                         <Resource fx:constant="MENU_FILE_PREFERENCES"/>
                     </text>
-                </MenuItem>
+                </MenuItem-->
                 <MenuItem onAction="#exit">
                     <text>
                         <Resource fx:constant="MENU_FILE_EXIT"/>
@@ -69,12 +69,7 @@
                 <text>
                     <Resource fx:constant="MENU_HELP"/>
                 </text>
-                <MenuItem>
-                    <text>
-                        <Resource fx:constant="MENU_HELP_ABOUT"/>
-                    </text>
-                </MenuItem>
-                <MenuItem accelerator="F1">
+                <MenuItem accelerator="F1" onAction="#openContact">
                     <text>
                         <Resource fx:constant="MENU_HELP_CONTACT"/>
                     </text>

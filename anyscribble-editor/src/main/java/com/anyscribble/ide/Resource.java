@@ -29,6 +29,8 @@ import java.util.ResourceBundle;
 /**
  * This class represents a collection of string resources that can be localized using a {@link ResourceBundle}.
  *
+ * This class is simply a proxy between the java implementation and the {@link ResourceBundle} that backs it.
+ *
  * @author Thomas Biesaart
  */
 public class Resource {

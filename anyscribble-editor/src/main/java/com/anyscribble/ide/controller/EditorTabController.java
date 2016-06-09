@@ -40,6 +40,10 @@ import java.util.ResourceBundle;
 
 /**
  * This controller is responsible for all ui operations inside the editor tab.
+ * <p>
+ * It is responsible for all buttons that perform operations on the text and for saving and syncing the current file.
+ * It is fixed to a certain location on the file path. This means that will always know where to save/read the source
+ * file but it also means it is not possible to change the file location.
  *
  * @author Thomas Biesaart
  */
@@ -60,7 +64,17 @@ public class EditorTabController implements AutoCloseable, Initializable {
             )
     );
 
+    /**
+     * Initialize this tab for a specific file.
+     *
+     * @param path the file to load
+     * @throws IOException           if an IO Error occurs
+     * @throws IllegalStateException if this tab has already been initialized
+     */
     public void loadFile(Path path) throws IOException {
+        if (currentFile != null) {
+            throw new IllegalStateException("A file has already been loaded into this tab");
+        }
         currentFile = path;
         refreshFromDisk();
     }

@@ -29,14 +29,18 @@ import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -192,5 +196,31 @@ public class GlobalController implements Initializable {
 
     public void closeCurrentProject() {
         fileTree.closeProject();
+    }
+
+    public void openContact() {
+        Alert alert = new Alert(
+                Alert.AlertType.INFORMATION,
+                "The chat will open in your default browser.",
+                ButtonType.OK, ButtonType.CANCEL
+        );
+        alert.setHeaderText("Join the chat");
+        alert.showAndWait().ifPresent(
+                type -> {
+                    if (type == ButtonType.OK) {
+                        browseToChat();
+                    }
+                }
+        );
+    }
+
+    private void browseToChat() {
+        try {
+            Desktop.getDesktop().browse(
+                    new URI("https://gitter.im/thomasbiesaart/anyscribble")
+            );
+        } catch (URISyntaxException | UnsupportedOperationException | IOException e) {
+            LOGGER.info("Could not open contact url", e);
+        }
     }
 }
