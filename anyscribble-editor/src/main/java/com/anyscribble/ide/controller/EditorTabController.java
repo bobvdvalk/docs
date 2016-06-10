@@ -17,6 +17,8 @@
  */
 package com.anyscribble.ide.controller;
 
+import com.anyscribble.ide.Preferences;
+import com.google.inject.Inject;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.Event;
@@ -52,6 +54,7 @@ import java.util.ResourceBundle;
  */
 public class EditorTabController implements AutoCloseable, Initializable {
     private static final Logger LOGGER = Log.get();
+    private Preferences preferences;
     @FXML
     private Button toolbarUndoBtn;
     @FXML
@@ -66,6 +69,11 @@ public class EditorTabController implements AutoCloseable, Initializable {
                     e -> save()
             )
     );
+
+    @Inject
+    public EditorTabController(Preferences preferences) {
+        this.preferences = preferences;
+    }
 
     /**
      * Initialize this tab for a specific file.
@@ -126,9 +134,7 @@ public class EditorTabController implements AutoCloseable, Initializable {
      * @param event key press event
      */
     private void onKeyPressed(KeyEvent event) {
-        if(KeyCombination.keyCombination("CTRL+1").match(event)) {
-            
-        }
+        
     }
 
     private void save() {
