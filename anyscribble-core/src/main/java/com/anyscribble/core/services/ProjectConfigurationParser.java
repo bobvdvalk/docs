@@ -18,6 +18,7 @@
 package com.anyscribble.core.services;
 
 import com.anyscribble.core.model.Project;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -36,7 +37,7 @@ public class ProjectConfigurationParser {
 
     @Inject
     public ProjectConfigurationParser() {
-        this(new ObjectMapper());
+        this(new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL));
     }
 
     public ProjectConfigurationParser(ObjectMapper objectMapper) {

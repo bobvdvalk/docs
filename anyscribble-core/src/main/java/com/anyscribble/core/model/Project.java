@@ -17,26 +17,73 @@
  */
 package com.anyscribble.core.model;
 
-import java.nio.file.Path;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+/**
+ * This class represents the configuration for the a project.
+ *
+ * It matches the structure of the json project configuration.
+ *
+ * @author Thomas Biesaart
+ */
 public class Project extends OutputConfiguration {
     private Path sourceDir;
     private Path buildDir;
     private String name;
     private PDFOutputConfiguration pdf;
 
+    /**
+     * This creator is used when we deserialize a json.
+     * This way we can have defaults when we come from a json but no defaults when we instantiate the
+     * class ourselves.
+     *
+     * @return the project default
+     */
+    @JsonCreator
+    public static Project buildProject() {
+        Project project = new Project();
+        project.setSourceDir(Paths.get("src/main/markdown"));
+        project.setBuildDir(Paths.get("target"));
+        return project;
+    }
+
+    /**
+     * Get the root directory of the sources.
+     * This will be used as the working directory for the build.
+     *
+     * @return the path
+     */
     public Path getSourceDir() {
         return sourceDir;
     }
 
+    /**
+     * Get the root directory of the sources.
+     *
+     * @param sourceDir the path
+     */
     public void setSourceDir(Path sourceDir) {
         this.sourceDir = sourceDir;
     }
 
+    /**
+     * Get the build directory.
+     * This is the directory where all outputs will be placed.
+     *
+     * @return the path
+     */
     public Path getBuildDir() {
         return buildDir;
     }
 
+    /**
+     * Set the build directory.
+     *
+     * @param buildDir this is the directory where all outputs will be placed.
+     */
     public void setBuildDir(Path buildDir) {
         this.buildDir = buildDir;
     }
