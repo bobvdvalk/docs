@@ -17,30 +17,10 @@
  */
 package com.anyscribble.ide;
 
-import com.anyscribble.ide.prefs.Preferences;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import javafx.stage.Stage;
+public enum Setting {
+    HOTKEY_SAVE, OPEN_TABS, OPEN_PROJECTS, WINDOW_WIDTH, WINDOW_HEIGHT;
 
-/**
- * This class represent the configuration for the application level injector.
- *
- * @author Thomas Biesaart
- */
-class InjectorConfig extends AbstractModule {
-    private final Stage primaryStage;
-
-    InjectorConfig(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
-    @Override
-    protected void configure() {
-        bind(Stage.class).toInstance(primaryStage);
-    }
-
-    @Provides
-    Preferences preferences() {
-        return Preferences.getUserPreferences("anyscribble");
+    public String getLabel() {
+        return name().toLowerCase().replaceAll("_", ".");
     }
 }
