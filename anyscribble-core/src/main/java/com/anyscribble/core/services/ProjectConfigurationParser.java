@@ -40,7 +40,13 @@ public class ProjectConfigurationParser {
     }
 
     public ProjectConfigurationParser(ObjectMapper objectMapper) {
-        this(objectMapper, objectMapper.readerFor(Project.class), objectMapper.writerFor(Project.class));
+        this(
+                objectMapper,
+                objectMapper.readerFor(Project.class),
+                objectMapper.writerFor(Project.class)
+                        .withDefaultPrettyPrinter()
+
+        );
     }
 
     public ProjectConfigurationParser(ObjectMapper objectMapper, ObjectReader objectReader, ObjectWriter objectWriter) {

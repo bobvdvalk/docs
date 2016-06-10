@@ -23,20 +23,20 @@ import java.util.Map;
 
 public class OutputConfiguration {
     private Path outputFile;
-    private boolean smart = true;
+    private Boolean smart;
     private String defaultImageExtension;
-    private int baseLevelHeaders;
-    private boolean fileScope;
-    private boolean normalize;
-    private boolean preserveTabs;
-    private int tabStop;
-    private boolean standalone;
+    private Integer baseLevelHeaders;
+    private Boolean fileScope;
+    private Boolean normalize;
+    private Boolean preserveTabs;
+    private Integer tabStop;
+    private Boolean standalone;
     private Path template;
     private Map<String, String> templateConfig;
     private WrapStyle warp;
-    private int columns;
-    private boolean toc;
-    private int tocDepth;
+    private Integer columns;
+    private Boolean toc;
+    private Integer tocDepth;
     private String highlightStyle;
     private List<Path> headers;
     private List<Path> beforeBody;
@@ -50,11 +50,11 @@ public class OutputConfiguration {
         this.outputFile = outputFile;
     }
 
-    public boolean isSmart() {
+    public Boolean getSmart() {
         return smart;
     }
 
-    public void setSmart(boolean smart) {
+    public void setSmart(Boolean smart) {
         this.smart = smart;
     }
 
@@ -66,51 +66,51 @@ public class OutputConfiguration {
         this.defaultImageExtension = defaultImageExtension;
     }
 
-    public int getBaseLevelHeaders() {
+    public Integer getBaseLevelHeaders() {
         return baseLevelHeaders;
     }
 
-    public void setBaseLevelHeaders(int baseLevelHeaders) {
+    public void setBaseLevelHeaders(Integer baseLevelHeaders) {
         this.baseLevelHeaders = baseLevelHeaders;
     }
 
-    public boolean isFileScope() {
+    public Boolean getFileScope() {
         return fileScope;
     }
 
-    public void setFileScope(boolean fileScope) {
+    public void setFileScope(Boolean fileScope) {
         this.fileScope = fileScope;
     }
 
-    public boolean isNormalize() {
+    public Boolean getNormalize() {
         return normalize;
     }
 
-    public void setNormalize(boolean normalize) {
+    public void setNormalize(Boolean normalize) {
         this.normalize = normalize;
     }
 
-    public boolean isPreserveTabs() {
+    public Boolean getPreserveTabs() {
         return preserveTabs;
     }
 
-    public void setPreserveTabs(boolean preserveTabs) {
+    public void setPreserveTabs(Boolean preserveTabs) {
         this.preserveTabs = preserveTabs;
     }
 
-    public int getTabStop() {
+    public Integer getTabStop() {
         return tabStop;
     }
 
-    public void setTabStop(int tabStop) {
+    public void setTabStop(Integer tabStop) {
         this.tabStop = tabStop;
     }
 
-    public boolean isStandalone() {
+    public Boolean getStandalone() {
         return standalone;
     }
 
-    public void setStandalone(boolean standalone) {
+    public void setStandalone(Boolean standalone) {
         this.standalone = standalone;
     }
 
@@ -138,27 +138,27 @@ public class OutputConfiguration {
         this.warp = warp;
     }
 
-    public int getColumns() {
+    public Integer getColumns() {
         return columns;
     }
 
-    public void setColumns(int columns) {
+    public void setColumns(Integer columns) {
         this.columns = columns;
     }
 
-    public boolean isToc() {
+    public Boolean getToc() {
         return toc;
     }
 
-    public void setToc(boolean toc) {
+    public void setToc(Boolean toc) {
         this.toc = toc;
     }
 
-    public int getTocDepth() {
+    public Integer getTocDepth() {
         return tocDepth;
     }
 
-    public void setTocDepth(int tocDepth) {
+    public void setTocDepth(Integer tocDepth) {
         this.tocDepth = tocDepth;
     }
 

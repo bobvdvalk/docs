@@ -19,8 +19,41 @@ package com.anyscribble.core.model;
 
 import java.nio.file.Path;
 
-public class Project {
+public class Project extends OutputConfiguration {
     private Path sourceDir;
     private Path buildDir;
     private String name;
+    private PDFOutputConfiguration pdf;
+
+    public Path getSourceDir() {
+        return sourceDir;
+    }
+
+    public void setSourceDir(Path sourceDir) {
+        this.sourceDir = sourceDir;
+    }
+
+    public Path getBuildDir() {
+        return buildDir;
+    }
+
+    public void setBuildDir(Path buildDir) {
+        this.buildDir = buildDir;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public PDFOutputConfiguration getPdf() {
+        return pdf;
+    }
+
+    public void setPdf(PDFOutputConfiguration pdf) {
+        this.pdf = pdf;
+    }
 }

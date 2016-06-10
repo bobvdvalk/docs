@@ -18,9 +18,49 @@
 package com.anyscribble.core.model;
 
 public class PDFOutputConfiguration extends OutputConfiguration {
-    private boolean chapters;
-    private boolean numberSections;
-    private int numberOffset;
-    private boolean noTexLigatures;
-    private boolean listings;
+    private Boolean chapters;
+    private Boolean numberSections;
+    private Integer numberOffset;
+    private Boolean noTexLigatures;
+    private Boolean listings;
+
+    public Boolean getChapters() {
+        return chapters;
+    }
+
+    public void setChapters(Boolean chapters) {
+        this.chapters = chapters;
+    }
+
+    public Boolean getNumberSections() {
+        return numberSections;
+    }
+
+    public void setNumberSections(Boolean numberSections) {
+        this.numberSections = numberSections;
+    }
+
+    public Integer getNumberOffset() {
+        return numberOffset;
+    }
+
+    public void setNumberOffset(Integer numberOffset) {
+        this.numberOffset = numberOffset;
+    }
+
+    public Boolean getNoTexLigatures() {
+        return noTexLigatures;
+    }
+
+    public void setNoTexLigatures(Boolean noTexLigatures) {
+        this.noTexLigatures = noTexLigatures;
+    }
+
+    public Boolean getListings() {
+        return listings;
+    }
+
+    public void setListings(Boolean listings) {
+        this.listings = listings;
+    }
 }
