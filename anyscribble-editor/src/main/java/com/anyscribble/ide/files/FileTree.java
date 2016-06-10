@@ -17,8 +17,9 @@
  */
 package com.anyscribble.ide.files;
 
-import com.anyscribble.ide.Preferences;
 import com.anyscribble.ide.Resource;
+import com.anyscribble.ide.Setting;
+import com.anyscribble.ide.prefs.Preferences;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javafx.scene.control.*;
@@ -42,10 +43,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-
+/**
+ * This class is responsible for displaying the current file system to the user.
+ *
+ * @author Thomas Biesaart
+ */
 @Singleton
 public class FileTree extends TreeView<Path> {
-    private static final String PREFERENCE_PROJECTS = "open.projects";
     private final TreeItem<Path> rootNode = new TreeItem<>(Paths.get("."));
     private static final Logger LOGGER = Log.get();
     private final Image folderIcon = new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icons/folder.png"));
@@ -117,11 +121,11 @@ public class FileTree extends TreeView<Path> {
                 File.pathSeparator
         );
 
-        preferences.put(PREFERENCE_PROJECTS, projects);
+        preferences.put(Setting.OPEN_PROJECTS, projects);
     }
 
     private void openProjectsFromPreferences() {
-        preferences.getList(PREFERENCE_PROJECTS).ifPresent(projects -> {
+        preferences.getList(Setting.OPEN_PROJECTS).ifPresent(projects -> {
             rootNode.getChildren().clear();
             for (String stringPath : projects) {
                 Path path = Paths.get(stringPath);
@@ -160,7 +164,7 @@ public class FileTree extends TreeView<Path> {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(getValue())) {
                 List<TreeItem<Path>> result = new ArrayList<>();
                 for (Path child : stream) {
-                    if(!child.getFileName().toString().startsWith(".")) {
+                    if (!child.getFileName().toString().startsWith(".")) {
                         result.add(new PathTree(child));
                     }
                 }
