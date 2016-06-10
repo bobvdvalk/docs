@@ -31,6 +31,7 @@ public enum Setting {
     HOTKEY_TAB0,
     HOTKEY_BOLD,
     HOTKEY_ITALIC,
+    HOTKEY_CODE,
     HOTKEY_H1,
     HOTKEY_H2,
     HOTKEY_H3,

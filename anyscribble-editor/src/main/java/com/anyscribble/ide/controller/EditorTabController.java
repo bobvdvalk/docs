@@ -17,11 +17,11 @@
  */
 package com.anyscribble.ide.controller;
 
-import com.anyscribble.ide.Preferences;
+import com.anyscribble.ide.Setting;
+import com.anyscribble.ide.prefs.Preferences;
 import com.google.inject.Inject;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -41,7 +41,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 /**
  * This controller is responsible for all ui operations inside the editor tab.
@@ -51,6 +54,7 @@ import java.util.ResourceBundle;
  * file but it also means it is not possible to change the file location.
  *
  * @author Thomas Biesaart
+ * @author Bob van der Valk
  */
 public class EditorTabController implements AutoCloseable, Initializable {
     private static final Logger LOGGER = Log.get();
@@ -122,19 +126,31 @@ public class EditorTabController implements AutoCloseable, Initializable {
         codeArea.textProperty().addListener((observable, oldValue, newValue) ->
                 saveTimeline.playFromStart()
         );
-
         codeArea.addEventFilter(KeyEvent.KEY_PRESSED, this::onKeyPressed);
     }
 
     /**
-     * Key pressed even in the CodeArea
-     * TODO: add save shortcut
-     * TODO: switch tab shortcut
-     * TODO: add more hotkeys
+     * Handler when a hotkey is pressed in the CodeArea
      * @param event key press event
      */
     private void onKeyPressed(KeyEvent event) {
-        
+        // Set bindings
+        hotKeyBinder(Setting.HOTKEY_SAVE, "CTRL+S", e -> save(), event);
+        hotKeyBinder(Setting.HOTKEY_BOLD, "CTRL+B", e -> toggleSelectionBold(), event);
+        hotKeyBinder(Setting.HOTKEY_ITALIC, "CTRL+i", e -> toggleSelectionItalic(), event);
+        hotKeyBinder(Setting.HOTKEY_CODE, "CTRL+c", e -> toggleSelectionCode(), event);
+    }
+
+
+    /**
+     * This method binds hotkeys to method and executes them.
+     */
+    private void hotKeyBinder(Setting setting, String combination, Consumer<KeyEvent> consumer, KeyEvent keyEvent) {
+        String key = preferences.get(setting).orElse(combination);
+        KeyCombination keyCombination = KeyCombination.keyCombination(key);
+        if(keyCombination.match(keyEvent)) {
+            consumer.accept(keyEvent);
+        }
     }
 
     private void save() {
