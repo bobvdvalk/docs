@@ -1,24 +1,29 @@
 /**
  * AnyScribble Core - Writing for Developers by Developers
  * Copyright © 2016 Thomas Biesaart (thomas.biesaart@gmail.com)
- * <p>
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.anyscribble.core;
 
+import com.anyscribble.core.model.Project;
+import com.anyscribble.core.services.ProjectConfigurationParser;
 import com.google.inject.*;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -31,12 +36,19 @@ import java.nio.file.Path;
 @Singleton
 public class AnyScribble {
     private final Configuration configuration;
+    private final ProjectConfigurationParser projectConfigurationParser;
 
     @Inject
-    AnyScribble(Configuration configuration) {
+    AnyScribble(Configuration configuration, ProjectConfigurationParser projectConfigurationParser) {
         this.configuration = configuration;
+        this.projectConfigurationParser = projectConfigurationParser;
     }
 
+    private Project loadProject(Path projectFile) throws IOException {
+        try (InputStream inputStream = Files.newInputStream(projectFile)) {
+            return projectConfigurationParser.load(inputStream);
+        }
+    }
 
     /**
      * Create a new injector that is configured to procude {@link AnyScribble AnyScribbles}.
@@ -44,6 +56,7 @@ public class AnyScribble {
      *
      * @return the injector
      */
+
     public static Injector createInjector(Module... modules) {
         return createInjector(Guice.createInjector(modules));
     }
