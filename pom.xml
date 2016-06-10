@@ -214,6 +214,19 @@
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>external.atlassian.jgitflow</groupId>
+                <artifactId>jgitflow-maven-plugin</artifactId>
+                <version>1.0-m5.1</version>
+                <configuration>
+                    <!-- No Feature Branch Merge. We use PRs -->
+                    <noFeatureMerge>true</noFeatureMerge>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <noDeploy>true</noDeploy>
+                    <squash>true</squash>
+                    <tagMessage>Tag release ${version}</tagMessage>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
