@@ -19,10 +19,13 @@ package com.anyscribble.ide.controller;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.IndexRange;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
 import me.biesaart.utils.IOUtils;
 import me.biesaart.utils.Log;
@@ -111,6 +114,21 @@ public class EditorTabController implements AutoCloseable, Initializable {
         codeArea.textProperty().addListener((observable, oldValue, newValue) ->
                 saveTimeline.playFromStart()
         );
+
+        codeArea.addEventFilter(KeyEvent.KEY_PRESSED, this::onKeyPressed);
+    }
+
+    /**
+     * Key pressed even in the CodeArea
+     * TODO: add save shortcut
+     * TODO: switch tab shortcut
+     * TODO: add more hotkeys
+     * @param event key press event
+     */
+    private void onKeyPressed(KeyEvent event) {
+        if(KeyCombination.keyCombination("CTRL+1").match(event)) {
+            
+        }
     }
 
     private void save() {
