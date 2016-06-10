@@ -45,7 +45,8 @@ public class Project extends OutputConfiguration {
     @JsonCreator
     public static Project buildProject() {
         Project project = new Project();
-        project.setSourceDir(Paths.get("src/main/markdown"));
+        project.parent = new OutputConfiguration();
+        project.setSourceDir(Paths.get("."));
         project.setBuildDir(Paths.get("target"));
         return project;
     }
@@ -88,19 +89,35 @@ public class Project extends OutputConfiguration {
         this.buildDir = buildDir;
     }
 
+    /**
+     * Get the friendly name of the project.
+     *
+     * @return the name of the project
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set the friendly name of the project.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get the pdf configuration.
+     *
+     * @return the pdf configuration
+     */
     public PDFOutputConfiguration getPdf() {
         return pdf;
     }
 
     public void setPdf(PDFOutputConfiguration pdf) {
+        pdf.attachParentConfiguration(this);
         this.pdf = pdf;
     }
 }

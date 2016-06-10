@@ -18,6 +18,7 @@
 package com.anyscribble.core;
 
 import com.anyscribble.core.model.Project;
+import com.anyscribble.core.services.PandocProcessFactory;
 import com.anyscribble.core.services.ProjectConfigurationParser;
 import com.google.inject.*;
 
@@ -25,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * This class represents the main entry point to the AnyScribble core.
@@ -35,19 +38,23 @@ import java.nio.file.Path;
  */
 @Singleton
 public class AnyScribble {
-    private final Configuration configuration;
+    private final PandocProcessFactory pandocProcessFactory;
     private final ProjectConfigurationParser projectConfigurationParser;
 
     @Inject
-    AnyScribble(Configuration configuration, ProjectConfigurationParser projectConfigurationParser) {
-        this.configuration = configuration;
+    AnyScribble(PandocProcessFactory pandocProcessFactory, ProjectConfigurationParser projectConfigurationParser) {
+        this.pandocProcessFactory = pandocProcessFactory;
         this.projectConfigurationParser = projectConfigurationParser;
     }
 
-    private Project loadProject(Path projectFile) throws IOException {
+    public Project loadProject(Path projectFile) throws IOException {
         try (InputStream inputStream = Files.newInputStream(projectFile)) {
             return projectConfigurationParser.load(inputStream);
         }
+    }
+
+    public List<ProcessBuilder> buildProcesses(Path projectRoot, Project project) throws IOException {
+        return pandocProcessFactory.buildProcesses(projectRoot, project);
     }
 
     /**
@@ -82,5 +89,30 @@ public class AnyScribble {
      */
     private static Injector createInjector(Injector injector, Path pandocBinPath) {
         return injector.createChildInjector(new AnyScribbleInjectionModule(new Configuration(pandocBinPath)));
+    }
+
+    public static void main(String[] args) throws IOException {
+        Path projectPath = Paths.get("D:\\Libraries\\Code\\anyscribble-test");
+        Path projectFile = projectPath.resolve("project.json");
+
+        AnyScribble anyScribble = new AnyScribble(
+                new PandocProcessFactory(new Configuration(Configuration.findPandoc())),
+                new ProjectConfigurationParser()
+        );
+
+        Project project = anyScribble.loadProject(projectFile);
+
+        List<ProcessBuilder> processBuilders = anyScribble.buildProcesses(projectPath, project);
+
+        for (ProcessBuilder builder : processBuilders) {
+            for(String arg : builder.command()) {
+                System.out.print(arg);
+                System.out.print(" ");
+            }
+            System.out.println();
+            System.out.println("In " + builder.directory());
+            builder.start();
+        }
+
     }
 }

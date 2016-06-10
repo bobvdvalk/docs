@@ -31,7 +31,7 @@ import java.nio.file.Paths;
  *
  * @author Thomas Biesaart
  */
-class Configuration {
+public class Configuration {
     private static final Logger LOGGER = Log.get();
     public static final String PANDOC_BIN_KEY = "pandoc.bin";
     private static final String[] PANDOC_EXTENSIONS = {"exe"};
@@ -100,5 +100,9 @@ class Configuration {
             }
         }
         return null;
+    }
+
+    public Path getPandocExecutable() {
+        return pandocExecutable;
     }
 }

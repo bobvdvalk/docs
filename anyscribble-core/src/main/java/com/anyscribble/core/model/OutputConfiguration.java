@@ -18,10 +18,12 @@
 package com.anyscribble.core.model;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class OutputConfiguration {
+    protected OutputConfiguration parent;
     private Path outputFile;
     private Boolean smart;
     private String defaultImageExtension;
@@ -33,7 +35,7 @@ public class OutputConfiguration {
     private Boolean standalone;
     private Path template;
     private Map<String, String> templateConfig;
-    private WrapStyle warp;
+    private WrapStyle wrap;
     private Integer columns;
     private Boolean toc;
     private Integer tocDepth;
@@ -43,6 +45,9 @@ public class OutputConfiguration {
     private List<Path> afterBody;
 
     public Path getOutputFile() {
+        if (outputFile == null) {
+            return parent.outputFile;
+        }
         return outputFile;
     }
 
@@ -51,6 +56,9 @@ public class OutputConfiguration {
     }
 
     public Boolean getSmart() {
+        if (smart == null) {
+            return parent.smart;
+        }
         return smart;
     }
 
@@ -59,6 +67,9 @@ public class OutputConfiguration {
     }
 
     public String getDefaultImageExtension() {
+        if (defaultImageExtension == null) {
+            return parent.defaultImageExtension;
+        }
         return defaultImageExtension;
     }
 
@@ -67,6 +78,9 @@ public class OutputConfiguration {
     }
 
     public Integer getBaseLevelHeaders() {
+        if (baseLevelHeaders == null) {
+            return parent.baseLevelHeaders;
+        }
         return baseLevelHeaders;
     }
 
@@ -75,6 +89,9 @@ public class OutputConfiguration {
     }
 
     public Boolean getFileScope() {
+        if (fileScope == null) {
+            return parent.fileScope;
+        }
         return fileScope;
     }
 
@@ -83,6 +100,9 @@ public class OutputConfiguration {
     }
 
     public Boolean getNormalize() {
+        if (normalize == null) {
+            return parent.normalize;
+        }
         return normalize;
     }
 
@@ -91,6 +111,9 @@ public class OutputConfiguration {
     }
 
     public Boolean getPreserveTabs() {
+        if (preserveTabs == null) {
+            return parent.preserveTabs;
+        }
         return preserveTabs;
     }
 
@@ -99,6 +122,9 @@ public class OutputConfiguration {
     }
 
     public Integer getTabStop() {
+        if (tabStop == null) {
+            return parent.tabStop;
+        }
         return tabStop;
     }
 
@@ -107,6 +133,9 @@ public class OutputConfiguration {
     }
 
     public Boolean getStandalone() {
+        if (standalone == null) {
+            return parent.standalone;
+        }
         return standalone;
     }
 
@@ -115,6 +144,9 @@ public class OutputConfiguration {
     }
 
     public Path getTemplate() {
+        if (template == null) {
+            return parent.template;
+        }
         return template;
     }
 
@@ -123,6 +155,9 @@ public class OutputConfiguration {
     }
 
     public Map<String, String> getTemplateConfig() {
+        if (templateConfig == null) {
+            return parent.templateConfig;
+        }
         return templateConfig;
     }
 
@@ -130,15 +165,21 @@ public class OutputConfiguration {
         this.templateConfig = templateConfig;
     }
 
-    public WrapStyle getWarp() {
-        return warp;
+    public WrapStyle getWrap() {
+        if (wrap == null) {
+            return parent.wrap;
+        }
+        return wrap;
     }
 
-    public void setWarp(WrapStyle warp) {
-        this.warp = warp;
+    public void setWrap(WrapStyle wrap) {
+        this.wrap = wrap;
     }
 
     public Integer getColumns() {
+        if (columns == null) {
+            return parent.columns;
+        }
         return columns;
     }
 
@@ -147,6 +188,9 @@ public class OutputConfiguration {
     }
 
     public Boolean getToc() {
+        if (toc == null) {
+            return parent.toc;
+        }
         return toc;
     }
 
@@ -155,6 +199,9 @@ public class OutputConfiguration {
     }
 
     public Integer getTocDepth() {
+        if (tocDepth == null) {
+            return parent.tocDepth;
+        }
         return tocDepth;
     }
 
@@ -163,6 +210,9 @@ public class OutputConfiguration {
     }
 
     public String getHighlightStyle() {
+        if (highlightStyle == null) {
+            return parent.highlightStyle;
+        }
         return highlightStyle;
     }
 
@@ -171,7 +221,7 @@ public class OutputConfiguration {
     }
 
     public List<Path> getHeaders() {
-        return headers;
+        return getOrParentList(headers, parent == null ? null : parent.getHeaders());
     }
 
     public void setHeaders(List<Path> headers) {
@@ -179,7 +229,7 @@ public class OutputConfiguration {
     }
 
     public List<Path> getBeforeBody() {
-        return beforeBody;
+        return getOrParentList(beforeBody, parent == null ? null : parent.getBeforeBody());
     }
 
     public void setBeforeBody(List<Path> beforeBody) {
@@ -187,10 +237,26 @@ public class OutputConfiguration {
     }
 
     public List<Path> getAfterBody() {
-        return afterBody;
+        return getOrParentList(afterBody, parent == null ? null : parent.getAfterBody());
     }
 
     public void setAfterBody(List<Path> afterBody) {
         this.afterBody = afterBody;
     }
+
+    private List<Path> getOrParentList(List<Path> mine, List<Path> parent) {
+        if (parent == null) {
+            return mine;
+        }
+        List<Path> result = new ArrayList<>(parent);
+        if (mine != null) {
+            result.addAll(mine);
+        }
+        return result;
+    }
+
+    public void attachParentConfiguration(OutputConfiguration parent) {
+        this.parent = parent;
+    }
+
 }
