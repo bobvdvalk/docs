@@ -18,6 +18,7 @@
 package com.anyscribble.ide;
 
 import com.anyscribble.core.AnyScribble;
+import com.anyscribble.ide.prefs.Preferences;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -35,46 +36,55 @@ import java.io.IOException;
  * @author Thomas Biesaart
  */
 public class AnyScribbleApplication extends Application {
-    private static final String PREFERENCE_WINDOW_WIDTH = "windowWidth";
-    private static final String PREFERENCE_WINDOW_HEIGHT = "windowHeight";
     private static final Logger LOGGER = Log.get();
     private static final String ANYSCRIBBLE_FXML_PATH = "/com/anyscribble/ide/anyscribble.fxml";
+    private Injector injector;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        LOGGER.info("Configuring Injection");
-        Injector injector = AnyScribble.createInjector(
+        LOGGER.debug("Building Injector");
+        injector = AnyScribble.createInjector(
                 new InjectorConfig(primaryStage)
         );
+
+        setStageData(primaryStage);
+        bindSizeToPreferences(primaryStage);
+        loadScene(primaryStage);
+
+        primaryStage.show();
+    }
+
+    private void loadScene(Stage primaryStage) {
+        LOGGER.debug("Loading Scene");
         InjectionFXMLLoader fxmlLoader = injector.getInstance(InjectionFXMLLoader.class);
 
-        LOGGER.info("Loading User Interface");
-        Scene scene = new Scene(
-                fxmlLoader.load(getClass().getResource(ANYSCRIBBLE_FXML_PATH))
+        Scene scene = new Scene(fxmlLoader.load(getClass().getResource(ANYSCRIBBLE_FXML_PATH)));
+        primaryStage.setScene(scene);
+    }
+
+    private void bindSizeToPreferences(Stage primaryStage) {
+        LOGGER.debug("Binding ");
+        Preferences preferences = injector.getInstance(Preferences.class);
+        preferences.get(Setting.WINDOW_WIDTH).ifPresent(width -> primaryStage.setWidth(Double.parseDouble(width)));
+        primaryStage.widthProperty().addListener((observable, oldValue, newValue) ->
+                preferences.put(Setting.WINDOW_WIDTH, Double.toString(newValue.doubleValue()))
         );
 
+        // Persist Height
+        preferences.get(Setting.WINDOW_HEIGHT).ifPresent(height -> primaryStage.setHeight(Double.parseDouble(height)));
+        primaryStage.heightProperty().addListener((observable, oldValue, newValue) ->
+                preferences.put(Setting.WINDOW_HEIGHT, Double.toString(newValue.doubleValue()))
+        );
+    }
+
+    private void setStageData(Stage primaryStage) {
+        LOGGER.debug("Setting stage data");
         primaryStage.setTitle(Resource.APPLICATION_TITLE);
-        primaryStage.setScene(scene);
         primaryStage.setMinHeight(600);
         primaryStage.setMinWidth(800);
         primaryStage.getIcons().add(
                 new Image(getClass().getResourceAsStream("/com/anyscribble/ide/icon.png"))
         );
-
-        // Persist width
-        Preferences preferences = injector.getInstance(Preferences.class);
-        preferences.get(PREFERENCE_WINDOW_WIDTH).ifPresent(width -> primaryStage.setWidth(Double.parseDouble(width)));
-        primaryStage.widthProperty().addListener((observable, oldValue, newValue) ->
-                preferences.put(PREFERENCE_WINDOW_WIDTH, Double.toString(newValue.doubleValue()))
-        );
-
-        // Persist Height
-        preferences.get(PREFERENCE_WINDOW_HEIGHT).ifPresent(height -> primaryStage.setHeight(Double.parseDouble(height)));
-        primaryStage.heightProperty().addListener((observable, oldValue, newValue) ->
-                preferences.put(PREFERENCE_WINDOW_HEIGHT, Double.toString(newValue.doubleValue()))
-        );
-
-        primaryStage.show();
     }
 
     public static void main(String[] args) {
