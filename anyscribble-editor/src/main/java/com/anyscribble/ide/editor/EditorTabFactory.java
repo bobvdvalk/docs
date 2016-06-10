@@ -18,8 +18,9 @@
 package com.anyscribble.ide.editor;
 
 import com.anyscribble.ide.InjectionFXMLLoader;
-import com.anyscribble.ide.Preferences;
+import com.anyscribble.ide.Setting;
 import com.anyscribble.ide.controller.EditorTabController;
+import com.anyscribble.ide.prefs.Preferences;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javafx.fxml.FXMLLoader;
@@ -43,7 +44,6 @@ import java.util.stream.Collectors;
 @Singleton
 public class EditorTabFactory {
     private static final Logger LOGGER = Log.get();
-    public static final String PREFERENCE_OPEN_TABS = "open.tabs";
     private final InjectionFXMLLoader fxmlLoader;
     private Map<Path, EditorTabData> controllerCache = new HashMap<>();
     private final Preferences preferences;
@@ -84,9 +84,10 @@ public class EditorTabFactory {
 
     private void saveOpenTabs() {
         preferences.putList(
-                PREFERENCE_OPEN_TABS,
+                Setting.OPEN_TABS,
                 controllerCache.values().stream()
                         .map(c -> c.controller.getPath())
+                        .map(Path::toString)
                         .collect(Collectors.toList())
         );
     }

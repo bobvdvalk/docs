@@ -1,23 +1,24 @@
 /**
  * AnyScribble Editor - Writing for Developers by Developers
  * Copyright © 2016 Thomas Biesaart (thomas.biesaart@gmail.com)
- * <p>
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.anyscribble.ide;
 
 import com.anyscribble.core.AnyScribble;
+import com.anyscribble.ide.prefs.Preferences;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -35,8 +36,6 @@ import java.io.IOException;
  * @author Thomas Biesaart
  */
 public class AnyScribbleApplication extends Application {
-    private static final String PREFERENCE_WINDOW_WIDTH = "windowWidth";
-    private static final String PREFERENCE_WINDOW_HEIGHT = "windowHeight";
     private static final Logger LOGGER = Log.get();
     private static final String ANYSCRIBBLE_FXML_PATH = "/com/anyscribble/ide/anyscribble.fxml";
     private Injector injector;
@@ -66,15 +65,15 @@ public class AnyScribbleApplication extends Application {
     private void bindSizeToPreferences(Stage primaryStage) {
         LOGGER.debug("Binding ");
         Preferences preferences = injector.getInstance(Preferences.class);
-        preferences.get(PREFERENCE_WINDOW_WIDTH).ifPresent(width -> primaryStage.setWidth(Double.parseDouble(width)));
+        preferences.get(Setting.WINDOW_WIDTH).ifPresent(width -> primaryStage.setWidth(Double.parseDouble(width)));
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) ->
-                preferences.put(PREFERENCE_WINDOW_WIDTH, Double.toString(newValue.doubleValue()))
+                preferences.put(Setting.WINDOW_WIDTH, Double.toString(newValue.doubleValue()))
         );
 
         // Persist Height
-        preferences.get(PREFERENCE_WINDOW_HEIGHT).ifPresent(height -> primaryStage.setHeight(Double.parseDouble(height)));
+        preferences.get(Setting.WINDOW_HEIGHT).ifPresent(height -> primaryStage.setHeight(Double.parseDouble(height)));
         primaryStage.heightProperty().addListener((observable, oldValue, newValue) ->
-                preferences.put(PREFERENCE_WINDOW_HEIGHT, Double.toString(newValue.doubleValue()))
+                preferences.put(Setting.WINDOW_HEIGHT, Double.toString(newValue.doubleValue()))
         );
     }
 

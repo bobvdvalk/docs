@@ -1,23 +1,24 @@
 /**
  * AnyScribble Editor - Writing for Developers by Developers
  * Copyright © 2016 Thomas Biesaart (thomas.biesaart@gmail.com)
- * <p>
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.anyscribble.ide;
+package com.anyscribble.ide.prefs;
 
-
+import com.anyscribble.ide.Resource;
+import com.anyscribble.ide.Setting;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
@@ -31,28 +32,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 /**
- * This class is responsible for persisting simple preferences.
- * It works by identifying a preference which is stored as a string.
- * For example, I want to save the last entered message in my dialog. Let's call this preference dialog.message.
- * <pre>
- * // Save my message
- * preferences.put("dialog.message", "Hello World");
- *
- * // Fetch my message and specify a default
- * preferences.get("dialog.message").orElse("This is the first time you see this dialog");
- * </pre>
+ * This implementation of the Preferences class persists the settings on a one-second delay to an xml file.
  *
  * @author Thomas Biesaart
  */
-public class Preferences {
+class XMLPreferences extends Preferences {
     private static final Logger LOGGER = Log.get();
-    private static Map<String, Preferences> cache = new HashMap<>();
     private final Properties properties;
     private final Path targetFile;
     private final Timeline saveTimeline = new Timeline(
@@ -62,30 +55,10 @@ public class Preferences {
             )
     );
 
-    private Preferences(Properties properties, Path targetFile) {
+    XMLPreferences(Properties properties, Path targetFile) {
         this.properties = properties;
         this.targetFile = targetFile;
         sync();
-    }
-
-    /**
-     * Create a {@link Preferences} that stores data in the user's home folder.
-     *
-     * @param vendor the vendor name
-     * @return the preferences
-     */
-    public static Preferences getUserPreferences(String vendor) {
-        if (cache.containsKey(vendor)) {
-            return cache.get(vendor);
-        }
-        Properties properties = new Properties(System.getProperties());
-
-        Path homeFolder = Paths.get(properties.getProperty("user.home"));
-        Path propertiesFolder = homeFolder.resolve("." + vendor.replaceAll("[^\\w]+", "").toLowerCase());
-
-        Preferences result = new Preferences(properties, propertiesFolder.resolve("properties.xml"));
-        cache.put(vendor, result);
-        return result;
     }
 
     private void save() {
@@ -113,48 +86,25 @@ public class Preferences {
         }
     }
 
-    /**
-     * Save a String preference.
-     * Use this method to save a preference that is identified by a key.
-     *
-     * @param key   the unique key of the preference
-     * @param value the value that should be saved
-     * @throws NullPointerException if the key or value is null
-     */
-    public synchronized void put(String key, String value) {
-        properties.put(key, value);
+    @Override
+    public synchronized void put(Setting key, String value) {
+        properties.put(key.getLabel(), value);
         saveTimeline.playFromStart();
         LOGGER.debug("Put preference {} = {}", key, value);
     }
 
-    /**
-     * Save a collection of objects. The string value of these objects will be saved to the persistence.
-     * Fetch it later using {@link #getList(String)}.
-     *
-     * @param key   the unique key of the preference
-     * @param value the collection
-     */
-    public synchronized void putList(String key, Iterable<?> value) {
+    @Override
+    public synchronized void putList(Setting key, Iterable<String> value) {
         put(key, StringUtils.join(value, File.pathSeparator));
     }
 
-    /**
-     * Fetch a preference from the persistence.
-     *
-     * @param key the unique key of the preference
-     * @return the preference of {@link Optional#empty()}} if it was not found
-     */
-    public Optional<String> get(String key) {
-        return Optional.ofNullable(properties.getProperty(key));
+    @Override
+    public Optional<String> get(Setting key) {
+        return Optional.ofNullable(properties.getProperty(key.getLabel()));
     }
 
-    /**
-     * Fetch a collection preference from the persistence.
-     *
-     * @param key the unique key of the preference
-     * @return the preference of {@link Optional#empty()}} if it was not found
-     */
-    public Optional<List<String>> getList(String key) {
+    @Override
+    public Optional<List<String>> getList(Setting key) {
         String value = get(key).orElse(null);
         if (value == null) {
             return Optional.empty();

@@ -18,10 +18,11 @@
 package com.anyscribble.ide.controller;
 
 import com.anyscribble.ide.InjectionFXMLLoader;
-import com.anyscribble.ide.Preferences;
 import com.anyscribble.ide.Resource;
+import com.anyscribble.ide.Setting;
 import com.anyscribble.ide.editor.EditorTabFactory;
 import com.anyscribble.ide.files.FileTree;
+import com.anyscribble.ide.prefs.Preferences;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javafx.application.Platform;
@@ -98,7 +99,7 @@ public class GlobalController implements Initializable {
         );
 
         // Open all previously open tabs
-        preferences.getList(EditorTabFactory.PREFERENCE_OPEN_TABS)
+        preferences.getList(Setting.OPEN_TABS)
                 .ifPresent(
                         list -> list.stream()
                                 .map(Paths::get)
