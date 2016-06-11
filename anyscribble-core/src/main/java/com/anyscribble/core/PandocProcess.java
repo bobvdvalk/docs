@@ -41,7 +41,7 @@ public class PandocProcess extends Thread {
 
     public PandocProcess(ProcessBuilder processBuilder, Path sourceDir) {
         this.processBuilder = processBuilder;
-        this.workingDirectory = sourceDir;
+        this.workingDirectory = sourceDir.toAbsolutePath();
         processBuilder.directory(sourceDir.toFile());
     }
 
@@ -66,8 +66,7 @@ public class PandocProcess extends Thread {
 
     public void addParameter(String key, Path value) {
         Path absolutePath = workingDirectory.resolve(value);
-        Path normalizedPath = absolutePath.normalize();
-        Path relativePath = workingDirectory.relativize(normalizedPath);
+        Path relativePath = workingDirectory.relativize(absolutePath.toAbsolutePath());
 
         addParameter(key, relativePath.toString());
     }
