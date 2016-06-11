@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author Thomas Biesaart
  */
-public class AnyScribbleTask extends Thread {
+public class AnyScribbleTask extends Thread implements AutoCloseable {
     private static final Logger LOGGER = Log.get();
     private final List<PandocProcess> pandocProcessList;
 
@@ -58,6 +58,13 @@ public class AnyScribbleTask extends Thread {
                 LOGGER.error("Execution was interrupted!");
                 Thread.currentThread().interrupt();
             }
+        }
+    }
+
+    @Override
+    public void close() throws InterruptedException {
+        for (PandocProcess process : pandocProcessList) {
+            process.close();
         }
     }
 }

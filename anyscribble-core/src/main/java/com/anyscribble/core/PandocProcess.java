@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class represents an instance of the pandoc process.
@@ -32,11 +34,11 @@ import java.util.List;
  *
  * @author Thomas Biesaart
  */
-public class PandocProcess extends Thread {
+public class PandocProcess extends Thread implements AutoCloseable {
     private static final Logger LOGGER = Log.get();
     private final ProcessBuilder processBuilder;
     private final Path workingDirectory;
-    private final List<EventHandler> onStart = new ArrayList<>();
+    private final List<EventHandler<PandocProcess>> onStart = new ArrayList<>();
     private Process process;
 
     public PandocProcess(ProcessBuilder processBuilder, Path sourceDir) {
@@ -45,6 +47,15 @@ public class PandocProcess extends Thread {
         processBuilder.directory(sourceDir.toFile());
     }
 
+    /**
+     * Add a parameter to the process.
+     * If the key is one character  the character notation <pre>-X VALUE</pre> will be used, if the key is longer than
+     * that the property notation <pre>--prop=VALUE</pre> will be used and if the key is null the value will simply be
+     * added to the parameters.
+     *
+     * @param key   the key
+     * @param value the value
+     */
     public void addParameter(String key, String value) {
         if (key == null) {
             processBuilder.command().add(parseParameterValue(value));
@@ -64,13 +75,31 @@ public class PandocProcess extends Thread {
         }
     }
 
+    /**
+     * Add a path parameter to the process.
+     * If the key is one character  the character notation <pre>-X VALUE</pre> will be used, if the key is longer than
+     * that the property notation <pre>--prop=VALUE</pre> will be used and if the key is null the value will simply be
+     * added to the parameters.
+     *
+     * @param key   the key
+     * @param value the value
+     */
     public void addParameter(String key, Path value) {
-        Path absolutePath = workingDirectory.resolve(value);
-        Path relativePath = workingDirectory.relativize(absolutePath.toAbsolutePath());
-
-        addParameter(key, relativePath.toString());
+        addParameter(key, value.toString());
     }
 
+    /**
+     * Add list of parameters to the process.
+     * This is equivalent to calling:
+     * <pre>
+     *    for (Path path : values) {
+     *      addParameter(key, path);
+     *   }
+     * </pre>
+     *
+     * @param key    the key
+     * @param values the value
+     */
     public void addParameters(String key, Iterable<Path> values) {
         if (values != null) {
             for (Path path : values) {
@@ -94,10 +123,15 @@ public class PandocProcess extends Thread {
 
     private void doRun() throws IOException {
         // Notify on start
-        fire(onStart);
+        fire(onStart, this);
 
-        processBuilder.inheritIO();
         process = processBuilder.start();
+
+        Scanner scanner = new Scanner(process.getInputStream());
+
+        while (scanner.hasNextLine()) {
+            throw new PandocRuntimeException(scanner.nextLine());
+        }
 
         try {
             process.waitFor();
@@ -107,9 +141,9 @@ public class PandocProcess extends Thread {
         }
     }
 
-    private void fire(List<EventHandler> eventHandlers) throws IOException {
+    private <T> void fire(List<EventHandler<T>> eventHandlers, T data) throws IOException {
         for (EventHandler handler : eventHandlers) {
-            handler.accept(this);
+            handler.accept(this, data);
         }
     }
 
@@ -122,7 +156,14 @@ public class PandocProcess extends Thread {
         );
     }
 
-    public interface EventHandler {
-        void accept(PandocProcess pandocProcess) throws IOException;
+    @Override
+    public void close() throws InterruptedException {
+        if (process != null) {
+            process.destroyForcibly().waitFor(2, TimeUnit.SECONDS);
+        }
+    }
+
+    public interface EventHandler<T> {
+        void accept(PandocProcess pandocProcess, T data) throws IOException;
     }
 }

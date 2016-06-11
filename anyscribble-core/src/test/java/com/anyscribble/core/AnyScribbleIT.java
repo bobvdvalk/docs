@@ -29,7 +29,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
 
 import static org.testng.Assert.assertTrue;
 
@@ -68,11 +67,10 @@ public class AnyScribbleIT {
 
         AnyScribble anyScribble = injector.getInstance(AnyScribble.class);
         Project project = anyScribble.loadProject(projectPath.resolve("project.json"));
-        AnyScribbleTask processes = anyScribble.buildProcesses(projectPath, project);
-
-        processes.start();
-
-        processes.join();
+        try (AnyScribbleTask processes = anyScribble.buildProcesses(projectPath, project)) {
+            processes.start();
+            processes.join();
+        }
         // Check if the files were built
         assertTrue(Files.exists(projectPath.resolve("target/AnyScribble Integration Test.pdf")));
     }
