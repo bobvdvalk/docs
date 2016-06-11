@@ -31,7 +31,6 @@ import java.io.OutputStream;
 
 @Singleton
 public class ProjectConfigurationParser {
-    private final ObjectMapper objectMapper;
     private final ObjectReader objectReader;
     private final ObjectWriter objectWriter;
 
@@ -42,7 +41,6 @@ public class ProjectConfigurationParser {
 
     public ProjectConfigurationParser(ObjectMapper objectMapper) {
         this(
-                objectMapper,
                 objectMapper.readerFor(Project.class),
                 objectMapper.writerFor(Project.class)
                         .withDefaultPrettyPrinter()
@@ -50,8 +48,7 @@ public class ProjectConfigurationParser {
         );
     }
 
-    public ProjectConfigurationParser(ObjectMapper objectMapper, ObjectReader objectReader, ObjectWriter objectWriter) {
-        this.objectMapper = objectMapper;
+    public ProjectConfigurationParser(ObjectReader objectReader, ObjectWriter objectWriter) {
         this.objectReader = objectReader;
         this.objectWriter = objectWriter;
     }
