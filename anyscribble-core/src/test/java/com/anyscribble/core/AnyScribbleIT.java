@@ -74,5 +74,4 @@ public class AnyScribbleIT {
         // Check if the files were built
         assertTrue(Files.exists(projectPath.resolve("target/AnyScribble Integration Test.pdf")));
     }
-
 }
