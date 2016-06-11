@@ -236,12 +236,11 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <noDeploy>true</noDeploy>
                     <squash>true</squash>
-                    <tagMessage>Tag release ${version}</tagMessage>
+                    <tagMessage>Tag release ${project.version}</tagMessage>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 
     <dependencies>
         <dependency>
