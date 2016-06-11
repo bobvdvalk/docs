@@ -108,9 +108,7 @@ public class PandocProcessFactory {
 
         PandocProcess process = new PandocProcess(processBuilder, sourceDir);
 
-        process.addOnStart(p -> {
-            Files.createDirectories(targetFile.getParent());
-        });
+        process.addOnStart(p -> Files.createDirectories(targetFile.getParent()));
 
         process.addParameter("o", targetFile);
 

@@ -17,9 +17,6 @@
  */
 package com.anyscribble.core;
 
-import me.biesaart.utils.Log;
-import org.slf4j.Logger;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -29,7 +26,6 @@ import java.util.List;
  * @author Thomas Biesaart
  */
 public class AnyScribbleTask extends Thread {
-    private static final Logger LOGGER = Log.get();
     private final List<PandocProcess> pandocProcessList;
 
     public AnyScribbleTask(List<PandocProcess> pandocProcessList) {
@@ -41,8 +37,7 @@ public class AnyScribbleTask extends Thread {
         try {
             doRun();
         } catch (IOException e) {
-            // TODO::Throw nice exception with callback
-            throw new RuntimeException(e.getMessage(), e);
+            throw new PandocRuntimeException("Execution failed", e);
         }
     }
 
@@ -56,7 +51,7 @@ public class AnyScribbleTask extends Thread {
             try {
                 process.join();
             } catch (InterruptedException e) {
-                LOGGER.error(process + " was interrupted", e);
+                throw new PandocRuntimeException("Execution was interrupted", e);
             }
         }
     }

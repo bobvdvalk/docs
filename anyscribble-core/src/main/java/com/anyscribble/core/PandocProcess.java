@@ -88,8 +88,7 @@ public class PandocProcess extends Thread {
         try {
             doRun();
         } catch (IOException e) {
-            // TODO Error Callback
-            throw new RuntimeException(e.getMessage(), e);
+            throw new PandocRuntimeException("Execution failed", e);
         }
     }
 
@@ -103,7 +102,7 @@ public class PandocProcess extends Thread {
         try {
             process.waitFor();
         } catch (InterruptedException e) {
-            LOGGER.error("Interrupted", e);
+            throw new PandocRuntimeException("Execution interrupted", e);
         }
     }
 
