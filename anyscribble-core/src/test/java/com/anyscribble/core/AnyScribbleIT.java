@@ -73,7 +73,6 @@ public class AnyScribbleIT {
         processes.start();
 
         processes.join();
-
         // Check if the files were built
         assertTrue(Files.exists(projectPath.resolve("target/AnyScribble Integration Test.pdf")));
     }
