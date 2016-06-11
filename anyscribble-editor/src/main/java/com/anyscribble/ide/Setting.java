@@ -28,7 +28,7 @@ public enum Setting {
     HOTKEY_TAB7,
     HOTKEY_TAB8,
     HOTKEY_TAB9,
-    HOTKEY_TAB0,
+    HOTKEY_TAB10,
     HOTKEY_BOLD,
     HOTKEY_ITALIC,
     HOTKEY_CODE,

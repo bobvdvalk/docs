@@ -19,6 +19,9 @@ package com.anyscribble.ide.prefs;
 
 
 import com.anyscribble.ide.Setting;
+import javafx.scene.Node;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -62,6 +65,41 @@ public abstract class Preferences {
     }
 
     /**
+     * Bind a hot key from preferences to an action on a node.
+     *
+     * Whenever that node has focus and it meets an unconsumed key pressed event that matches the key combination
+     * it will fire the action.
+     *
+     * @param target        the node
+     * @param key           the preference
+     * @param defaultHotKey the default hot key
+     * @param action        the action
+     */
+    public void bindHotKey(Node target, Setting key, KeyCombination defaultHotKey, Callback action) {
+        target.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            KeyCombination keyCombination = get(key).map(KeyCombination::keyCombination).orElse(defaultHotKey);
+            if (keyCombination.match(event)) {
+                action.trigger();
+            }
+        });
+    }
+
+    /**
+     * Bind a hot key from preferences to an action on a node.
+     *
+     * Whenever that node has focus and it meets an unconsumed key pressed event that matches the key combination
+     * it will fire the action.
+     *
+     * @param target        the node
+     * @param key           the preference
+     * @param defaultHotKey the default hot key
+     * @param action        the action
+     */
+    public void bindHotKey(Node target, Setting key, String defaultHotKey, Callback action) {
+        bindHotKey(target, key, KeyCombination.keyCombination(defaultHotKey), action);
+    }
+
+    /**
      * Fetch a preference from the persistence.
      *
      * @param key the unique key of the preference
@@ -95,4 +133,9 @@ public abstract class Preferences {
      * @param value the collection
      */
     public abstract void putList(Setting key, Iterable<String> value);
+
+    @FunctionalInterface
+    public interface Callback {
+        void trigger();
+    }
 }

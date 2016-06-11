@@ -37,13 +37,11 @@ import java.util.concurrent.TimeUnit;
 public class PandocProcess extends Thread implements AutoCloseable {
     private static final Logger LOGGER = Log.get();
     private final ProcessBuilder processBuilder;
-    private final Path workingDirectory;
     private final List<EventHandler<PandocProcess>> onStart = new ArrayList<>();
     private Process process;
 
     public PandocProcess(ProcessBuilder processBuilder, Path sourceDir) {
         this.processBuilder = processBuilder;
-        this.workingDirectory = sourceDir.toAbsolutePath();
         processBuilder.directory(sourceDir.toFile());
     }
 
@@ -163,6 +161,7 @@ public class PandocProcess extends Thread implements AutoCloseable {
         }
     }
 
+    @FunctionalInterface
     public interface EventHandler<T> {
         void accept(PandocProcess pandocProcess, T data) throws IOException;
     }

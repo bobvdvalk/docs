@@ -78,7 +78,7 @@
         </MenuBar>
     </top>
     <center>
-        <TabPane fx:id="editorTabPane"/>
+        <TabPane fx:id="editorTabPane" tabClosingPolicy="ALL_TABS"/>
     </center>
     <bottom>
         <HBox alignment="CENTER">
