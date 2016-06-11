@@ -17,8 +17,14 @@
  */
 package com.anyscribble.core;
 
+import com.anyscribble.core.model.Project;
+import com.anyscribble.core.services.PandocProcessFactory;
+import com.anyscribble.core.services.ProjectConfigurationParser;
 import com.google.inject.*;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -30,13 +36,24 @@ import java.nio.file.Path;
  */
 @Singleton
 public class AnyScribble {
-    private final Configuration configuration;
+    private final PandocProcessFactory pandocProcessFactory;
+    private final ProjectConfigurationParser projectConfigurationParser;
 
     @Inject
-    AnyScribble(Configuration configuration) {
-        this.configuration = configuration;
+    AnyScribble(PandocProcessFactory pandocProcessFactory, ProjectConfigurationParser projectConfigurationParser) {
+        this.pandocProcessFactory = pandocProcessFactory;
+        this.projectConfigurationParser = projectConfigurationParser;
     }
 
+    public Project loadProject(Path projectFile) throws IOException {
+        try (InputStream inputStream = Files.newInputStream(projectFile)) {
+            return projectConfigurationParser.load(inputStream);
+        }
+    }
+
+    public AnyScribbleTask buildProcesses(Path projectRoot, Project project) throws IOException {
+        return new AnyScribbleTask(pandocProcessFactory.buildProcesses(projectRoot, project));
+    }
 
     /**
      * Create a new injector that is configured to procude {@link AnyScribble AnyScribbles}.
@@ -44,6 +61,7 @@ public class AnyScribble {
      *
      * @return the injector
      */
+
     public static Injector createInjector(Module... modules) {
         return createInjector(Guice.createInjector(modules));
     }
@@ -70,4 +88,6 @@ public class AnyScribble {
     private static Injector createInjector(Injector injector, Path pandocBinPath) {
         return injector.createChildInjector(new AnyScribbleInjectionModule(new Configuration(pandocBinPath)));
     }
+
+
 }
