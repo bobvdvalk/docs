@@ -139,6 +139,7 @@ public class EditorTabController implements AutoCloseable, Initializable {
         hotKeyBinder(Setting.HOTKEY_BOLD, "CTRL+B", e -> toggleSelectionBold(), event);
         hotKeyBinder(Setting.HOTKEY_ITALIC, "CTRL+i", e -> toggleSelectionItalic(), event);
         hotKeyBinder(Setting.HOTKEY_CODE, "CTRL+c", e -> toggleSelectionCode(), event);
+        hotKeyBinder(Setting.HOTKEY_H1, "CTRL+h", e -> toggleSelectionHeader("H1"), event);
     }
 
 
@@ -167,6 +168,32 @@ public class EditorTabController implements AutoCloseable, Initializable {
         } catch (IOException e) {
             LOGGER.error("Failed to save " + currentFile, e);
         }
+    }
+
+    public void toggleSelectionHeader(String type) {
+        String value = null;
+        switch (type) {
+            case "H1":
+                value = "#";
+                break;
+            case "H2":
+                value = "##";
+                break;
+            case "H3":
+                value = "###";
+                break;
+            case "H4":
+                value = "####";
+                break;
+            default:
+                value = "#";
+        }
+        addBeforeLine(value);
+    }
+
+    private void addBeforeLine(String addValue) {
+        codeArea.selectLine();
+        codeArea.replaceSelection(addValue + " " + codeArea.getSelectedText());
     }
 
     public void toggleSelectionBold() {
