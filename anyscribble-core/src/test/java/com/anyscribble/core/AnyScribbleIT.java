@@ -71,7 +71,7 @@ public class AnyScribbleIT {
         AnyScribbleTask processes = anyScribble.buildProcesses(projectPath, project);
 
         processes.start();
-
+        
         processes.join();
         // Check if the files were built
         assertTrue(Files.exists(projectPath.resolve("target/AnyScribble Integration Test.pdf")));
