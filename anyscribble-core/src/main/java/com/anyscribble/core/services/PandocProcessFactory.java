@@ -18,6 +18,7 @@
 package com.anyscribble.core.services;
 
 import com.anyscribble.core.Configuration;
+import com.anyscribble.core.PandocProcess;
 import com.anyscribble.core.model.OutputConfiguration;
 import com.anyscribble.core.model.PDFOutputConfiguration;
 import com.anyscribble.core.model.Project;
@@ -26,13 +27,11 @@ import com.google.inject.Singleton;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -50,76 +49,25 @@ public class PandocProcessFactory {
         this.configuration = configuration;
     }
 
-    public List<ProcessBuilder> buildProcesses(Path projectRoot, Project project) throws IOException {
-        List<ProcessBuilder> result = new ArrayList<>();
+    public List<PandocProcess> buildProcesses(Path projectRoot, Project project) throws IOException {
+        List<PandocProcess> result = new ArrayList<>();
         if (project.getPdf() != null) {
             result.add(buildPdfProcess(projectRoot, project, project.getPdf()));
         }
 
-        List<Path> files = gatherFiles(projectRoot.resolve(project.getSourceDir()));
-        result.forEach(pb -> files.forEach(file -> addArgument(pb, null, file)));
+        Path sourcePath = projectRoot.resolve(project.getSourceDir()).toRealPath();
+        List<Path> files = gatherFiles(sourcePath);
+
+        result.forEach(p -> {
+            p.addParameters(null, files);
+            LOGGER.debug("{}", p);
+        });
 
         return result;
     }
 
-    private ProcessBuilder buildPdfProcess(Path projectRoot, Project project, PDFOutputConfiguration pdfOutputConfiguration) throws IOException {
-        ProcessBuilder processBuilder = buildBaseProcess(projectRoot, project, pdfOutputConfiguration);
-
-
-        return processBuilder;
-    }
-
-
-    private ProcessBuilder buildBaseProcess(Path projectRoot, Project project, OutputConfiguration outputConfiguration) throws IOException {
-        Path sourceDir = projectRoot.resolve(project.getSourceDir()).toRealPath();
-        Path buildDir = projectRoot.resolve(project.getBuildDir());
-        Path targetFile = outputConfiguration.getOutputFile();
-        if (targetFile == null) {
-            targetFile = buildDir.resolve(project.getName() + ".pdf");
-        } else {
-            targetFile = buildDir.resolve(outputConfiguration.getOutputFile());
-        }
-
-        Files.createDirectories(targetFile.getParent());
-
-        ProcessBuilder processBuilder = new ProcessBuilder(configuration.getPandocExecutable().toString());
-        processBuilder.inheritIO();
-        processBuilder.directory(sourceDir.toFile());
-
-        addArgument(processBuilder, "o", targetFile);
-
-        parseList(processBuilder, "H", outputConfiguration.getHeaders(), projectRoot);
-        parseList(processBuilder, "B", outputConfiguration.getBeforeBody(), projectRoot);
-        parseList(processBuilder, "A", outputConfiguration.getAfterBody(), projectRoot);
-
-        // TODO More Options
-
-        return processBuilder;
-    }
-
-    private static void parseList(ProcessBuilder processBuilder, String argumentName, List<Path> value, Path baseDir) {
-        if (value != null) {
-            for (Path path : value) {
-                Path fullPath = baseDir.resolve(path).toAbsolutePath();
-                addArgument(processBuilder, argumentName, fullPath);
-            }
-        }
-    }
-
-    private static void addArgument(ProcessBuilder processBuilder, String key, Path path) {
-        Path relative = processBuilder.directory().toPath().toAbsolutePath().relativize(path.toAbsolutePath());
-        addArgument(processBuilder, key, relative.toString());
-    }
-
-    private static void addArgument(ProcessBuilder processBuilder, String key, String value) {
-        if (key != null) {
-            processBuilder.command().add("-" + key);
-        }
-        processBuilder.command().add(String.format("\"%s\"", value));
-    }
-
     private List<Path> gatherFiles(Path sourceDir) throws IOException {
-        List<Path> files = new ArrayList<>();
+        List<Path> result = new ArrayList<>();
 
         if (Files.exists(sourceDir)) {
             Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
@@ -128,19 +76,51 @@ public class PandocProcessFactory {
                     String fileName = file.getFileName().toString();
                     int index = fileName.lastIndexOf('.');
                     if (index != -1) {
-                        String extension = fileName.substring(index + 1);
-                        if ("md".equals(extension) || "markdown".equals(extension)) {
-                            files.add(file);
+                        String ext = fileName.substring(index + 1);
+                        if ("md".equals(ext) || "markdown".equals(ext)) {
+                            result.add(file);
                         }
                     }
-                    return FileVisitResult.CONTINUE;
+                    return super.visitFile(file, attrs);
                 }
             });
-        } else {
-            LOGGER.info("The source directory was not found for {}", sourceDir);
         }
+        return result;
+    }
 
-        return files;
+    private PandocProcess buildPdfProcess(Path projectRoot, Project project, PDFOutputConfiguration pdfOutputConfiguration) throws IOException {
+        PandocProcess process = buildBaseProcess(projectRoot, project, pdfOutputConfiguration);
+
+
+        return process;
+    }
+
+
+    private PandocProcess buildBaseProcess(Path projectRoot, Project project, OutputConfiguration outputConfiguration) throws IOException {
+        Path sourceDir = projectRoot.resolve(project.getSourceDir()).toRealPath();
+        Path buildDir = projectRoot.resolve(project.getBuildDir());
+        Path targetFile = buildDir.resolve(
+                Optional.ofNullable(outputConfiguration.getOutputFile())
+                        .orElse(Paths.get(project.getName() + ".pdf"))
+        );
+
+        ProcessBuilder processBuilder = new ProcessBuilder(configuration.getPandocExecutable().toString());
+
+        PandocProcess process = new PandocProcess(processBuilder, sourceDir);
+
+        process.addOnStart(p -> {
+            Files.createDirectories(targetFile.getParent());
+        });
+
+        process.addParameter("o", targetFile);
+
+        process.addParameters("H", outputConfiguration.getHeaders());
+        process.addParameters("B", outputConfiguration.getBeforeBody());
+        process.addParameters("A", outputConfiguration.getAfterBody());
+
+        // TODO More Options
+
+        return process;
     }
 
 }

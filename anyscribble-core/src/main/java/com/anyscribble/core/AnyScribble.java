@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * This class represents the main entry point to the AnyScribble core.
@@ -53,8 +51,8 @@ public class AnyScribble {
         }
     }
 
-    public List<ProcessBuilder> buildProcesses(Path projectRoot, Project project) throws IOException {
-        return pandocProcessFactory.buildProcesses(projectRoot, project);
+    public AnyScribbleTask buildProcesses(Path projectRoot, Project project) throws IOException {
+        return new AnyScribbleTask(pandocProcessFactory.buildProcesses(projectRoot, project));
     }
 
     /**
@@ -91,28 +89,5 @@ public class AnyScribble {
         return injector.createChildInjector(new AnyScribbleInjectionModule(new Configuration(pandocBinPath)));
     }
 
-    public static void main(String[] args) throws IOException {
-        Path projectPath = Paths.get("D:\\Libraries\\Code\\anyscribble-test");
-        Path projectFile = projectPath.resolve("project.json");
 
-        AnyScribble anyScribble = new AnyScribble(
-                new PandocProcessFactory(new Configuration(Configuration.findPandoc())),
-                new ProjectConfigurationParser()
-        );
-
-        Project project = anyScribble.loadProject(projectFile);
-
-        List<ProcessBuilder> processBuilders = anyScribble.buildProcesses(projectPath, project);
-
-        for (ProcessBuilder builder : processBuilders) {
-            for(String arg : builder.command()) {
-                System.out.print(arg);
-                System.out.print(" ");
-            }
-            System.out.println();
-            System.out.println("In " + builder.directory());
-            builder.start();
-        }
-
-    }
 }

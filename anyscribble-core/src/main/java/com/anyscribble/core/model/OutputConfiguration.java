@@ -21,7 +21,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
+/**
+ * This class represents the base configuration for any build target.
+ *
+ * @author Thomas Biesaart
+ */
 public class OutputConfiguration {
     protected OutputConfiguration parent;
     private Path outputFile;
@@ -45,10 +51,7 @@ public class OutputConfiguration {
     private List<Path> afterBody;
 
     public Path getOutputFile() {
-        if (outputFile == null) {
-            return parent.outputFile;
-        }
-        return outputFile;
+        return getOrParent(OutputConfiguration::getOutputFile, outputFile, parent);
     }
 
     public void setOutputFile(Path outputFile) {
@@ -56,10 +59,7 @@ public class OutputConfiguration {
     }
 
     public Boolean getSmart() {
-        if (smart == null) {
-            return parent.smart;
-        }
-        return smart;
+        return getOrParent(OutputConfiguration::getSmart, smart, parent);
     }
 
     public void setSmart(Boolean smart) {
@@ -67,10 +67,7 @@ public class OutputConfiguration {
     }
 
     public String getDefaultImageExtension() {
-        if (defaultImageExtension == null) {
-            return parent.defaultImageExtension;
-        }
-        return defaultImageExtension;
+        return getOrParent(OutputConfiguration::getDefaultImageExtension, defaultImageExtension, parent);
     }
 
     public void setDefaultImageExtension(String defaultImageExtension) {
@@ -78,10 +75,7 @@ public class OutputConfiguration {
     }
 
     public Integer getBaseLevelHeaders() {
-        if (baseLevelHeaders == null) {
-            return parent.baseLevelHeaders;
-        }
-        return baseLevelHeaders;
+        return getOrParent(OutputConfiguration::getBaseLevelHeaders, baseLevelHeaders, parent);
     }
 
     public void setBaseLevelHeaders(Integer baseLevelHeaders) {
@@ -89,10 +83,7 @@ public class OutputConfiguration {
     }
 
     public Boolean getFileScope() {
-        if (fileScope == null) {
-            return parent.fileScope;
-        }
-        return fileScope;
+        return getOrParent(OutputConfiguration::getFileScope, fileScope, parent);
     }
 
     public void setFileScope(Boolean fileScope) {
@@ -100,10 +91,7 @@ public class OutputConfiguration {
     }
 
     public Boolean getNormalize() {
-        if (normalize == null) {
-            return parent.normalize;
-        }
-        return normalize;
+        return getOrParent(OutputConfiguration::getNormalize, normalize, parent);
     }
 
     public void setNormalize(Boolean normalize) {
@@ -111,10 +99,7 @@ public class OutputConfiguration {
     }
 
     public Boolean getPreserveTabs() {
-        if (preserveTabs == null) {
-            return parent.preserveTabs;
-        }
-        return preserveTabs;
+        return getOrParent(OutputConfiguration::getPreserveTabs, preserveTabs, parent);
     }
 
     public void setPreserveTabs(Boolean preserveTabs) {
@@ -122,10 +107,7 @@ public class OutputConfiguration {
     }
 
     public Integer getTabStop() {
-        if (tabStop == null) {
-            return parent.tabStop;
-        }
-        return tabStop;
+        return getOrParent(OutputConfiguration::getTabStop, tabStop, parent);
     }
 
     public void setTabStop(Integer tabStop) {
@@ -133,10 +115,7 @@ public class OutputConfiguration {
     }
 
     public Boolean getStandalone() {
-        if (standalone == null) {
-            return parent.standalone;
-        }
-        return standalone;
+        return getOrParent(OutputConfiguration::getStandalone, standalone, parent);
     }
 
     public void setStandalone(Boolean standalone) {
@@ -144,10 +123,7 @@ public class OutputConfiguration {
     }
 
     public Path getTemplate() {
-        if (template == null) {
-            return parent.template;
-        }
-        return template;
+        return getOrParent(OutputConfiguration::getTemplate, template, parent);
     }
 
     public void setTemplate(Path template) {
@@ -155,10 +131,7 @@ public class OutputConfiguration {
     }
 
     public Map<String, String> getTemplateConfig() {
-        if (templateConfig == null) {
-            return parent.templateConfig;
-        }
-        return templateConfig;
+        return getOrParent(OutputConfiguration::getTemplateConfig, templateConfig, parent);
     }
 
     public void setTemplateConfig(Map<String, String> templateConfig) {
@@ -166,10 +139,7 @@ public class OutputConfiguration {
     }
 
     public WrapStyle getWrap() {
-        if (wrap == null) {
-            return parent.wrap;
-        }
-        return wrap;
+        return getOrParent(OutputConfiguration::getWrap, wrap, parent);
     }
 
     public void setWrap(WrapStyle wrap) {
@@ -177,10 +147,7 @@ public class OutputConfiguration {
     }
 
     public Integer getColumns() {
-        if (columns == null) {
-            return parent.columns;
-        }
-        return columns;
+        return getOrParent(OutputConfiguration::getColumns, columns, parent);
     }
 
     public void setColumns(Integer columns) {
@@ -188,10 +155,7 @@ public class OutputConfiguration {
     }
 
     public Boolean getToc() {
-        if (toc == null) {
-            return parent.toc;
-        }
-        return toc;
+        return getOrParent(OutputConfiguration::getToc, toc, parent);
     }
 
     public void setToc(Boolean toc) {
@@ -199,10 +163,7 @@ public class OutputConfiguration {
     }
 
     public Integer getTocDepth() {
-        if (tocDepth == null) {
-            return parent.tocDepth;
-        }
-        return tocDepth;
+        return getOrParent(OutputConfiguration::getTocDepth, tocDepth, parent);
     }
 
     public void setTocDepth(Integer tocDepth) {
@@ -210,10 +171,7 @@ public class OutputConfiguration {
     }
 
     public String getHighlightStyle() {
-        if (highlightStyle == null) {
-            return parent.highlightStyle;
-        }
-        return highlightStyle;
+        return getOrParent(OutputConfiguration::getHighlightStyle, highlightStyle, parent);
     }
 
     public void setHighlightStyle(String highlightStyle) {
@@ -253,6 +211,16 @@ public class OutputConfiguration {
             result.addAll(mine);
         }
         return result;
+    }
+
+    protected <T> T getOrParent(Function<OutputConfiguration, T> getter, T thisValue, OutputConfiguration parent) {
+        if (thisValue != null) {
+            return thisValue;
+        }
+        if (parent != null) {
+            return getter.apply(parent);
+        }
+        return null;
     }
 
     public void attachParentConfiguration(OutputConfiguration parent) {
