@@ -18,7 +18,31 @@
 package com.anyscribble.ide;
 
 public enum Setting {
-    HOTKEY_SAVE, OPEN_TABS, OPEN_PROJECTS, WINDOW_WIDTH, WINDOW_HEIGHT;
+    HOTKEY_SAVE,
+    HOTKEY_TAB1,
+    HOTKEY_TAB2,
+    HOTKEY_TAB3,
+    HOTKEY_TAB4,
+    HOTKEY_TAB5,
+    HOTKEY_TAB6,
+    HOTKEY_TAB7,
+    HOTKEY_TAB8,
+    HOTKEY_TAB9,
+    HOTKEY_TAB0,
+    HOTKEY_BOLD,
+    HOTKEY_ITALIC,
+    HOTKEY_CODE,
+    HOTKEY_H1,
+    HOTKEY_H2,
+    HOTKEY_H3,
+    HOTKEY_H4,
+    HOTKEY_H5,
+    HOTKEY_FIND,
+    HOTKEY_FIND_FILE,
+    OPEN_TABS,
+    OPEN_PROJECTS,
+    WINDOW_WIDTH,
+    WINDOW_HEIGHT;
 
     public String getLabel() {
         return name().toLowerCase().replaceAll("_", ".");
