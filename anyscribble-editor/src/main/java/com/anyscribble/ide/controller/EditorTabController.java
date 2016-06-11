@@ -26,8 +26,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.IndexRange;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
 import me.biesaart.utils.IOUtils;
 import me.biesaart.utils.Log;
@@ -42,7 +40,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 /**
  * This controller is responsible for all ui operations inside the editor tab.
@@ -124,36 +121,16 @@ public class EditorTabController implements AutoCloseable, Initializable {
         codeArea.textProperty().addListener((observable, oldValue, newValue) ->
                 saveTimeline.playFromStart()
         );
-        codeArea.addEventFilter(KeyEvent.KEY_PRESSED, this::onKeyPressed);
-    }
 
-    /**
-     * Handler when a hotkey is pressed in the CodeArea
-     * @param event key press event
-     */
-    private void onKeyPressed(KeyEvent event) {
-        // Set bindings
-        hotKeyBinder(Setting.HOTKEY_SAVE, "CTRL+S", e -> save(), event);
-        hotKeyBinder(Setting.HOTKEY_BOLD, "CTRL+B", e -> toggleSelectionBold(), event);
-        hotKeyBinder(Setting.HOTKEY_ITALIC, "CTRL+i", e -> toggleSelectionItalic(), event);
-        hotKeyBinder(Setting.HOTKEY_CODE, "CTRL+c", e -> toggleSelectionCode(), event);
-        hotKeyBinder(Setting.HOTKEY_H1, "CTRL+SHIFT+1", e -> toggleHeaderH1(), event);
-        hotKeyBinder(Setting.HOTKEY_H2, "CTRL+SHIFT+2", e -> toggleHeaderH2(), event);
-        hotKeyBinder(Setting.HOTKEY_H3, "CTRL+SHIFT+3", e -> toggleHeaderH3(), event);
-        hotKeyBinder(Setting.HOTKEY_H4, "CTRL+SHIFT+4", e -> toggleHeaderH4(), event);
-        hotKeyBinder(Setting.HOTKEY_H5, "CTRL+SHIFT+5", e -> toggleHeaderH5(), event);
-    }
-
-
-    /**
-     * This method binds hotkeys to method and executes them.
-     */
-    private void hotKeyBinder(Setting setting, String combination, Consumer<KeyEvent> consumer, KeyEvent keyEvent) {
-        String key = preferences.get(setting).orElse(combination);
-        KeyCombination keyCombination = KeyCombination.keyCombination(key);
-        if(keyCombination.match(keyEvent)) {
-            consumer.accept(keyEvent);
-        }
+        // Register hot  keys
+        preferences.bindHotKey(codeArea, Setting.HOTKEY_BOLD, "SHORTCUT+B", this::toggleSelectionBold);
+        preferences.bindHotKey(codeArea, Setting.HOTKEY_ITALIC, "SHORTCUT+I", this::toggleSelectionItalic);
+        preferences.bindHotKey(codeArea, Setting.HOTKEY_CODE, "SHORTCUT+/", this::toggleSelectionCode);
+        preferences.bindHotKey(codeArea, Setting.HOTKEY_H1, "SHORTCUT+SHIFT+1", this::toggleHeaderH1);
+        preferences.bindHotKey(codeArea, Setting.HOTKEY_H2, "SHORTCUT+SHIFT+2", this::toggleHeaderH2);
+        preferences.bindHotKey(codeArea, Setting.HOTKEY_H3, "SHORTCUT+SHIFT+3", this::toggleHeaderH3);
+        preferences.bindHotKey(codeArea, Setting.HOTKEY_H4, "SHORTCUT+SHIFT+4", this::toggleHeaderH4);
+        preferences.bindHotKey(codeArea, Setting.HOTKEY_H5, "SHORTCUT+SHIFT+5", this::toggleHeaderH5);
     }
 
     private void save() {
@@ -196,6 +173,7 @@ public class EditorTabController implements AutoCloseable, Initializable {
      * Add before a line
      * If the value that has to be added(addValue) is the same as the first characters of the String,
      * It removes it from the line. If it is'nt the same then it will add to the line.
+     *
      * @param addValue input that you want to add on the front of the line
      */
     private void addBeforeLine(String addValue) {
@@ -203,7 +181,7 @@ public class EditorTabController implements AutoCloseable, Initializable {
 
         int length = addValue.length();
         String firstCharacters = codeArea.getSelectedText().substring(0, length);
-        if(firstCharacters.equals(addValue)) {
+        if (firstCharacters.equals(addValue)) {
             codeArea.replaceSelection(codeArea.getSelectedText().substring(length));
         } else {
             codeArea.replaceSelection(addValue + codeArea.getSelectedText());

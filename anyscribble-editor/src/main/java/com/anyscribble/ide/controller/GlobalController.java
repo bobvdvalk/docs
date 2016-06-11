@@ -24,22 +24,18 @@ import com.anyscribble.ide.editor.EditorTabFactory;
 import com.anyscribble.ide.files.FileTree;
 import com.anyscribble.ide.prefs.Preferences;
 import com.google.inject.Inject;
-import com.google.inject.Key;
 import com.google.inject.Singleton;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
-
 
 import java.awt.*;
 import java.io.File;
@@ -51,8 +47,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
-import javafx.scene.input.KeyEvent;
+
 /**
  * This class represents the controller for the highest level of the interface.
  *
@@ -93,19 +88,19 @@ public class GlobalController implements Initializable {
         rootPane.setLeft(
                 injectionFXMLLoader.load(getClass().getResource("/com/anyscribble/ide/left-panel.fxml"))
         );
-        rootPane.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            hotKeyBinder(Setting.HOTKEY_TAB1, "CTRL+1", e -> openTabOnHotkey(0), event);
-            hotKeyBinder(Setting.HOTKEY_TAB2, "CTRL+2", e -> openTabOnHotkey(1), event);
-            hotKeyBinder(Setting.HOTKEY_TAB3, "CTRL+3", e -> openTabOnHotkey(2), event);
-            hotKeyBinder(Setting.HOTKEY_TAB4, "CTRL+4", e -> openTabOnHotkey(3), event);
-            hotKeyBinder(Setting.HOTKEY_TAB5, "CTRL+5", e -> openTabOnHotkey(4), event);
-            hotKeyBinder(Setting.HOTKEY_TAB6, "CTRL+6", e -> openTabOnHotkey(5), event);
-            hotKeyBinder(Setting.HOTKEY_TAB7, "CTRL+7", e -> openTabOnHotkey(6), event);
-            hotKeyBinder(Setting.HOTKEY_TAB8, "CTRL+8", e -> openTabOnHotkey(7), event);
-            hotKeyBinder(Setting.HOTKEY_TAB9, "CTRL+9", e -> openTabOnHotkey(8), event);
-            hotKeyBinder(Setting.HOTKEY_TAB0, "CTRL+0", e -> openTabOnHotkey(9), event);
-        });
 
+        // Bind tab switching hot keys
+        for (int i = 1; i <= 10; i++) {
+            Setting setting = Setting.valueOf("HOTKEY_TAB" + i);
+            int tabIndex = i; // Make this variable final
+
+            preferences.bindHotKey(
+                    rootPane,
+                    setting,
+                    "SHORTCUT+" + (i % 10), // Default hot key for tab 10 is 0 not 10
+                    () -> editorTabPane.getSelectionModel().select(tabIndex)
+            );
+        }
         // Disable close tab menu item when no tabs are open
         editorTabPane.getTabs().addListener((ListChangeListener<Tab>) c ->
                 closeTabMenuItem.setDisable(c.getList().isEmpty())
@@ -124,25 +119,6 @@ public class GlobalController implements Initializable {
                                 .filter(Files::isReadable)
                                 .forEach(this::openTab)
                 );
-    }
-
-    /**
-     * This method binds hotkeys to method and executes them.
-     */
-    private void hotKeyBinder(Setting setting, String combination, Consumer<KeyEvent> consumer, KeyEvent keyEvent) {
-        String key = preferences.get(setting).orElse(combination);
-        KeyCombination keyCombination = KeyCombination.keyCombination(key);
-        if(keyCombination.match(keyEvent)) {
-            consumer.accept(keyEvent);
-        }
-    }
-
-    /**
-     * This method opens a tab
-     * @param index tab number you want to open
-     */
-    private void openTabOnHotkey(int index) {
-        editorTabPane.getSelectionModel().select(index);
     }
 
     /**
