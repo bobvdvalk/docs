@@ -102,7 +102,8 @@ public class PandocProcess extends Thread {
         try {
             process.waitFor();
         } catch (InterruptedException e) {
-            throw new PandocRuntimeException("Execution interrupted", e);
+            LOGGER.error("Execution was interrupted!");
+            Thread.currentThread().interrupt();
         }
     }
 
