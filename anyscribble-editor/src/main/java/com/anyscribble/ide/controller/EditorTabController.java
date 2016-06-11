@@ -41,8 +41,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
@@ -139,7 +137,11 @@ public class EditorTabController implements AutoCloseable, Initializable {
         hotKeyBinder(Setting.HOTKEY_BOLD, "CTRL+B", e -> toggleSelectionBold(), event);
         hotKeyBinder(Setting.HOTKEY_ITALIC, "CTRL+i", e -> toggleSelectionItalic(), event);
         hotKeyBinder(Setting.HOTKEY_CODE, "CTRL+c", e -> toggleSelectionCode(), event);
-        hotKeyBinder(Setting.HOTKEY_H1, "CTRL+h", e -> toggleSelectionHeader("H1"), event);
+        hotKeyBinder(Setting.HOTKEY_H1, "CTRL+SHIFT+1", e -> toggleSelectionHeader("H1"), event);
+        hotKeyBinder(Setting.HOTKEY_H2, "CTRL+SHIFT+2", e -> toggleSelectionHeader("H2"), event);
+        hotKeyBinder(Setting.HOTKEY_H3, "CTRL+SHIFT+3", e -> toggleSelectionHeader("H3"), event);
+        hotKeyBinder(Setting.HOTKEY_H4, "CTRL+SHIFT+4", e -> toggleSelectionHeader("H4"), event);
+        hotKeyBinder(Setting.HOTKEY_H5, "CTRL+SHIFT+5", e -> toggleSelectionHeader("H5"), event);
     }
 
 
@@ -174,26 +176,42 @@ public class EditorTabController implements AutoCloseable, Initializable {
         String value = null;
         switch (type) {
             case "H1":
-                value = "#";
+                value = "# ";
                 break;
             case "H2":
-                value = "##";
+                value = "## ";
                 break;
             case "H3":
-                value = "###";
+                value = "### ";
                 break;
             case "H4":
-                value = "####";
+                value = "#### ";
+                break;
+            case "H5":
+                value = "##### ";
                 break;
             default:
-                value = "#";
+                value = "# ";
         }
         addBeforeLine(value);
     }
 
+    /**
+     * Add before a line
+     * If the value that has to be added(addValue) is the same as the first characters of the String,
+     * It removes it from the line. If it is'nt the same then it will add to the line.
+     * @param addValue input that you want to add on the front of the line
+     */
     private void addBeforeLine(String addValue) {
         codeArea.selectLine();
-        codeArea.replaceSelection(addValue + " " + codeArea.getSelectedText());
+
+        int length = addValue.length();
+        String firstCharacters = codeArea.getSelectedText().substring(0, length);
+        if(firstCharacters.equals(addValue)) {
+            codeArea.replaceSelection(codeArea.getSelectedText().substring(length));
+        } else {
+            codeArea.replaceSelection(addValue + codeArea.getSelectedText());
+        }
     }
 
     public void toggleSelectionBold() {
