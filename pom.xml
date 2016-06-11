@@ -245,10 +245,21 @@
                 <version>0.7.7.201606060606</version>
                 <executions>
                     <execution>
+                        <id>prepare-jacoco-ut</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                         <phase>test-compile</phase>
+                    </execution>
+                    <execution>
+                        <id>prepare-jacoco-it</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <phase>pre-integration-test</phase>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco-it.exec</destFile>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
