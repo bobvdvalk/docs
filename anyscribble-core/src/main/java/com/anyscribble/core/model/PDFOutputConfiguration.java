@@ -17,19 +17,29 @@
  */
 package com.anyscribble.core.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+/**
+ * This class represents the configuration for the pdf target.
+ *
+ * @author Thomas Biesaart
+ */
 public class PDFOutputConfiguration extends OutputConfiguration {
-    private Boolean chapters;
     private Boolean numberSections;
     private Integer numberOffset;
     private Boolean noTexLigatures;
     private Boolean listings;
 
-    public Boolean getChapters() {
-        return chapters;
-    }
+    @JsonCreator
+    public static PDFOutputConfiguration buildDefault() {
+        PDFOutputConfiguration configuration = new PDFOutputConfiguration();
 
-    public void setChapters(Boolean chapters) {
-        this.chapters = chapters;
+        configuration.setNumberSections(false);
+        configuration.setNumberOffset(0);
+        configuration.setNoTexLigatures(false);
+        configuration.setListings(false);
+
+        return configuration;
     }
 
     public Boolean getNumberSections() {

@@ -45,7 +45,7 @@ public class Project extends OutputConfiguration {
     @JsonCreator
     public static Project buildProject() {
         Project project = new Project();
-        project.parent = new OutputConfiguration();
+        project.parent = OutputConfiguration.buildDefaultConfiguration();
         project.setSourceDir(Paths.get("."));
         project.setBuildDir(Paths.get("target"));
         return project;
@@ -116,6 +116,11 @@ public class Project extends OutputConfiguration {
         return pdf;
     }
 
+    /**
+     * Set the pdf configuration.
+     *
+     * @param pdf the configuration
+     */
     public void setPdf(PDFOutputConfiguration pdf) {
         pdf.attachParentConfiguration(this);
         this.pdf = pdf;

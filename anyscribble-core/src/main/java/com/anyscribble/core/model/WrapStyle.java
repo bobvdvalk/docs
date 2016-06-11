@@ -21,5 +21,5 @@ package com.anyscribble.core.model;
 public enum WrapStyle {
     AUTO,
     NONE,
-    PRESERVER
+    PRESERVE
 }
