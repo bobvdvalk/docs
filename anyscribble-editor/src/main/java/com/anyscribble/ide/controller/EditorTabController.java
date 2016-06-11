@@ -137,11 +137,11 @@ public class EditorTabController implements AutoCloseable, Initializable {
         hotKeyBinder(Setting.HOTKEY_BOLD, "CTRL+B", e -> toggleSelectionBold(), event);
         hotKeyBinder(Setting.HOTKEY_ITALIC, "CTRL+i", e -> toggleSelectionItalic(), event);
         hotKeyBinder(Setting.HOTKEY_CODE, "CTRL+c", e -> toggleSelectionCode(), event);
-        hotKeyBinder(Setting.HOTKEY_H1, "CTRL+SHIFT+1", e -> toggleSelectionHeader("H1"), event);
-        hotKeyBinder(Setting.HOTKEY_H2, "CTRL+SHIFT+2", e -> toggleSelectionHeader("H2"), event);
-        hotKeyBinder(Setting.HOTKEY_H3, "CTRL+SHIFT+3", e -> toggleSelectionHeader("H3"), event);
-        hotKeyBinder(Setting.HOTKEY_H4, "CTRL+SHIFT+4", e -> toggleSelectionHeader("H4"), event);
-        hotKeyBinder(Setting.HOTKEY_H5, "CTRL+SHIFT+5", e -> toggleSelectionHeader("H5"), event);
+        hotKeyBinder(Setting.HOTKEY_H1, "CTRL+SHIFT+1", e -> toggleHeaderH1(), event);
+        hotKeyBinder(Setting.HOTKEY_H2, "CTRL+SHIFT+2", e -> toggleHeaderH2(), event);
+        hotKeyBinder(Setting.HOTKEY_H3, "CTRL+SHIFT+3", e -> toggleHeaderH3(), event);
+        hotKeyBinder(Setting.HOTKEY_H4, "CTRL+SHIFT+4", e -> toggleHeaderH4(), event);
+        hotKeyBinder(Setting.HOTKEY_H5, "CTRL+SHIFT+5", e -> toggleHeaderH5(), event);
     }
 
 
@@ -172,28 +172,24 @@ public class EditorTabController implements AutoCloseable, Initializable {
         }
     }
 
-    public void toggleSelectionHeader(String type) {
-        String value = null;
-        switch (type) {
-            case "H1":
-                value = "# ";
-                break;
-            case "H2":
-                value = "## ";
-                break;
-            case "H3":
-                value = "### ";
-                break;
-            case "H4":
-                value = "#### ";
-                break;
-            case "H5":
-                value = "##### ";
-                break;
-            default:
-                value = "# ";
-        }
-        addBeforeLine(value);
+    public void toggleHeaderH1() {
+        addBeforeLine("# ");
+    }
+
+    public void toggleHeaderH2() {
+        addBeforeLine("## ");
+    }
+
+    public void toggleHeaderH3() {
+        addBeforeLine("### ");
+    }
+
+    public void toggleHeaderH4() {
+        addBeforeLine("#### ");
+    }
+
+    public void toggleHeaderH5() {
+        addBeforeLine("#### ");
     }
 
     /**

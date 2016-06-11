@@ -31,11 +31,11 @@
             <Button text="B" onAction="#toggleSelectionBold"/>
             <Button text="I" onAction="#toggleSelectionItalic"/>
             <Button text="~" onAction="#toggleSelectionStrikeThrough"/>
-            <Button fx:id="toolbarH1Btn" text="H1"/>
-            <Button fx:id="toolbarH2Btn" text="H2"/>
-            <Button fx:id="toolbarH3Btn" text="H3"/>
-            <Button fx:id="toolbarH4Btn" text="H4"/>
-            <Button fx:id="toolbarH5Btn" text="H5"/>
+            <Button fx:id="toolbarH1Btn" text="H1" onAction="#toggleHeaderH1"/>
+            <Button fx:id="toolbarH2Btn" text="H2" onAction="#toggleHeaderH2"/>
+            <Button fx:id="toolbarH3Btn" text="H3" onAction="#toggleHeaderH3"/>
+            <Button fx:id="toolbarH4Btn" text="H4" onAction="#toggleHeaderH4"/>
+            <Button fx:id="toolbarH5Btn" text="H5" onAction="#toggleHeaderH5"/>
             <Button fx:id="toolbarCodeBtn" text="&lt;/&gt;" onAction="#toggleSelectionCode"/>
             <Button fx:id="toolbarUndoBtn" text="&lt;-" disable="true" onAction="#undo"/>
             <Button fx:id="toolbarRedoBtn" text="-&gt;" disable="true" onAction="#redo"/>
