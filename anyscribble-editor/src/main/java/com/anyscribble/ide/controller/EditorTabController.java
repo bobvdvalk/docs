@@ -18,6 +18,7 @@
 package com.anyscribble.ide.controller;
 
 import com.anyscribble.ide.Setting;
+import com.anyscribble.ide.editor.SyntaxHighlighter;
 import com.anyscribble.ide.prefs.Preferences;
 import com.google.inject.Inject;
 import javafx.animation.KeyFrame;
@@ -31,6 +32,8 @@ import me.biesaart.utils.IOUtils;
 import me.biesaart.utils.Log;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.pegdown.Extensions;
+import org.pegdown.PegDownProcessor;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -62,6 +65,15 @@ public class EditorTabController implements AutoCloseable, Initializable {
     private CodeArea codeArea;
     private Path currentFile;
     private boolean closed;
+    private SyntaxHighlighter syntaxHighlighter;
+    private final Timeline tokenizerTimeline = new Timeline(
+            new KeyFrame(
+                    Duration.seconds(0.3),
+                    e -> refreshTokens()
+            )
+    );
+
+
     private final Timeline saveTimeline = new Timeline(
             new KeyFrame(
                     Duration.seconds(1),
@@ -98,6 +110,16 @@ public class EditorTabController implements AutoCloseable, Initializable {
         }
     }
 
+    private void refreshTokens() {
+        if (syntaxHighlighter == null) {
+            syntaxHighlighter = new SyntaxHighlighter(
+                    codeArea,
+                    new PegDownProcessor(Extensions.ALL)
+            );
+        }
+        syntaxHighlighter.update();
+    }
+
     @Override
     public void close() {
         this.closed = true;
@@ -118,9 +140,10 @@ public class EditorTabController implements AutoCloseable, Initializable {
         codeArea.undoAvailableProperty().addListener((observable, oldValue, newValue) ->
                 toolbarUndoBtn.setDisable(!newValue)
         );
-        codeArea.textProperty().addListener((observable, oldValue, newValue) ->
-                saveTimeline.playFromStart()
-        );
+        codeArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            saveTimeline.playFromStart();
+            tokenizerTimeline.playFromStart();
+        });
 
         // Register hot  keys
         preferences.bindHotKey(codeArea, Setting.HOTKEY_BOLD, "SHORTCUT+B", this::toggleSelectionBold);
@@ -141,7 +164,7 @@ public class EditorTabController implements AutoCloseable, Initializable {
             codeArea.selectRange(range.getStart(), range.getEnd());
         }
         try (InputStream data = IOUtils.toInputStream(codeArea.getText())) {
-            LOGGER.info("Saving {}", currentFile);
+            LOGGER.debug("Saving {}", currentFile);
             Files.createDirectories(currentFile.getParent());
             Files.copy(data, currentFile, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
