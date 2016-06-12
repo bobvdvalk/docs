@@ -117,7 +117,11 @@ public class EditorTabController implements AutoCloseable, Initializable {
                     new PegDownProcessor(Extensions.ALL)
             );
         }
-        syntaxHighlighter.update();
+        try {
+            syntaxHighlighter.update();
+        } catch (IllegalArgumentException ignore) {
+            // We probably changed the text while parsing
+        }
     }
 
     @Override

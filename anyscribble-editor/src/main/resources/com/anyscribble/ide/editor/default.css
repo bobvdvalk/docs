@@ -59,11 +59,26 @@
     -fx-fill: darkolivegreen;
 }
 
-.code-node, .verbatim-node {
+.code-node, .verbatim-node, .table-node {
     -fx-background-fill: rgba(0, 0, 0, 0.1);
+}
+
+.table-header-node {
+    -fx-font-weight: bold;
+    -fx-underline: true;
 }
 
 .exp-link-node, .exp-image-node {
     -fx-fill: darkorange;
+}
+
+.bullet-list-node, .ordered-list-node {
+    -fx-fill: crimson;
+}
+
+.list-item-node {
+    /* Reset to black. We only want to color the bullets
+    */
+    -fx-fill: black;
 }
 

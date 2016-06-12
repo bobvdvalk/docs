@@ -39,11 +39,14 @@ public class SyntaxHighlighter implements Visitor {
     }
 
     public synchronized void update() {
-        String text = codeArea.getText();
-        RootNode rootNode = processor.parseMarkdown(text.toCharArray());
-        codeArea.clearStyle(0, text.length());
-        rootNode.accept(this);
-        styleStack.clear();
+        try {
+            String text = codeArea.getText();
+            RootNode rootNode = processor.parseMarkdown(text.toCharArray());
+            codeArea.clearStyle(0, text.length());
+            rootNode.accept(this);
+        } finally {
+            styleStack.clear();
+        }
     }
 
     @Override
