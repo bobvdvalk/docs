@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    AnyScribble Editor - Writing for Developers by Developers
-    Copyright © 2016 Thomas Biesaart (thomas.biesaart@gmail.com)
+    AnyScribble Docs Editor - Writing for Developers by Developers
+    Copyright © 2016 AnyScribble (thomas.biesaart@gmail.com)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import org.fxmisc.richtext.CodeArea?>

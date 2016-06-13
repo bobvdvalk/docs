@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    AnyScribble - Writing for Developers by Developers
-    Copyright © 2016 Thomas Biesaart (thomas.biesaart@gmail.com)
+    AnyScribble Docs Parent - Writing for Developers by Developers
+    Copyright © 2016 AnyScribble (thomas.biesaart@gmail.com)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
     <issueManagement>
         <url>https://github.com/AnyScribble/docs/issues</url>
-        <system>GitHub Issues</system>
+        <system>GitHub</system>
     </issueManagement>
 
     <licenses>
@@ -74,6 +74,7 @@
         <github.version>1.76</github.version>
         <guice.version>4.0</guice.version>
         <log4j.version>2.6</log4j.version>
+        <slf4j.version>1.7.21</slf4j.version>
         <richtext.version>0.6.10</richtext.version>
         <jackson.version>2.7.4</jackson.version>
         <pegdown.version>1.6.0</pegdown.version>
@@ -120,6 +121,11 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-1.2-api</artifactId>
                 <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.fxmisc.richtext</groupId>
@@ -253,6 +259,24 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>lt.velykis.maven.skins</groupId>
+                        <artifactId>reflow-velocity-tools</artifactId>
+                        <version>1.1.1</version>
+                    </dependency>
+                    <!-- Reflow skin requires Velocity >= 1.7  -->
+                    <dependency>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                        <version>1.7</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
 
@@ -270,5 +294,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>

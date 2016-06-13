@@ -427,7 +427,7 @@ public abstract class OutputConfiguration {
     }
 
     /**
-     * Include contents of files, verbatim, at the beginning of the document body (e.g. after the <body> tag in
+     * Include contents of files, verbatim, at the beginning of the document body (e.g. after the {@code <body>} tag in
      * HTML, or the \begin{document} command in LaTeX). Implies <pre>setStandalone(true)</pre>.
      *
      * @return the files
@@ -437,7 +437,7 @@ public abstract class OutputConfiguration {
     }
 
     /**
-     * Include contents of files, verbatim, at the beginning of the document body (e.g. after the <body> tag in HTML,
+     * Include contents of files, verbatim, at the beginning of the document body (e.g. after the {@code <body>} tag in HTML,
      * or the \begin{document} command in LaTeX). Implies <pre>setStandalone(true)</pre>.
      *
      * @param beforeBody the files
@@ -447,7 +447,7 @@ public abstract class OutputConfiguration {
     }
 
     /**
-     * Include contents of files, verbatim, at the end of the document body (before the </body> tag in HTML, or the
+     * Include contents of files, verbatim, at the end of the document body (before the {@code </body>} tag in HTML, or the
      * \end{document} command in LaTeX).  Implies <pre>setStandalone(true)</pre>.
      *
      * @return the files
@@ -457,7 +457,7 @@ public abstract class OutputConfiguration {
     }
 
     /**
-     * Include contents of files, verbatim, at the end of the document body (before the </body> tag in HTML, or the
+     * Include contents of files, verbatim, at the end of the document body (before the {@code </body>} tag in HTML, or the
      * \end{document} command in LaTeX).  Implies <pre>setStandalone(true)</pre>.
      *
      * @param afterBody the files
