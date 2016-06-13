@@ -92,6 +92,7 @@
         <log4j.version>2.6</log4j.version>
         <richtext.version>0.6.10</richtext.version>
         <jackson.version>2.7.4</jackson.version>
+        <pegdown.version>1.6.0</pegdown.version>
     </properties>
 
     <dependencyManagement>
@@ -150,6 +151,11 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.pegdown</groupId>
+                <artifactId>pegdown</artifactId>
+                <version>${pegdown.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

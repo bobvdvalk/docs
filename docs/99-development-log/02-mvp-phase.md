@@ -19,3 +19,10 @@ to the user's home folder. I wanted to use the java.util.prefs.Preferences
 system first but oracle can't honestly expect all users to edit their
 registry?
 [Check out the issue](http://stackoverflow.com/questions/5354838/java-java-util-preferences-failing)
+
+## June 12th 2016
+The past weekend I have been working with bobvdvalk to get some progress
+on the mvp. He implemented some hotkeys and I started working on the backend.
+At some point I was bored with creating getters and setters for the
+configuration so I implemented a syntax highlighter using pegdown. Turns
+out it does the exact thing I need it to. Send some love that way! :)

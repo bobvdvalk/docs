@@ -1,0 +1,84 @@
+/**
+ * AnyScribble Editor - Writing for Developers by Developers
+ * Copyright © 2016 Thomas Biesaart (thomas.biesaart@gmail.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.header-node {
+    -fx-font-weight: bold;
+}
+
+.header1 {
+    -fx-font-size: 1.6em;
+}
+
+.header2 {
+    -fx-font-size: 1.5em;
+}
+
+.header3 {
+    -fx-font-size: 1.4em;
+}
+
+.header4 {
+    -fx-font-size: 1.3em;
+}
+
+.header5 {
+    -fx-font-size: 1.2em;
+}
+
+.header6 {
+    -fx-font-size: 1.1em;
+}
+
+.emphasis {
+    -fx-font-style: italic;
+    -fx-fill: darkblue;
+}
+
+.strong {
+    -fx-font-weight: bold;
+    -fx-fill: darkcyan;
+}
+
+.strike-node {
+    -fx-strikethrough: true;
+    -fx-fill: darkolivegreen;
+}
+
+.code-node, .verbatim-node, .table-node {
+    -fx-background-fill: rgba(0, 0, 0, 0.1);
+}
+
+.table-header-node {
+    -fx-font-weight: bold;
+    -fx-underline: true;
+}
+
+.exp-link-node, .exp-image-node {
+    -fx-fill: darkorange;
+}
+
+.bullet-list-node, .ordered-list-node {
+    -fx-fill: crimson;
+}
+
+.list-item-node {
+    /* Reset to black. We only want to color the bullets
+    */
+    -fx-fill: black;
+}
+
