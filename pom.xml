@@ -23,17 +23,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.anyscribble</groupId>
-    <artifactId>anyscribble-parent</artifactId>
+    <groupId>com.anyscribble.docs</groupId>
+    <artifactId>docs-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>AnyScribble</name>
+    <name>AnyScribble Docs Parent</name>
     <description>Writing for Developers by Developers</description>
     <inceptionYear>2016</inceptionYear>
 
     <issueManagement>
-        <url>https://github.com/thomasbiesaart/anyscribble/issues</url>
+        <url>https://github.com/AnyScribble/docs/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 
@@ -45,9 +45,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/kevinsawicki/github-maven-example</url>
-        <connection>scm:git:git://github.com/kevinsawicki/github-maven-example.git</connection>
-        <developerConnection>scm:git:git@github.com:kevinsawicki/github-maven-example.git</developerConnection>
+        <url>https://github.com/AnyScribble/docs</url>
+        <connection>scm:git:git://github.com/AnyScribble/docs.git</connection>
+        <developerConnection>scm:git:git@github.com:AnyScribble/docs.git</developerConnection>
     </scm>
 
     <organization>
@@ -55,25 +55,9 @@
         <url>http://anyscribble.com</url>
     </organization>
 
-    <developers>
-        <developer>
-            <email>thomas.biesaart@gmail.com</email>
-            <name>Thomas Biesaart</name>
-            <url>https://github.com/thomasbiesaart/</url>
-            <id>thomasbiesaart</id>
-        </developer>
-        <developer>
-            <email>info@mawoo.nl</email>
-            <name>Bob van der Valk</name>
-            <url>https://github.com/bobvdvalk/</url>
-            <id>bobvdvalk</id>
-        </developer>
-    </developers>
-
-
     <modules>
-        <module>anyscribble-core</module>
-        <module>anyscribble-editor</module>
+        <module>docs-core</module>
+        <module>docs-editor</module>
     </modules>
 
     <repositories>
@@ -113,8 +97,8 @@
                 <version>${github.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.anyscribble</groupId>
-                <artifactId>anyscribble-core</artifactId>
+                <groupId>com.anyscribble.docs</groupId>
+                <artifactId>docs-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -181,7 +165,7 @@
                     <configuration>
                         <header>com/mycila/maven/plugin/license/templates/GPL-3.txt</header>
                         <properties>
-                            <owner>Thomas Biesaart</owner>
+                            <owner>AnyScribble</owner>
                             <email>thomas.biesaart@gmail.com</email>
                         </properties>
                         <excludes>
