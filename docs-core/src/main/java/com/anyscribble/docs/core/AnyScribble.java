@@ -48,9 +48,15 @@ public class AnyScribble {
     public Project loadProject(Path projectFile) throws IOException {
         try (InputStream inputStream = Files.newInputStream(projectFile)) {
             Project project = projectConfigurationParser.load(inputStream);
-
-            project.setSourceDir(projectFile.resolve(project.getSourceDir()));
-            project.setBuildDir(projectFile.resolve(project.getBuildDir()));
+            if (project.getName() == null) {
+                throw new ProjectConfigurationException("The project must have a name");
+            }
+            if (project.getPdf() == null) {
+                throw new ProjectConfigurationException("A project must have at least one build");
+            }
+            Path projectDir = projectFile.getParent();
+            project.setSourceDir(projectDir.resolve(project.getSourceDir()));
+            project.setBuildDir(projectDir.resolve(project.getBuildDir()));
 
             return project;
         }
@@ -68,31 +74,9 @@ public class AnyScribble {
      */
 
     public static Injector createInjector(Module... modules) {
-        return createInjector(Guice.createInjector(modules));
+        Module[] injectorModules = new Module[modules.length + 1];
+        injectorModules[0] = new AnyScribbleInjectionModule(new Configuration(Configuration.findPandoc()));
+        System.arraycopy(modules, 0, injectorModules, 1, modules.length);
+        return Guice.createInjector(injectorModules);
     }
-
-    /**
-     * Create a new child injector that is configured to procude {@link AnyScribble AnyScribbles}.
-     * The default configuration will be used.
-     *
-     * @param injector the parent injector
-     * @return the injector
-     */
-    private static Injector createInjector(Injector injector) {
-        return createInjector(injector, Configuration.findPandoc());
-    }
-
-    /**
-     * Create a new injector that is configured to procude {@link AnyScribble AnyScribbles}.
-     * The provided configuration will be used.
-     *
-     * @param injector      the parent injector
-     * @param pandocBinPath the path to the pandoc installation
-     * @return the injector
-     */
-    private static Injector createInjector(Injector injector, Path pandocBinPath) {
-        return injector.createChildInjector(new AnyScribbleInjectionModule(new Configuration(pandocBinPath)));
-    }
-
-
 }

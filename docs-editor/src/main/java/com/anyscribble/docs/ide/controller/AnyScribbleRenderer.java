@@ -18,24 +18,23 @@
 package com.anyscribble.docs.ide.controller;
 
 import com.anyscribble.docs.core.AnyScribble;
-import com.anyscribble.docs.core.AnyScribbleTask;
 import com.anyscribble.docs.core.BuildProcessCallback;
 import com.anyscribble.docs.core.PandocNotFoundException;
+import com.anyscribble.docs.core.ProjectConfigurationException;
 import com.anyscribble.docs.core.model.Project;
 import com.anyscribble.docs.ide.Resource;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.Singleton;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import me.biesaart.utils.Log;
-import org.omg.CORBA.Any;
 import org.slf4j.Logger;
 
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -43,7 +42,6 @@ import java.util.Optional;
  *
  * @author Thomas Biesaart
  */
-@Singleton
 public class AnyScribbleRenderer {
     private static final Logger LOGGER = Log.get();
     private final Provider<AnyScribble> anyScribbleProvider;
@@ -54,16 +52,41 @@ public class AnyScribbleRenderer {
     }
 
     public void startBuild(Project project, BuildProcessCallback callback) {
-        Optional<AnyScribble> anyScribbleOptional = getAnyScribble();
+        getAnyScribble().map(
+                anyScribble -> anyScribble.buildProcesses(project, callback)
+        ).ifPresent(Thread::start);
+    }
 
+    public Optional<Project> getProject(Path projectFile) {
+        Optional<AnyScribble> anyScribbleOptional = getAnyScribble();
         if (!anyScribbleOptional.isPresent()) {
-            // This is handled with a dialog
-            return;
+            return Optional.empty();
         }
 
-        AnyScribble anyScribble = anyScribbleOptional.get();
-        AnyScribbleTask anyScribbleTask = anyScribble.buildProcesses(project, callback);
+        try {
+            Project result = anyScribbleOptional.get().loadProject(projectFile);
+            return Optional.of(result);
+        } catch (ProjectConfigurationException e) {
+            LOGGER.error("Failed to load project", e);
+            handleConfigurationError(e);
+            return Optional.empty();
+        } catch (IOException e) {
+            LOGGER.error("Failed to load project", e);
+            handleNoProjectFound(projectFile);
+            return Optional.empty();
+        }
+    }
 
+    private void handleConfigurationError(ProjectConfigurationException e) {
+        Alert alert = new Alert(
+                Alert.AlertType.WARNING,
+                "The project could not be built.\n" + e.getMessage());
+        alert.show();
+    }
+
+    private void handleNoProjectFound(Path projectFile) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, "No project configuration found at " + projectFile);
+        alert.show();
     }
 
     private Optional<AnyScribble> getAnyScribble() {

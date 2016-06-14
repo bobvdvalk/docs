@@ -17,6 +17,9 @@
  */
 package com.anyscribble.docs.ide.controller;
 
+import com.anyscribble.docs.core.BuildProcessCallback;
+import com.anyscribble.docs.core.PandocProcess;
+import com.anyscribble.docs.core.PandocRuntimeException;
 import com.anyscribble.docs.ide.InjectionFXMLLoader;
 import com.anyscribble.docs.ide.Resource;
 import com.anyscribble.docs.ide.Setting;
@@ -30,15 +33,12 @@ import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -47,7 +47,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
  * This class represents the controller for the highest level of the interface.
@@ -73,13 +75,15 @@ public class GlobalController implements Initializable {
     private final EditorTabFactory editorTabFactory;
     private final FileTree fileTree;
     private final DirectoryChooser openProjectDirectoryChooser;
+    private final AnyScribbleRenderer anyScribbleRenderer;
 
     @Inject
-    GlobalController(Preferences preferences, InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory, FileTree fileTree) {
+    GlobalController(Preferences preferences, InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory, FileTree fileTree, AnyScribbleRenderer anyScribbleRenderer) {
         this.preferences = preferences;
         this.injectionFXMLLoader = injectionFXMLLoader;
         this.editorTabFactory = editorTabFactory;
         this.fileTree = fileTree;
+        this.anyScribbleRenderer = anyScribbleRenderer;
         fileTree.setOpenFileConsumer(this::openTab);
         openProjectDirectoryChooser = new DirectoryChooser();
         openProjectDirectoryChooser.setTitle(Resource.PROJECT_NEW_TITLE);
@@ -112,7 +116,6 @@ public class GlobalController implements Initializable {
         // Disable close project menu item when no node is selected
         fileTree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                     closeProjectMenuItem.setDisable(newValue == null);
-                    projectMenu.setDisable(newValue == null);
                 }
         );
 
@@ -213,7 +216,7 @@ public class GlobalController implements Initializable {
     }
 
     public void closeCurrentProject() {
-        fileTree.closeProject();
+        fileTree.closeCurrentProject();
     }
 
     public void openContact() {
@@ -234,11 +237,52 @@ public class GlobalController implements Initializable {
 
     private void browseToChat() {
         try {
-            Desktop.getDesktop().browse(
+            java.awt.Desktop.getDesktop().browse(
                     new URI("https://gitter.im/thomasbiesaart/anyscribble")
             );
         } catch (URISyntaxException | UnsupportedOperationException | IOException e) {
             LOGGER.info("Could not open contact url", e);
         }
     }
+
+    public void buildProject() {
+        List<Path> choices = fileTree.getProjects().stream()
+                .map(TreeItem::getValue)
+                .collect(Collectors.toList());
+
+        TreeItem<Path> project = fileTree.getCurrentProject();
+        ChoiceDialog<Path> choiceDialog = new ChoiceDialog<>(project == null ? null : project.getValue(), choices);
+
+        choiceDialog.setHeaderText(Resource.DIALOG_BUILD_PROJECT_TITLE);
+        choiceDialog.setTitle(Resource.DIALOG_BUILD_PROJECT_TITLE);
+        choiceDialog.setContentText(Resource.DIALOG_BUILD_PROJECT_CONTENT);
+
+        choiceDialog.showAndWait().ifPresent(path -> {
+            Path projectFile = path.resolve(".anyscribble");
+            showBuildDialog(projectFile);
+        });
+    }
+
+    private void showBuildDialog(Path projectFile) {
+        anyScribbleRenderer.getProject(projectFile).ifPresent(project ->
+                anyScribbleRenderer.startBuild(project, new BuildProcessCallbackImpl()));
+    }
+
+    private final class BuildProcessCallbackImpl implements BuildProcessCallback {
+        @Override
+        public void onStart(PandocProcess pandocProcess) {
+            LOGGER.info("Starting Build");
+        }
+
+        @Override
+        public void onError(IOException e) {
+            LOGGER.error("Callback", e);
+        }
+
+        @Override
+        public void onError(PandocRuntimeException e) {
+            LOGGER.error("Callback", e);
+        }
+    }
+
 }

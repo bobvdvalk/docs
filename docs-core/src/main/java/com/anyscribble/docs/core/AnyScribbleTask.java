@@ -20,7 +20,6 @@ package com.anyscribble.docs.core;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -40,15 +39,6 @@ public class AnyScribbleTask extends Thread implements AutoCloseable {
 
     @Override
     public void run() {
-        try {
-            doRun();
-        } catch (IOException e) {
-            processCallback.onError(e);
-        }
-    }
-
-    private void doRun() throws IOException {
-
         for (PandocProcess process : pandocProcessList) {
             process.start();
         }

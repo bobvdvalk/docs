@@ -56,6 +56,8 @@ public class Resource {
     public static final MessageProvider CONFIRM_DELETE_PROJECT = new MessageProvider("confirm.delete.project");
     public static final String PROJECT_NEW_TITLE = getString("project.new.title");
     public static final String ERROR_PANDOC_NOT_FOUND = getString("error.pandoc.notfound");
+    public static final String DIALOG_BUILD_PROJECT_TITLE = getString("dialog.build.project.title");
+    public static final String DIALOG_BUILD_PROJECT_CONTENT = getString("dialog.build.project.content");
 
     private Resource() {
         throw new IllegalAccessError("Do not make instances of utilities");

@@ -64,11 +64,11 @@
                     </text>
                 </MenuItem>
             </Menu>
-            <Menu fx:id="projectMenu" disable="true">
+            <Menu>
                 <text>
                     <Resource fx:constant="MENU_PROJECT"/>
                 </text>
-                <MenuItem accelerator="F5">
+                <MenuItem accelerator="F5" onAction="#buildProject">
                     <text>
                         <Resource fx:constant="MENU_PROJECT_GENERATE"/>
                     </text>
