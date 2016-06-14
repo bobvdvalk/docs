@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertTrue;
 
 
@@ -67,7 +68,7 @@ public class AnyScribbleIT {
 
         AnyScribble anyScribble = injector.getInstance(AnyScribble.class);
         Project project = anyScribble.loadProject(projectPath.resolve("project.json"));
-        try (AnyScribbleTask processes = anyScribble.buildProcesses(projectPath, project)) {
+        try (AnyScribbleTask processes = anyScribble.buildProcesses(project, mock(BuildProcessCallback.class))) {
             processes.start();
             processes.join();
         }

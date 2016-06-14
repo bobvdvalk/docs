@@ -22,6 +22,7 @@ import org.testng.annotations.Test;
 import java.nio.file.Paths;
 import java.util.Collections;
 
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -32,7 +33,7 @@ public class PandocProcessTest {
         ProcessBuilder processBuilder = new ProcessBuilder();
 
         // Call the method
-        PandocProcess pandocProcess = new PandocProcess(processBuilder, Paths.get("."));
+        PandocProcess pandocProcess = new PandocProcess(processBuilder, Paths.get("."), mock(BuildProcessCallback.class));
         pandocProcess.addParameter("test", "value");
         pandocProcess.addParameter("t", "value2");
         pandocProcess.addParameter(null, "filePath");
@@ -50,7 +51,7 @@ public class PandocProcessTest {
         ProcessBuilder processBuilder = new ProcessBuilder();
 
         // Call the method
-        PandocProcess pandocProcess = new PandocProcess(processBuilder, Paths.get("unit-test"));
+        PandocProcess pandocProcess = new PandocProcess(processBuilder, Paths.get("unit-test"), mock(BuildProcessCallback.class));
         pandocProcess.addParameter(null, Paths.get("test.xml"));
 
         assertEquals(processBuilder.command().get(0), "test.xml");
@@ -61,7 +62,7 @@ public class PandocProcessTest {
         ProcessBuilder processBuilder = new ProcessBuilder();
 
         // Call the method
-        PandocProcess pandocProcess = new PandocProcess(processBuilder, Paths.get("unit-test"));
+        PandocProcess pandocProcess = new PandocProcess(processBuilder, Paths.get("unit-test"), mock(BuildProcessCallback.class));
 
         pandocProcess.addParameters(null, null);
         assertTrue(processBuilder.command().isEmpty());

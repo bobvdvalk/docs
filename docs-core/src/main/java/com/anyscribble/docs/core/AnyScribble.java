@@ -47,12 +47,17 @@ public class AnyScribble {
 
     public Project loadProject(Path projectFile) throws IOException {
         try (InputStream inputStream = Files.newInputStream(projectFile)) {
-            return projectConfigurationParser.load(inputStream);
+            Project project = projectConfigurationParser.load(inputStream);
+
+            project.setSourceDir(projectFile.resolve(project.getSourceDir()));
+            project.setBuildDir(projectFile.resolve(project.getBuildDir()));
+
+            return project;
         }
     }
 
-    public AnyScribbleTask buildProcesses(Path projectRoot, Project project) throws IOException {
-        return new AnyScribbleTask(pandocProcessFactory.buildProcesses(projectRoot, project));
+    public AnyScribbleTask buildProcesses(Project project, BuildProcessCallback processCallback) {
+        return new AnyScribbleTask(pandocProcessFactory.buildProcesses(project, processCallback), processCallback);
     }
 
     /**

@@ -29,6 +29,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * This class is responsible for serialization and deserialization of
+ * the json project files.
+ *
+ * @author Thomas Biesaart
+ */
 @Singleton
 public class ProjectConfigurationParser {
     private final ObjectReader objectReader;

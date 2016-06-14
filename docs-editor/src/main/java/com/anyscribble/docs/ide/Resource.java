@@ -46,12 +46,16 @@ public class Resource {
     public static final String MENU_FILE_CLOSE_PROJECT = getString("menu.file.closeproject");
     public static final String MENU_FILE_EXIT = getString("menu.file.exit");
     public static final String MENU_FILE_PREFERENCES = getString("menu.file.preferences");
+    public static final String MENU_PROJECT = getString("menu.project");
+    public static final String MENU_PROJECT_GENERATE = getString("menu.project.generate");
+    public static final String MENU_PROJECT_CLEAN = getString("menu.project.clean");
     public static final String MENU_HELP = getString("menu.help");
     public static final String MENU_HELP_ABOUT = getString("menu.help.about");
     public static final String MENU_HELP_CONTACT = getString("menu.help.contact");
     public static final MessageProvider ERROR_INVALID_PROJECT_ROOT = new MessageProvider("error.project.invalidroot");
     public static final MessageProvider CONFIRM_DELETE_PROJECT = new MessageProvider("confirm.delete.project");
     public static final String PROJECT_NEW_TITLE = getString("project.new.title");
+    public static final String ERROR_PANDOC_NOT_FOUND = getString("error.pandoc.notfound");
 
     private Resource() {
         throw new IllegalAccessError("Do not make instances of utilities");

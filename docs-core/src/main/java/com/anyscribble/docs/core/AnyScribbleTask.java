@@ -31,9 +31,11 @@ import java.util.List;
 public class AnyScribbleTask extends Thread implements AutoCloseable {
     private static final Logger LOGGER = Log.get();
     private final List<PandocProcess> pandocProcessList;
+    private final BuildProcessCallback processCallback;
 
-    public AnyScribbleTask(List<PandocProcess> pandocProcessList) {
+    public AnyScribbleTask(List<PandocProcess> pandocProcessList, BuildProcessCallback processCallback) {
         this.pandocProcessList = pandocProcessList;
+        this.processCallback = processCallback;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class AnyScribbleTask extends Thread implements AutoCloseable {
         try {
             doRun();
         } catch (IOException e) {
-            throw new PandocRuntimeException("Execution failed", e);
+            processCallback.onError(e);
         }
     }
 

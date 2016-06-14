@@ -31,7 +31,7 @@ import java.io.IOException;
 
 /**
  * This class represents the main loader of the editor application.
- * It will configure the injector and start the application.
+ * It will configure the injector and onStart the application.
  *
  * @author Thomas Biesaart
  */

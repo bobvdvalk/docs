@@ -17,12 +17,12 @@
  */
 package com.anyscribble.docs.ide.controller;
 
-import com.anyscribble.docs.ide.Setting;
-import com.anyscribble.docs.ide.files.FileTree;
-import com.anyscribble.docs.ide.prefs.Preferences;
 import com.anyscribble.docs.ide.InjectionFXMLLoader;
 import com.anyscribble.docs.ide.Resource;
+import com.anyscribble.docs.ide.Setting;
 import com.anyscribble.docs.ide.editor.EditorTabFactory;
+import com.anyscribble.docs.ide.files.FileTree;
+import com.anyscribble.docs.ide.prefs.Preferences;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javafx.application.Platform;
@@ -30,6 +30,7 @@ import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
@@ -57,6 +58,8 @@ import java.util.ResourceBundle;
 @Singleton
 public class GlobalController implements Initializable {
     private static final Logger LOGGER = Log.get();
+    @FXML
+    private Menu projectMenu;
     @FXML
     private MenuItem closeProjectMenuItem;
     @FXML
@@ -107,8 +110,10 @@ public class GlobalController implements Initializable {
         );
 
         // Disable close project menu item when no node is selected
-        fileTree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-                closeProjectMenuItem.setDisable(newValue == null)
+        fileTree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                    closeProjectMenuItem.setDisable(newValue == null);
+                    projectMenu.setDisable(newValue == null);
+                }
         );
 
         // Open all previously open tabs

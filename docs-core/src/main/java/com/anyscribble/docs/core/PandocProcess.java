@@ -38,10 +38,12 @@ public class PandocProcess extends Thread implements AutoCloseable {
     private static final Logger LOGGER = Log.get();
     private final ProcessBuilder processBuilder;
     private final List<EventHandler<PandocProcess>> onStart = new ArrayList<>();
+    private final BuildProcessCallback buildProcessCallback;
     private Process process;
 
-    public PandocProcess(ProcessBuilder processBuilder, Path sourceDir) {
+    public PandocProcess(ProcessBuilder processBuilder, Path sourceDir, BuildProcessCallback buildProcessCallback) {
         this.processBuilder = processBuilder;
+        this.buildProcessCallback = buildProcessCallback;
         processBuilder.directory(sourceDir.toFile());
     }
 
@@ -106,7 +108,7 @@ public class PandocProcess extends Thread implements AutoCloseable {
         }
     }
 
-    public void addOnStart(EventHandler listener) {
+    public void addOnStart(EventHandler<PandocProcess> listener) {
         onStart.add(listener);
     }
 
@@ -115,20 +117,21 @@ public class PandocProcess extends Thread implements AutoCloseable {
         try {
             doRun();
         } catch (IOException e) {
-            throw new PandocRuntimeException("Execution failed", e);
+            buildProcessCallback.onError(e);
         }
     }
 
     private void doRun() throws IOException {
-        // Notify on start
+        // Notify on onStart
         fire(onStart, this);
+        buildProcessCallback.onStart(this);
 
         process = processBuilder.start();
 
         Scanner scanner = new Scanner(process.getInputStream());
 
         while (scanner.hasNextLine()) {
-            throw new PandocRuntimeException(scanner.nextLine());
+            buildProcessCallback.onError(new PandocRuntimeException(scanner.nextLine()));
         }
 
         try {
@@ -139,9 +142,13 @@ public class PandocProcess extends Thread implements AutoCloseable {
         }
     }
 
-    private <T> void fire(List<EventHandler<T>> eventHandlers, T data) throws IOException {
-        for (EventHandler handler : eventHandlers) {
-            handler.accept(this, data);
+    private <T> void fire(List<EventHandler<T>> eventHandlers, T data) {
+        for (EventHandler<T> handler : eventHandlers) {
+            try {
+                handler.accept(this, data);
+            } catch (IOException e) {
+                buildProcessCallback.onError(e);
+            }
         }
     }
 

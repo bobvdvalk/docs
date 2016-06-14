@@ -17,6 +17,7 @@
  */
 package com.anyscribble.docs.core.services;
 
+import com.anyscribble.docs.core.BuildProcessCallback;
 import com.anyscribble.docs.core.Configuration;
 import com.anyscribble.docs.core.PandocProcess;
 import com.anyscribble.docs.core.model.OutputConfiguration;
@@ -49,14 +50,13 @@ public class PandocProcessFactory {
         this.configuration = configuration;
     }
 
-    public List<PandocProcess> buildProcesses(Path projectRoot, Project project) throws IOException {
+    public List<PandocProcess> buildProcesses(Project project, BuildProcessCallback processCallback) {
         List<PandocProcess> result = new ArrayList<>();
         if (project.getPdf() != null) {
-            result.add(buildPdfProcess(projectRoot, project, project.getPdf()));
+            result.add(buildPdfProcess(project, project.getPdf(), processCallback));
         }
 
-        Path sourcePath = projectRoot.resolve(project.getSourceDir()).toRealPath();
-        List<Path> files = gatherFiles(sourcePath);
+        List<Path> files = gatherFiles(project.getSourceDir(), processCallback);
 
         result.forEach(p -> {
             p.addParameters(null, files);
@@ -66,39 +66,43 @@ public class PandocProcessFactory {
         return result;
     }
 
-    private List<Path> gatherFiles(Path sourceDir) throws IOException {
+    private List<Path> gatherFiles(Path sourceDir, BuildProcessCallback callback) {
         List<Path> result = new ArrayList<>();
 
         if (Files.exists(sourceDir)) {
-            Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    String fileName = file.getFileName().toString();
-                    int index = fileName.lastIndexOf('.');
-                    if (index != -1) {
-                        String ext = fileName.substring(index + 1);
-                        if ("md".equals(ext) || "markdown".equals(ext)) {
-                            result.add(file);
+            try {
+                Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        String fileName = file.getFileName().toString();
+                        int index = fileName.lastIndexOf('.');
+                        if (index != -1) {
+                            String ext = fileName.substring(index + 1);
+                            if ("md".equals(ext) || "markdown".equals(ext)) {
+                                result.add(file);
+                            }
                         }
+                        return super.visitFile(file, attrs);
                     }
-                    return super.visitFile(file, attrs);
-                }
-            });
+                });
+            } catch (IOException e) {
+                callback.onError(e);
+            }
         }
         return result;
     }
 
-    private PandocProcess buildPdfProcess(Path projectRoot, Project project, PDFOutputConfiguration pdfOutputConfiguration) throws IOException {
-        PandocProcess process = buildBaseProcess(projectRoot, project, pdfOutputConfiguration);
+    private PandocProcess buildPdfProcess(Project project, PDFOutputConfiguration pdfOutputConfiguration, BuildProcessCallback processCallback) {
+        PandocProcess process = buildBaseProcess(project, pdfOutputConfiguration, processCallback);
 
 
         return process;
     }
 
 
-    private PandocProcess buildBaseProcess(Path projectRoot, Project project, OutputConfiguration outputConfiguration) throws IOException {
-        Path sourceDir = projectRoot.resolve(project.getSourceDir()).toRealPath();
-        Path buildDir = projectRoot.resolve(project.getBuildDir());
+    private PandocProcess buildBaseProcess(Project project, OutputConfiguration outputConfiguration, BuildProcessCallback processCallback) {
+        Path sourceDir = project.getSourceDir();
+        Path buildDir = project.getBuildDir();
         Path targetFile = buildDir.resolve(
                 Optional.ofNullable(outputConfiguration.getOutputFile())
                         .orElse(Paths.get(project.getName() + ".pdf"))
@@ -106,7 +110,7 @@ public class PandocProcessFactory {
 
         ProcessBuilder processBuilder = new ProcessBuilder(configuration.getPandocExecutable().toString());
 
-        PandocProcess process = new PandocProcess(processBuilder, sourceDir);
+        PandocProcess process = new PandocProcess(processBuilder, sourceDir, processCallback);
 
         process.addOnStart((p, x) -> Files.createDirectories(targetFile.getParent()));
 
