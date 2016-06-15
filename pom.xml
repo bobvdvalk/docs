@@ -234,6 +234,7 @@
                     <noDeploy>true</noDeploy>
                     <squash>true</squash>
                     <tagMessage>Tag release ${project.version}</tagMessage>
+                    <enableSshAgent>true</enableSshAgent>
                 </configuration>
             </plugin>
             <plugin>
