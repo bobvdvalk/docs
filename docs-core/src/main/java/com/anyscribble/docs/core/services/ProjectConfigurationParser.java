@@ -18,52 +18,31 @@
 package com.anyscribble.docs.core.services;
 
 import com.anyscribble.docs.core.model.Project;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
-import java.io.IOException;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * This class is responsible for serialization and deserialization of
- * the json project files.
+ * the xml project files.
  *
  * @author Thomas Biesaart
  */
 @Singleton
 public class ProjectConfigurationParser {
-    private final ObjectReader objectReader;
-    private final ObjectWriter objectWriter;
+    private final Unmarshaller unmarshaller;
 
     @Inject
-    public ProjectConfigurationParser() {
-        this(new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL));
+    public ProjectConfigurationParser(@Named("anyscribble") Unmarshaller unmarshaller) {
+        this.unmarshaller = unmarshaller;
     }
 
-    public ProjectConfigurationParser(ObjectMapper objectMapper) {
-        this(
-                objectMapper.readerFor(Project.class),
-                objectMapper.writerFor(Project.class)
-                        .withDefaultPrettyPrinter()
-
-        );
-    }
-
-    public ProjectConfigurationParser(ObjectReader objectReader, ObjectWriter objectWriter) {
-        this.objectReader = objectReader;
-        this.objectWriter = objectWriter;
-    }
-
-    public Project load(InputStream configuration) throws IOException {
-        return objectReader.readValue(configuration);
-    }
-
-    public void write(Project project, OutputStream outputStream) throws IOException {
-        objectWriter.writeValue(outputStream, project);
+    public Project load(InputStream configuration) throws JAXBException {
+        return unmarshaller.unmarshal(new StreamSource(configuration), Project.class).getValue();
     }
 }

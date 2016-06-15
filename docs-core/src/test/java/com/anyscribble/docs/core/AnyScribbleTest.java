@@ -20,34 +20,34 @@ package com.anyscribble.docs.core;
 import com.anyscribble.docs.core.model.Project;
 import com.anyscribble.docs.core.services.PandocProcessFactory;
 import com.anyscribble.docs.core.services.ProjectConfigurationParser;
-import org.apache.commons.io.IOUtils;
 import org.testng.annotations.Test;
 
+import javax.xml.bind.JAXBException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 
 
 public class AnyScribbleTest {
+    private final AnyScribble anyScribble = new AnyScribble(
+            new PandocProcessFactory(new Configuration(Paths.get("."))),
+            new ProjectConfigurationParser(new AnyScribbleInjectionModule(null).jaxbContext().createUnmarshaller())
+    );
+
+    public AnyScribbleTest() throws JAXBException {
+    }
+
     @Test
     public void testLoadProject() throws Exception {
+        Path projectFile = Files.createTempFile("Unit Test", ".xml");
 
-        Path projectFile = Files.createTempFile("Unit Test", ".json");
-
-        AnyScribble anyScribble = new AnyScribble(
-                new PandocProcessFactory(new Configuration(Paths.get("."))),
-                new ProjectConfigurationParser()
-        );
-
-        Files.copy(IOUtils.toInputStream("{\"name\": \"Hello World\", \"pdf\": {}}"), projectFile, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(getClass().getResourceAsStream("/testProject.xml"), projectFile, StandardCopyOption.REPLACE_EXISTING);
 
         Project project = anyScribble.loadProject(projectFile);
 
-        assertEquals(project.getName(), "Hello World");
+        assertEquals(project.getName(), "Test Project");
     }
-
 }

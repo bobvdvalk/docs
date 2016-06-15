@@ -21,7 +21,6 @@ import com.anyscribble.docs.core.BuildProcessCallback;
 import com.anyscribble.docs.core.Configuration;
 import com.anyscribble.docs.core.PandocProcess;
 import com.anyscribble.docs.core.model.OutputConfiguration;
-import com.anyscribble.docs.core.model.PDFOutputConfiguration;
 import com.anyscribble.docs.core.model.Project;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -52,11 +51,8 @@ public class PandocProcessFactory {
 
     public List<PandocProcess> buildProcesses(Project project, BuildProcessCallback processCallback) {
         List<PandocProcess> result = new ArrayList<>();
-        if (project.getPdf() != null) {
-            result.add(buildPdfProcess(project, project.getPdf(), processCallback));
-        }
 
-        List<Path> files = gatherFiles(project.getSourceDir(), processCallback);
+        List<Path> files = gatherFiles(project.getSourcePath(), processCallback);
 
         result.forEach(p -> {
             p.addParameters(null, files);
@@ -92,19 +88,11 @@ public class PandocProcessFactory {
         return result;
     }
 
-    private PandocProcess buildPdfProcess(Project project, PDFOutputConfiguration pdfOutputConfiguration, BuildProcessCallback processCallback) {
-        PandocProcess process = buildBaseProcess(project, pdfOutputConfiguration, processCallback);
-
-
-        return process;
-    }
-
-
     private PandocProcess buildBaseProcess(Project project, OutputConfiguration outputConfiguration, BuildProcessCallback processCallback) {
-        Path sourceDir = project.getSourceDir();
-        Path buildDir = project.getBuildDir();
+        Path sourceDir = project.getSourcePath();
+        Path buildDir = project.getBuildPath();
         Path targetFile = buildDir.resolve(
-                Optional.ofNullable(outputConfiguration.getOutputFile())
+                Optional.ofNullable(outputConfiguration.getOutputPath())
                         .orElse(Paths.get(project.getName() + ".pdf"))
         );
 
@@ -115,10 +103,6 @@ public class PandocProcessFactory {
         process.addOnStart((p, x) -> Files.createDirectories(targetFile.getParent()));
 
         process.addParameter("o", targetFile);
-
-        process.addParameters("H", outputConfiguration.getHeaders());
-        process.addParameters("B", outputConfiguration.getBeforeBody());
-        process.addParameters("A", outputConfiguration.getAfterBody());
 
         // TODO More Options
 

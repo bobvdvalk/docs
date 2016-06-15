@@ -22,6 +22,7 @@ import com.anyscribble.docs.core.services.PandocProcessFactory;
 import com.anyscribble.docs.core.services.ProjectConfigurationParser;
 import com.google.inject.*;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -51,14 +52,13 @@ public class AnyScribble {
             if (project.getName() == null) {
                 throw new ProjectConfigurationException("The project must have a name");
             }
-            if (project.getPdf() == null) {
-                throw new ProjectConfigurationException("A project must have at least one build");
-            }
             Path projectDir = projectFile.getParent();
-            project.setSourceDir(projectDir.resolve(project.getSourceDir()));
-            project.setBuildDir(projectDir.resolve(project.getBuildDir()));
+            project.setSourceDir(projectDir.resolve(project.getSourcePath()).toFile());
+            project.setBuildDir(projectDir.resolve(project.getBuildPath()).toFile());
 
             return project;
+        } catch (JAXBException e) {
+            throw new IOException("Invalid project configuration.\n" + e.getMessage(), e);
         }
     }
 

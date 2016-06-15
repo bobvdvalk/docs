@@ -20,39 +20,28 @@ package com.anyscribble.docs.core.services;
 import com.anyscribble.docs.core.model.Project;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayOutputStream;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 
 public class ProjectConfigurationParserTest {
-    private final ProjectConfigurationParser projectConfigurationParser = new ProjectConfigurationParser();
+    private final ProjectConfigurationParser projectConfigurationParser = new ProjectConfigurationParser(
+            JAXBContext.newInstance(Project.class).createUnmarshaller()
+    );
+
+    public ProjectConfigurationParserTest() throws JAXBException {
+    }
 
     @Test
     public void testLoad() throws Exception {
-        try (InputStream inputStream = getClass().getResourceAsStream("/testProject.json")) {
+        try (InputStream inputStream = getClass().getResourceAsStream("/testProject.xml")) {
             Project project = projectConfigurationParser.load(inputStream);
-            assertEquals(project.getName(), "Unit Test");
-            assertEquals(project.getBuildDir(), Paths.get("target")); // Default Value
-            assertEquals(project.getSourceDir(), Paths.get("src"));
+            assertEquals(project.getName(), "Test Project");
+            assertEquals(project.getBuildDir().toString(), "target"); // Default Value
+            assertEquals(project.getSourceDir().toString(), "src");
         }
     }
-
-    @Test
-    public void testWrite() throws Exception {
-        Project project = new Project();
-        project.setName("Write Unit Test");
-        project.setSourceDir(Paths.get("."));
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        projectConfigurationParser.write(project, outputStream);
-        String json = outputStream.toString();
-        assertTrue(json.contains(project.getName()));
-        assertTrue(json.contains("."));
-        assertTrue(json.length() < 60); // Don't serialize nulls
-    }
-
 }

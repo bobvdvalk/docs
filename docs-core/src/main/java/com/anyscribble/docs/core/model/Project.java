@@ -17,10 +17,10 @@
  */
 package com.anyscribble.docs.core.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * This class represents the configuration for the a project.
@@ -29,27 +29,11 @@ import java.nio.file.Paths;
  *
  * @author Thomas Biesaart
  */
+@XmlRootElement
 public class Project extends OutputConfiguration {
-    private Path sourceDir;
-    private Path buildDir;
+    private File sourceDir;
+    private File buildDir;
     private String name;
-    private PDFOutputConfiguration pdf;
-
-    /**
-     * This creator is used when we deserialize a json.
-     * This way we can have defaults when we come from a json but no defaults when we instantiate the
-     * class ourselves.
-     *
-     * @return the project default
-     */
-    @JsonCreator
-    public static Project buildProject() {
-        Project project = new Project();
-        project.parent = buildDefaultConfiguration();
-        project.setSourceDir(Paths.get("."));
-        project.setBuildDir(Paths.get("target"));
-        return project;
-    }
 
     /**
      * Get the root directory of the sources.
@@ -57,8 +41,12 @@ public class Project extends OutputConfiguration {
      *
      * @return the path
      */
-    public Path getSourceDir() {
+    public File getSourceDir() {
         return sourceDir;
+    }
+
+    public Path getSourcePath() {
+        return sourceDir.toPath();
     }
 
     /**
@@ -66,7 +54,8 @@ public class Project extends OutputConfiguration {
      *
      * @param sourceDir the path
      */
-    public void setSourceDir(Path sourceDir) {
+    @XmlElement
+    public void setSourceDir(File sourceDir) {
         this.sourceDir = sourceDir;
     }
 
@@ -76,8 +65,12 @@ public class Project extends OutputConfiguration {
      *
      * @return the path
      */
-    public Path getBuildDir() {
+    public File getBuildDir() {
         return buildDir;
+    }
+
+    public Path getBuildPath() {
+        return buildDir.toPath();
     }
 
     /**
@@ -85,7 +78,8 @@ public class Project extends OutputConfiguration {
      *
      * @param buildDir this is the directory where all outputs will be placed.
      */
-    public void setBuildDir(Path buildDir) {
+    @XmlElement
+    public void setBuildDir(File buildDir) {
         this.buildDir = buildDir;
     }
 
@@ -103,26 +97,8 @@ public class Project extends OutputConfiguration {
      *
      * @param name the name
      */
+    @XmlElement(required = true)
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * Get the pdf configuration.
-     *
-     * @return the pdf configuration
-     */
-    public PDFOutputConfiguration getPdf() {
-        return pdf;
-    }
-
-    /**
-     * Set the pdf configuration.
-     *
-     * @param pdf the configuration
-     */
-    public void setPdf(PDFOutputConfiguration pdf) {
-        pdf.attachParentConfiguration(this);
-        this.pdf = pdf;
     }
 }

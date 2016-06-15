@@ -1,0 +1,5 @@
+<project>
+    <name>Test Project</name>
+    <buildDir>target</buildDir>
+    <sourceDir>src</sourceDir>
+</project>

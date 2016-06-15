@@ -17,7 +17,15 @@
  */
 package com.anyscribble.docs.core;
 
+import com.anyscribble.docs.core.model.Project;
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 /**
  * This injection module should be used to load the AnyScript environment.
@@ -34,5 +42,18 @@ class AnyScribbleInjectionModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(Configuration.class).toInstance(configuration);
+    }
+
+    @Provides
+    @Singleton
+    @Named("anyscribble")
+    JAXBContext jaxbContext() throws JAXBException {
+        return JAXBContext.newInstance(Project.class);
+    }
+
+    @Provides
+    @Named("anyscribble")
+    Unmarshaller unmarshaller(@Named("anyscribble") JAXBContext context) throws JAXBException {
+        return context.createUnmarshaller();
     }
 }
