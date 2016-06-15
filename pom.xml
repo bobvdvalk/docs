@@ -229,6 +229,7 @@
                 <configuration>
                     <!-- No Feature Branch Merge. We use PRs -->
                     <noFeatureMerge>true</noFeatureMerge>
+                    <pushFeatures>true</pushFeatures>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <noDeploy>true</noDeploy>
                     <squash>true</squash>
