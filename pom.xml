@@ -234,7 +234,8 @@
                     <noDeploy>true</noDeploy>
                     <squash>true</squash>
                     <tagMessage>Tag release ${project.version}</tagMessage>
-                    <enableSshAgent>true</enableSshAgent>
+                    <username>${github.username}</username>
+                    <password>${github.password}</password>
                 </configuration>
             </plugin>
             <plugin>
