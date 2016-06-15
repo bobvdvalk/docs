@@ -1,4 +1,5 @@
 {
   "name": "Unit Test",
-  "sourceDir": "src"
+  "sourceDir": "src",
+  "pdf": {}
 }

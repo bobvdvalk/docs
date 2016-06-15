@@ -43,7 +43,7 @@ public class AnyScribbleTest {
                 new ProjectConfigurationParser()
         );
 
-        Files.copy(IOUtils.toInputStream("{\"name\": \"Hello World\"}"), projectFile, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(IOUtils.toInputStream("{\"name\": \"Hello World\", \"pdf\": {}}"), projectFile, StandardCopyOption.REPLACE_EXISTING);
 
         Project project = anyScribble.loadProject(projectFile);
 
