@@ -229,10 +229,13 @@
                 <configuration>
                     <!-- No Feature Branch Merge. We use PRs -->
                     <noFeatureMerge>true</noFeatureMerge>
+                    <pushFeatures>true</pushFeatures>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <noDeploy>true</noDeploy>
                     <squash>true</squash>
                     <tagMessage>Tag release ${project.version}</tagMessage>
+                    <username>${github.username}</username>
+                    <password>${github.password}</password>
                 </configuration>
             </plugin>
             <plugin>
