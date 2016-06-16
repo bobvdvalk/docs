@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    AnyScribble - Writing for Developers by Developers
-    Copyright © 2016 Thomas Biesaart (thomas.biesaart@gmail.com)
+    AnyScribble Docs Parent - Writing for Developers by Developers
+    Copyright © 2016 AnyScribble (thomas.biesaart@gmail.com)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,18 +23,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.anyscribble</groupId>
-    <artifactId>anyscribble-parent</artifactId>
+    <groupId>com.anyscribble.docs</groupId>
+    <artifactId>docs-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>AnyScribble</name>
+    <name>AnyScribble Docs Parent</name>
     <description>Writing for Developers by Developers</description>
     <inceptionYear>2016</inceptionYear>
 
     <issueManagement>
-        <url>https://github.com/thomasbiesaart/anyscribble/issues</url>
-        <system>GitHub Issues</system>
+        <url>https://github.com/AnyScribble/docs/issues</url>
+        <system>GitHub</system>
     </issueManagement>
 
     <licenses>
@@ -45,9 +45,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/kevinsawicki/github-maven-example</url>
-        <connection>scm:git:git://github.com/kevinsawicki/github-maven-example.git</connection>
-        <developerConnection>scm:git:git@github.com:kevinsawicki/github-maven-example.git</developerConnection>
+        <url>https://github.com/AnyScribble/docs</url>
+        <connection>scm:git:git://github.com/AnyScribble/docs.git</connection>
+        <developerConnection>scm:git:git@github.com:AnyScribble/docs.git</developerConnection>
     </scm>
 
     <organization>
@@ -55,25 +55,9 @@
         <url>http://anyscribble.com</url>
     </organization>
 
-    <developers>
-        <developer>
-            <email>thomas.biesaart@gmail.com</email>
-            <name>Thomas Biesaart</name>
-            <url>https://github.com/thomasbiesaart/</url>
-            <id>thomasbiesaart</id>
-        </developer>
-        <developer>
-            <email>info@mawoo.nl</email>
-            <name>Bob van der Valk</name>
-            <url>https://github.com/bobvdvalk/</url>
-            <id>bobvdvalk</id>
-        </developer>
-    </developers>
-
-
     <modules>
-        <module>anyscribble-core</module>
-        <module>anyscribble-editor</module>
+        <module>docs-core</module>
+        <module>docs-editor</module>
     </modules>
 
     <repositories>
@@ -90,6 +74,10 @@
         <github.version>1.76</github.version>
         <guice.version>4.0</guice.version>
         <log4j.version>2.6</log4j.version>
+        <slf4j.version>1.7.21</slf4j.version>
+        <richtext.version>0.6.10</richtext.version>
+        <jackson.version>2.7.4</jackson.version>
+        <pegdown.version>1.6.0</pegdown.version>
     </properties>
 
     <dependencyManagement>
@@ -110,8 +98,8 @@
                 <version>${github.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.anyscribble</groupId>
-                <artifactId>anyscribble-core</artifactId>
+                <groupId>com.anyscribble.docs</groupId>
+                <artifactId>docs-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -135,9 +123,29 @@
                 <version>${log4j.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.fxmisc.richtext</groupId>
                 <artifactId>richtextfx</artifactId>
-                <version>0.6.10</version>
+                <version>${richtext.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.pegdown</groupId>
+                <artifactId>pegdown</artifactId>
+                <version>${pegdown.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -163,7 +171,7 @@
                     <configuration>
                         <header>com/mycila/maven/plugin/license/templates/GPL-3.txt</header>
                         <properties>
-                            <owner>Thomas Biesaart</owner>
+                            <owner>AnyScribble</owner>
                             <email>thomas.biesaart@gmail.com</email>
                         </properties>
                         <excludes>
@@ -221,15 +229,59 @@
                 <configuration>
                     <!-- No Feature Branch Merge. We use PRs -->
                     <noFeatureMerge>true</noFeatureMerge>
+                    <pushFeatures>true</pushFeatures>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <noDeploy>true</noDeploy>
                     <squash>true</squash>
-                    <tagMessage>Tag release ${version}</tagMessage>
+                    <tagMessage>Tag release ${project.version}</tagMessage>
+                    <username>${github.username}</username>
+                    <password>${github.password}</password>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.7.201606060606</version>
+                <executions>
+                    <execution>
+                        <id>prepare-jacoco-ut</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <phase>test-compile</phase>
+                    </execution>
+                    <execution>
+                        <id>prepare-jacoco-it</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <phase>pre-integration-test</phase>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco-it.exec</destFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>lt.velykis.maven.skins</groupId>
+                        <artifactId>reflow-velocity-tools</artifactId>
+                        <version>1.1.1</version>
+                    </dependency>
+                    <!-- Reflow skin requires Velocity >= 1.7  -->
+                    <dependency>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                        <version>1.7</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
-
 
     <dependencies>
         <dependency>
@@ -245,5 +297,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>
