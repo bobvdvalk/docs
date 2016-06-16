@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
 
     AnyScribble Docs Core - Writing for Developers by Developers
@@ -18,15 +18,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<Configuration status="WARN">
-    <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Root level="debug">
-            <AppenderRef ref="Console"/>
-        </Root>
-    </Loggers>
-</Configuration>
+<project>
+    <name>Test Project</name>
+</project>

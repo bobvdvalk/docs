@@ -15,11 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.anyscribble.docs.core.model;
+package com.anyscribble.docs.core;
+
+import com.anyscribble.docs.model.Project;
+import org.testng.annotations.Test;
+
+import java.nio.file.Paths;
+
+import static org.testng.Assert.*;
 
 
-public enum WrapStyle {
-    AUTO,
-    NONE,
-    PRESERVE
+public class DocsProjectParserTest {
+    @Test
+    public void testLoadProject() throws Exception {
+        DocsProjectParser docsProjectParser = new DocsProjectParser();
+
+        Project project = docsProjectParser.loadProject(getClass().getResourceAsStream("/minimalProject.xml"));
+
+        assertEquals(project.getName(), "Test Project");
+        // Test defaults
+        assertEquals(project.getBuildDir(), Paths.get("target"));
+        assertEquals(project.getSourceDir(),  Paths.get("src/main/docs"));
+    }
+
 }

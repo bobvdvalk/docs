@@ -17,9 +17,6 @@
  */
 package com.anyscribble.docs.ide.controller;
 
-import com.anyscribble.docs.core.BuildProcessCallback;
-import com.anyscribble.docs.core.PandocProcess;
-import com.anyscribble.docs.core.PandocRuntimeException;
 import com.anyscribble.docs.ide.InjectionFXMLLoader;
 import com.anyscribble.docs.ide.Resource;
 import com.anyscribble.docs.ide.Setting;
@@ -75,15 +72,13 @@ public class GlobalController implements Initializable {
     private final EditorTabFactory editorTabFactory;
     private final FileTree fileTree;
     private final DirectoryChooser openProjectDirectoryChooser;
-    private final AnyScribbleRenderer anyScribbleRenderer;
 
     @Inject
-    GlobalController(Preferences preferences, InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory, FileTree fileTree, AnyScribbleRenderer anyScribbleRenderer) {
+    GlobalController(Preferences preferences, InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory, FileTree fileTree) {
         this.preferences = preferences;
         this.injectionFXMLLoader = injectionFXMLLoader;
         this.editorTabFactory = editorTabFactory;
         this.fileTree = fileTree;
-        this.anyScribbleRenderer = anyScribbleRenderer;
         fileTree.setOpenFileConsumer(this::openTab);
         openProjectDirectoryChooser = new DirectoryChooser();
         openProjectDirectoryChooser.setTitle(Resource.PROJECT_NEW_TITLE);
@@ -264,25 +259,7 @@ public class GlobalController implements Initializable {
     }
 
     private void showBuildDialog(Path projectFile) {
-        anyScribbleRenderer.getProject(projectFile).ifPresent(project ->
-                anyScribbleRenderer.startBuild(project, new BuildProcessCallbackImpl()));
     }
 
-    private final class BuildProcessCallbackImpl implements BuildProcessCallback {
-        @Override
-        public void onStart(PandocProcess pandocProcess) {
-            LOGGER.info("Starting Build");
-        }
-
-        @Override
-        public void onError(IOException e) {
-            LOGGER.error("Callback", e);
-        }
-
-        @Override
-        public void onError(PandocRuntimeException e) {
-            LOGGER.error("Callback", e);
-        }
-    }
 
 }

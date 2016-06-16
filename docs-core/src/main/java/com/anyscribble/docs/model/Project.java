@@ -15,32 +15,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.anyscribble.docs.core.model;
+package com.anyscribble.docs.model;
 
 import javax.xml.bind.annotation.XmlElement;
-import java.io.File;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
-/**
- * This class represents the base configuration for any build target.
- *
- * @author Thomas Biesaart
- */
-public abstract class OutputConfiguration {
+@XmlType
+public class Project {
+    @XmlElement(required = true)
+    private String name;
 
-    private File outputFile;
+    @XmlElement(defaultValue = "target")
+    @XmlJavaTypeAdapter(XmlPathAdapter.class)
+    private Path buildDir = Paths.get("target");
 
+    @XmlElement(defaultValue = "src/main/docs")
+    @XmlJavaTypeAdapter(XmlPathAdapter.class)
+    private Path sourceDir = Paths.get("src/main/docs");
 
-    public File getOutputFile() {
-        return outputFile;
+    public String getName() {
+        return name;
     }
 
-    public Path getOutputPath() {
-        return outputFile.toPath();
+    public Path getBuildDir() {
+        return buildDir;
     }
 
-    @XmlElement
-    public void setOutputFile(File outputFile) {
-        this.outputFile = outputFile;
+    public Path getSourceDir() {
+        return sourceDir;
     }
 }

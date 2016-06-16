@@ -15,34 +15,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.anyscribble.docs.core.services;
+package com.anyscribble.docs.core;
 
-import com.anyscribble.docs.core.model.Project;
+import com.anyscribble.docs.model.Project;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
- * This class is responsible for serialization and deserialization of
- * the xml project files.
+ * This class is responsible for parsing xml configuration files to projects.
  *
  * @author Thomas Biesaart
  */
-@Singleton
-public class ProjectConfigurationParser {
+public class DocsProjectParser {
     private final Unmarshaller unmarshaller;
 
     @Inject
-    public ProjectConfigurationParser(@Named("anyscribble") Unmarshaller unmarshaller) {
+    public DocsProjectParser() throws JAXBException {
+        this(JAXBContext.newInstance(Project.class).createUnmarshaller());
+    }
+
+
+    public DocsProjectParser(Unmarshaller unmarshaller) {
         this.unmarshaller = unmarshaller;
     }
 
-    public Project load(InputStream configuration) throws JAXBException {
-        return unmarshaller.unmarshal(new StreamSource(configuration), Project.class).getValue();
+    public Project loadProject(InputStream inputStream) throws JAXBException {
+        Objects.requireNonNull(inputStream);
+        return unmarshaller.unmarshal(new StreamSource(inputStream), Project.class).getValue();
     }
 }

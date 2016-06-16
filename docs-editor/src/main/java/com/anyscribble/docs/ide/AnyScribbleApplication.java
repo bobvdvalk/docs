@@ -17,8 +17,8 @@
  */
 package com.anyscribble.docs.ide;
 
-import com.anyscribble.docs.core.AnyScribble;
 import com.anyscribble.docs.ide.prefs.Preferences;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -43,9 +43,7 @@ public class AnyScribbleApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         LOGGER.debug("Building Injector");
-        injector = AnyScribble.createInjector(
-                new InjectorConfig(primaryStage)
-        );
+        injector = Guice.createInjector(new InjectorConfig(primaryStage));
 
         setStageData(primaryStage);
         bindSizeToPreferences(primaryStage);
