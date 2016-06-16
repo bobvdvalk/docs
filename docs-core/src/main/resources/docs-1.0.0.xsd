@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://anyscribble.com/docs" elementFormDefault="qualified" targetNamespace="http://anyscribble.com/docs" version="1.0">
+
+  <xs:element name="project" type="tns:project"/>
+
+  <xs:complexType name="project">
+    <xs:annotation>
+      <xs:documentation><![CDATA[This class represents the implementation of the root project configuration.
+This configuration can be loaded from xml using the [@link {@link XmlProjectParser}.
+
+(author): Thomas Biesaart]]></xs:documentation>
+    </xs:annotation>
+    <xs:all>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element default="target" minOccurs="0" name="buildDir" type="xs:string"/>
+      <xs:element default="src/main/docs" minOccurs="0" name="sourceDir" type="xs:string"/>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>
