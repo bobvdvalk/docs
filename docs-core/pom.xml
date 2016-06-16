@@ -87,10 +87,5 @@
                 </configuration>
             </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>${build.directory}/generated-resources/schemagen</directory>
-            </resource>
-        </resources>
     </build>
 </project>
