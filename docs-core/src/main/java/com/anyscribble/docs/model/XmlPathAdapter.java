@@ -21,7 +21,11 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-
+/**
+ * This class is used by JAXB to convert between {@link String Strings} and {@link Path paths}
+ *
+ * @author Thomas Biesaart
+ */
 class XmlPathAdapter extends XmlAdapter<String, Path> {
 
     @Override

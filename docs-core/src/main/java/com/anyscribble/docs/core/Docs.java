@@ -19,18 +19,9 @@ package com.anyscribble.docs.core;
 
 import com.anyscribble.docs.model.Project;
 import com.anyscribble.docs.model.XmlProjectParser;
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import org.xml.sax.SAXException;
 
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
@@ -63,19 +54,5 @@ public class Docs {
         } catch (JAXBException e) {
             throw new DocsException(e.getMessage(), e);
         }
-    }
-
-    public static void main(String[] args) throws DocsException, JAXBException, SAXException {
-        JAXBContext context = JAXBContext.newInstance(Project.class);
-        Marshaller marshaller = context.createMarshaller();
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = schemaFactory.newSchema(Project.class.getResource("/docs-1.0.0.xsd"));
-        marshaller.setSchema(schema);
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-        Project test = new Project();
-        test.setName("Test");
-
-        marshaller.marshal(test, new File("test.xml"));
     }
 }

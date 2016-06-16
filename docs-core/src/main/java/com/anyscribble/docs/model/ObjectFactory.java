@@ -19,6 +19,11 @@ package com.anyscribble.docs.model;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
+/**
+ * This class is used by JAXB to instantiate objects.
+ *
+ * @author Thomas Biesaart
+ */
 @XmlRegistry
 class ObjectFactory {
     public Project createProject() {
