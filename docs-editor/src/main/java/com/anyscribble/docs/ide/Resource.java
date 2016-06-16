@@ -18,7 +18,7 @@
 package com.anyscribble.docs.ide;
 
 
-import com.anyscribble.docs.core.AnyScribble;
+import com.anyscribble.docs.core.Docs;
 import com.google.common.base.CaseFormat;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
@@ -84,7 +84,7 @@ public class Resource {
     }
 
     private static String getVersion() {
-        String version = AnyScribble.class.getPackage().getImplementationVersion();
+        String version = Docs.class.getPackage().getImplementationVersion();
         if (version == null) {
             version = "Development Version";
         }

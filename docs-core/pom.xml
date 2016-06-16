@@ -68,6 +68,35 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <id>schemagen</id>
+                        <goals>
+                            <goal>schemagen</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sources>
+                        <source>src/main/java/com/anyscribble/docs/model/Project.java</source>
+                    </sources>
+                    <transformSchemas>
+                        <transformSchema>
+                            <uri>http://anyscribble.com/docs</uri>
+                            <toFile>docs-1.0.0.xsd</toFile>
+                        </transformSchema>
+                    </transformSchemas>
+                </configuration>
+            </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>${build.directory}/generated-resources/schemagen</directory>
+            </resource>
+        </resources>
     </build>
 </project>

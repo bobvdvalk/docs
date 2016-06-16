@@ -17,11 +17,24 @@
  */
 package com.anyscribble.docs.model;
 
-import javax.xml.bind.annotation.XmlRegistry;
+import org.testng.annotations.Test;
 
-@XmlRegistry
-class ObjectFactory {
-    public Project createProject() {
-        return new Project();
+import java.nio.file.Paths;
+
+import static org.testng.Assert.assertEquals;
+
+
+public class XmlProjectParserTest {
+    @Test
+    public void testLoadProject() throws Exception {
+        XmlProjectParser xmlProjectParser = new XmlProjectParser();
+
+        Project project = xmlProjectParser.loadProject(Paths.get("."), getClass().getResourceAsStream("/minimalProject.xml"));
+
+        assertEquals(project.getName(), "Test Project");
+        // Test defaults
+        assertEquals(project.getBuildDir().normalize().toString(), Paths.get("target").toString());
+        assertEquals(project.getSourceDir().normalize().toString(), Paths.get("src/main/docs").toString());
     }
+
 }

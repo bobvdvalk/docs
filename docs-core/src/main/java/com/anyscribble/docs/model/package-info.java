@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.anyscribble.docs.core;
 
-/**
- * This class represents
- */
-public class AnyScribble {
+@XmlSchema(
+        namespace = "http://anyscribble.com/docs",
+        elementFormDefault = XmlNsForm.QUALIFIED
+)
+package com.anyscribble.docs.model;
 
-}
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlSchema;

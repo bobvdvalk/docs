@@ -15,13 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.anyscribble.docs.model;
+package com.anyscribble.docs.core;
 
-import javax.xml.bind.annotation.XmlRegistry;
+/**
+ * This exception is generally thrown whenever there is an error in the project configuration.
+ *
+ * @author Thomas Biesaart
+ */
+public class ConfigurationException extends DocsException {
+    public ConfigurationException(String message) {
+        super(message);
+    }
 
-@XmlRegistry
-class ObjectFactory {
-    public Project createProject() {
-        return new Project();
+    public ConfigurationException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

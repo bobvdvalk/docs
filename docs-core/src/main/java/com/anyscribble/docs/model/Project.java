@@ -17,13 +17,20 @@
  */
 package com.anyscribble.docs.model;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@XmlType
+/**
+ * This class represents the implementation of the root project configuration.
+ * This configuration can be loaded from xml using the [@link {@link XmlProjectParser}.
+ *
+ * @author Thomas Biesaart
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorOrder(XmlAccessOrder.UNDEFINED)
+@XmlRootElement()
 public class Project {
     @XmlElement(required = true)
     private String name;
@@ -40,11 +47,23 @@ public class Project {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Path getBuildDir() {
         return buildDir;
     }
 
+    void setBuildDir(Path buildDir) {
+        this.buildDir = buildDir;
+    }
+
     public Path getSourceDir() {
         return sourceDir;
+    }
+
+    void setSourceDir(Path sourceDir) {
+        this.sourceDir = sourceDir;
     }
 }
