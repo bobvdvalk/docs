@@ -66,10 +66,10 @@ public class PandocProcessFactory {
 
         // Output File
         process.addParameter("f", "markdown");
-        process.addParameter("o", config.getOutputFile());
 
-        process.addMetadata("title", config.getTitle());
-        process.addMetadata("author", config.getAuthor());
+        config.applyOptionsTo(process);
+        process.addFlag("normalize");
+        process.addFlag("smart");
 
         return process;
     }

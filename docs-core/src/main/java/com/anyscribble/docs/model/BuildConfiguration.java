@@ -17,13 +17,15 @@
  */
 package com.anyscribble.docs.model;
 
+import com.anyscribble.docs.core.process.PandocProcess;
+
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.nio.file.Path;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlAccessorOrder(XmlAccessOrder.UNDEFINED)
-public class BuildConfiguration {
+public abstract class BuildConfiguration {
     @XmlElement
     @XmlJavaTypeAdapter(XmlPathAdapter.class)
     private Path outputFile;
@@ -38,6 +40,9 @@ public class BuildConfiguration {
 
     @XmlElement
     private String author;
+
+    @XmlElement(defaultValue = "true")
+    private Boolean toc = true;
 
     public Path getOutputFile() {
         return parentOrSelf(outputFile, parent.outputFile);
@@ -75,8 +80,23 @@ public class BuildConfiguration {
         this.parent = parent;
     }
 
-    public String defaultExtension() {
-        return "md";
+    public boolean enableToc() {
+        return parentOrSelf(toc, parent.toc);
+    }
+
+    public void setToc(boolean toc) {
+        this.toc = toc;
+    }
+
+    public abstract String defaultExtension();
+
+    public void applyOptionsTo(PandocProcess process) {
+        process.addParameter("o", getOutputFile());
+        process.addMetadata("title", getTitle());
+        process.addMetadata("author", getAuthor());
+        if (enableToc()) {
+            process.addFlag("toc");
+        }
     }
 
     private <T> T parentOrSelf(T self, T parent) {

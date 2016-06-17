@@ -40,6 +40,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import me.biesaart.utils.IOUtils;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
 
@@ -282,6 +283,7 @@ public class GlobalController implements Initializable {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     if (file.getFileName().toString().endsWith("md")) {
                         Files.copy(file, process.getOutputStream());
+                        IOUtils.write("\n", process.getOutputStream());
                     }
                     return super.visitFile(file, attrs);
                 }

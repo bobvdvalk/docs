@@ -90,8 +90,8 @@ public class XmlProjectParser {
 
         // Set Output Files
         for (BuildConfiguration config : project.getBuild()) {
-            if (project.getDefaults() != null) {
-                config.setParent(project.getDefaults());
+            if (project.getConfiguration() != null) {
+                config.setParent(project.getConfiguration());
             }
             if (config.getTitle() == null) {
                 config.setTitle(project.getName());

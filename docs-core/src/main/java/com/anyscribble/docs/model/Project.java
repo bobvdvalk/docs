@@ -30,7 +30,6 @@ import java.util.List;
  * @author Thomas Biesaart
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlAccessorOrder(XmlAccessOrder.UNDEFINED)
 @XmlRootElement()
 public class Project {
     @XmlElement(required = true)
@@ -51,7 +50,7 @@ public class Project {
     private List<BuildConfiguration> build;
 
     @XmlElement
-    private BuildConfiguration defaults;
+    private DefaultsBuildConfiguration configuration;
 
     public String getName() {
         return name;
@@ -85,11 +84,11 @@ public class Project {
         this.build = build;
     }
 
-    public BuildConfiguration getDefaults() {
-        return defaults;
+    public DefaultsBuildConfiguration getConfiguration() {
+        return configuration;
     }
 
-    public void setDefaults(BuildConfiguration defaults) {
-        this.defaults = defaults;
+    public void setConfiguration(DefaultsBuildConfiguration configuration) {
+        this.configuration = configuration;
     }
 }

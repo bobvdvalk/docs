@@ -17,15 +17,44 @@
  */
 package com.anyscribble.docs.model;
 
-import javax.xml.bind.annotation.*;
+import com.anyscribble.docs.core.process.PandocProcess;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlAccessorOrder(XmlAccessOrder.UNDEFINED)
 public class PdfBuildConfiguration extends BuildConfiguration {
+    @XmlElement
+    private String fontFamily;
 
     @Override
     public String defaultExtension() {
         return "pdf";
+    }
+
+    public String getFontFamily() {
+        if (fontFamily == null) {
+            return "arev";
+        }
+        return fontFamily;
+    }
+
+    public void setFontFamily(String fontFamily) {
+        this.fontFamily = fontFamily;
+    }
+
+    @Override
+    public void applyOptionsTo(PandocProcess process) {
+        super.applyOptionsTo(process);
+
+        process.addMetadata("fontfamily", getFontFamily());
+        process.addMetadata("margin-top", "100pt");
+        process.addMetadata("margin-bottom", "160pt");
+        process.addMetadata("margin-left", "60pt");
+        process.addMetadata("margin-right", "60pt");
+
     }
 }

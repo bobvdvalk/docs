@@ -39,12 +39,14 @@ public class PandocProcess extends Thread {
     private final ProcessBuilder processBuilder;
     private final PandocCallback callback;
     private final BuildConfiguration buildConfiguration;
+    private final Path workingDir;
     private OutputStream outputStream;
 
     PandocProcess(ProcessBuilder processBuilder, PandocCallback callback, BuildConfiguration buildConfiguration) {
         this.processBuilder = processBuilder;
         this.callback = callback;
         this.buildConfiguration = buildConfiguration;
+        workingDir = processBuilder.directory().toPath();
     }
 
     @Override
@@ -91,11 +93,19 @@ public class PandocProcess extends Thread {
         }
     }
 
-    void addParameter(String key, Path value) {
-        addParameter(key, value.toString());
+    public void addFlag(String name) {
+        if (name.length() == 1) {
+            processBuilder.command().add("-" + name);
+        } else {
+            processBuilder.command().add("--" + name);
+        }
     }
 
-    void addParameter(String key, String value) {
+    public void addParameter(String key, Path value) {
+        addParameter(key, workingDir.relativize(value).toString());
+    }
+
+    public void addParameter(String key, String value) {
         String escapedValue = parameterValue(value);
         if (key == null) {
             processBuilder.command().add(escapedValue);

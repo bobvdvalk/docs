@@ -76,6 +76,7 @@
                     <sources>
                         <source>src/main/java/com/anyscribble/docs/model/Project.java</source>
                         <source>src/main/java/com/anyscribble/docs/model/PdfBuildConfiguration.java</source>
+                        <source>src/main/java/com/anyscribble/docs/model/DefaultsBuildConfiguration.java</source>
                     </sources>
                     <outputDirectory>src/main/resources</outputDirectory>
                     <clearOutputDir>true</clearOutputDir>
