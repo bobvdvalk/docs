@@ -17,25 +17,13 @@
  */
 package com.anyscribble.docs.core.process;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-class ProcessUtils {
-    private ProcessUtils() {
-        // UTIL CLASS
-    }
-
-    static Path findExecutableOnPath(String execName) {
-        String pathVar = System.getenv("path");
-        for (String pathString : pathVar.split(File.pathSeparator)) {
-            Path path = Paths.get(pathString);
-            Path exec = path.resolve(execName);
-            if (Files.exists(exec)) {
-                return exec;
-            }
-        }
-        return null;
+/**
+ * This exception is thrown whenever an error occurs in the pandoc process.
+ *
+ * @author Thomas Biesaart
+ */
+public class PandocExecutionException extends Exception {
+    public PandocExecutionException(String message) {
+        super(message);
     }
 }

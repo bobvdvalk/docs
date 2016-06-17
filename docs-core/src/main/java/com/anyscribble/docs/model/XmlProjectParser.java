@@ -30,6 +30,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -82,8 +83,27 @@ public class XmlProjectParser {
     public Project loadProject(Path projectRootFolder, InputStream inputStream) throws JAXBException {
         Objects.requireNonNull(inputStream);
         Project project = unmarshaller.unmarshal(new StreamSource(inputStream), Project.class).getValue();
+
+        // Resolve paths
         project.setSourceDir(projectRootFolder.resolve(project.getSourceDir()));
         project.setBuildDir(projectRootFolder.resolve(project.getBuildDir()));
+
+        // Set Output Files
+        for (BuildConfiguration config : project.getBuild()) {
+            if (project.getDefaults() != null) {
+                config.setParent(project.getDefaults());
+            }
+            if (config.getTitle() == null) {
+                config.setTitle(project.getName());
+            }
+            if (config.getOutputFile() == null) {
+                config.setOutputFile(Paths.get(config.getTitle() + "." + config.defaultExtension()));
+            }
+
+            config.setOutputFile(
+                    project.getBuildDir().resolve(config.getOutputFile())
+            );
+        }
         return project;
     }
 }

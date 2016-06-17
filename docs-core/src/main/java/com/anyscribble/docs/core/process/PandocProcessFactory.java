@@ -17,6 +17,9 @@
  */
 package com.anyscribble.docs.core.process;
 
+import com.anyscribble.docs.model.BuildConfiguration;
+import com.anyscribble.docs.model.Project;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
@@ -39,13 +42,35 @@ public class PandocProcessFactory {
         }
         if (PANDOC_EXEC != null) {
             LOGGER.info("Found Pandoc Installation at {}", PANDOC_EXEC);
+        } else {
+            LOGGER.warn("No Pandoc Installation found");
         }
     }
 
     private final Path pandocExecutable;
 
+    @Inject
+    public PandocProcessFactory() {
+        this(PANDOC_EXEC);
+    }
 
     public PandocProcessFactory(Path pandocExecutable) {
         this.pandocExecutable = pandocExecutable;
+    }
+
+    public PandocProcess buildProcess(Project project, BuildConfiguration config, PandocCallback callback) {
+        ProcessBuilder processBuilder = new ProcessBuilder(pandocExecutable.toAbsolutePath().toString());
+        processBuilder.directory(project.getSourceDir().toFile());
+
+        PandocProcess process = new PandocProcess(processBuilder, callback, config);
+
+        // Output File
+        process.addParameter("f", "markdown");
+        process.addParameter("o", config.getOutputFile());
+
+        process.addMetadata("title", config.getTitle());
+        process.addMetadata("author", config.getAuthor());
+
+        return process;
     }
 }

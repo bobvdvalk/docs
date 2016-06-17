@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * This class represents the implementation of the root project configuration.
@@ -42,6 +43,15 @@ public class Project {
     @XmlElement(defaultValue = "src/main/docs")
     @XmlJavaTypeAdapter(XmlPathAdapter.class)
     private Path sourceDir = Paths.get("src/main/docs");
+
+    @XmlElements(
+            @XmlElement(name = "pdf", type = PdfBuildConfiguration.class)
+    )
+    @XmlElementWrapper
+    private List<BuildConfiguration> build;
+
+    @XmlElement
+    private BuildConfiguration defaults;
 
     public String getName() {
         return name;
@@ -65,5 +75,21 @@ public class Project {
 
     void setSourceDir(Path sourceDir) {
         this.sourceDir = sourceDir;
+    }
+
+    public List<BuildConfiguration> getBuild() {
+        return build;
+    }
+
+    public void setBuild(List<BuildConfiguration> build) {
+        this.build = build;
+    }
+
+    public BuildConfiguration getDefaults() {
+        return defaults;
+    }
+
+    public void setDefaults(BuildConfiguration defaults) {
+        this.defaults = defaults;
     }
 }

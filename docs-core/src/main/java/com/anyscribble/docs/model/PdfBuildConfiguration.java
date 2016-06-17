@@ -15,27 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.anyscribble.docs.core.process;
+package com.anyscribble.docs.model;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import javax.xml.bind.annotation.*;
 
-class ProcessUtils {
-    private ProcessUtils() {
-        // UTIL CLASS
-    }
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorOrder(XmlAccessOrder.UNDEFINED)
+public class PdfBuildConfiguration extends BuildConfiguration {
 
-    static Path findExecutableOnPath(String execName) {
-        String pathVar = System.getenv("path");
-        for (String pathString : pathVar.split(File.pathSeparator)) {
-            Path path = Paths.get(pathString);
-            Path exec = path.resolve(execName);
-            if (Files.exists(exec)) {
-                return exec;
-            }
-        }
-        return null;
+    @Override
+    public String defaultExtension() {
+        return "pdf";
     }
 }

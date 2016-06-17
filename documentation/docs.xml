@@ -19,9 +19,16 @@
 
 -->
 <project xmlns="http://anyscribble.com/docs">
-    <name>Test Project</name>
+    <name>AnyScribble Docs Development</name>
+
+    <defaults>
+        <author>Thomas Biesaart</author>
+    </defaults>
     <build>
-        <pdf></pdf>
-        <pdf></pdf>
+        <pdf>
+        </pdf>
+        <pdf>
+		<title>Mock</title>
+        </pdf>
     </build>
 </project>

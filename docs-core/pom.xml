@@ -75,9 +75,10 @@
                 <configuration>
                     <sources>
                         <source>src/main/java/com/anyscribble/docs/model/Project.java</source>
+                        <source>src/main/java/com/anyscribble/docs/model/PdfBuildConfiguration.java</source>
                     </sources>
                     <outputDirectory>src/main/resources</outputDirectory>
-                    <clearOutputDir>false</clearOutputDir>
+                    <clearOutputDir>true</clearOutputDir>
                     <transformSchemas>
                         <transformSchema>
                             <uri>http://anyscribble.com/docs</uri>

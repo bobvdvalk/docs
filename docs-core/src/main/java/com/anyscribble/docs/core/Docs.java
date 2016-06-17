@@ -17,6 +17,10 @@
  */
 package com.anyscribble.docs.core;
 
+import com.anyscribble.docs.core.process.PandocCallback;
+import com.anyscribble.docs.core.process.PandocProcess;
+import com.anyscribble.docs.core.process.PandocProcessFactory;
+import com.anyscribble.docs.model.BuildConfiguration;
 import com.anyscribble.docs.model.Project;
 import com.anyscribble.docs.model.XmlProjectParser;
 import com.google.inject.Inject;
@@ -25,6 +29,9 @@ import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class represents the main entry point into the AnyScribble Docs core.
@@ -33,10 +40,12 @@ import java.nio.file.*;
  */
 public class Docs {
     private final XmlProjectParser xmlProjectParser;
+    private final PandocProcessFactory pandocProcessFactory;
 
     @Inject
-    public Docs(XmlProjectParser xmlProjectParser) {
+    public Docs(XmlProjectParser xmlProjectParser, PandocProcessFactory pandocProcessFactory) {
         this.xmlProjectParser = xmlProjectParser;
+        this.pandocProcessFactory = pandocProcessFactory;
     }
 
     public Project loadProject(Path projectFile) throws DocsException {
@@ -54,5 +63,15 @@ public class Docs {
         } catch (JAXBException e) {
             throw new DocsException(e.getMessage(), e);
         }
+    }
+
+    public DocsProcess buildProcess(Project project, PandocCallback callback) {
+        List<PandocProcess> processes = project.getBuild().stream()
+                .filter(conf -> conf.getEnabled() != null)
+                .filter(BuildConfiguration::getEnabled)
+                .map(buildConfiguration -> pandocProcessFactory.buildProcess(project, buildConfiguration, callback))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        return new DocsProcess(processes, callback);
     }
 }

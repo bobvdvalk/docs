@@ -65,7 +65,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>8.1.4</version>
                 <configuration>
-                    <mainClass>com.anyscribble.docs.ide.AnyScribbleApplication</mainClass>
+                    <mainClass>com.anyscribble.docs.ide.DocsApplication</mainClass>
                     <needShortcut>true</needShortcut>
                     <needMenu>true</needMenu>
                 </configuration>

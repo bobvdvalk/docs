@@ -35,9 +35,9 @@ import java.io.IOException;
  *
  * @author Thomas Biesaart
  */
-public class AnyScribbleApplication extends Application {
+public class DocsApplication extends Application {
     private static final Logger LOGGER = Log.get();
-    private static final String ANYSCRIBBLE_FXML_PATH = "/com/anyscribble/docs/ide/anyscribble.fxml";
+    private static final String DOCS_FXML_PATH = "/com/anyscribble/docs/ide/anyscribble.fxml";
     private Injector injector;
 
     @Override
@@ -56,7 +56,7 @@ public class AnyScribbleApplication extends Application {
         LOGGER.debug("Loading Scene");
         InjectionFXMLLoader fxmlLoader = injector.getInstance(InjectionFXMLLoader.class);
 
-        Scene scene = new Scene(fxmlLoader.load(getClass().getResource(ANYSCRIBBLE_FXML_PATH)));
+        Scene scene = new Scene(fxmlLoader.load(getClass().getResource(DOCS_FXML_PATH)));
         primaryStage.setScene(scene);
     }
 
