@@ -19,91 +19,33 @@ package com.anyscribble.docs.model;
 
 import com.anyscribble.docs.core.process.PandocProcess;
 
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.nio.file.Path;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public abstract class BuildConfiguration {
-    @XmlElement
-    @XmlJavaTypeAdapter(XmlPathAdapter.class)
-    private Path outputFile;
+public interface BuildConfiguration {
 
-    @XmlElement(defaultValue = "true")
-    private Boolean enabled = true;
-    @XmlTransient
-    private BuildConfiguration parent = this;
+    Path getOutputFile();
 
-    @XmlElement
-    private String title;
+    void setOutputFile(Path file);
 
-    @XmlElement
-    private String author;
+    Boolean isEnabled();
 
-    @XmlElement(defaultValue = "true")
-    private Boolean toc = true;
+    void setEnabled(Boolean enabled);
 
-    public Path getOutputFile() {
-        return parentOrSelf(outputFile, parent.outputFile);
-    }
+    String getTitle();
 
-    public void setOutputFile(Path outputFile) {
-        this.outputFile = outputFile;
-    }
+    void setTitle(String title);
 
-    public Boolean getEnabled() {
-        return parentOrSelf(enabled, parent.enabled);
-    }
+    String getAuthor();
 
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
+    void setAuthor(String author);
 
-    public String getTitle() {
-        return parentOrSelf(title, parent.title);
-    }
+    Boolean enableToc();
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    void setEnableToc(Boolean enableToc);
 
-    public String getAuthor() {
-        return parentOrSelf(author, parent.author);
-    }
+    void applyOptionsTo(PandocProcess process);
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+    String defaultExtension();
 
-    public void setParent(BuildConfiguration parent) {
-        this.parent = parent;
-    }
-
-    public boolean enableToc() {
-        return parentOrSelf(toc, parent.toc);
-    }
-
-    public void setToc(boolean toc) {
-        this.toc = toc;
-    }
-
-    public abstract String defaultExtension();
-
-    public void applyOptionsTo(PandocProcess process) {
-        process.addParameter("o", getOutputFile());
-        process.addMetadata("title", getTitle());
-        process.addMetadata("author", getAuthor());
-        if (enableToc()) {
-            process.addFlag("toc");
-        }
-    }
-
-    private <T> T parentOrSelf(T self, T parent) {
-        if (self != null) {
-            return self;
-        }
-        return parent;
-    }
-
+    void extractDefaults(DefaultsBuildConfiguration defaultsBuildConfiguration);
 }

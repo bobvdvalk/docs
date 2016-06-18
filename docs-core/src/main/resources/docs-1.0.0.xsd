@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://anyscribble.com/docs" elementFormDefault="qualified" targetNamespace="http://anyscribble.com/docs" version="1.0">
 
-  <xs:element name="buildConfiguration" type="tns:buildConfiguration"/>
-
   <xs:element name="defaultsBuildConfiguration" type="tns:defaultsBuildConfiguration"/>
 
   <xs:element name="pdfBuildConfiguration" type="tns:pdfBuildConfiguration"/>
@@ -10,31 +8,23 @@
   <xs:element name="project" type="tns:project"/>
 
   <xs:complexType name="defaultsBuildConfiguration">
-    <xs:complexContent>
-      <xs:extension base="tns:buildConfiguration">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType abstract="true" name="buildConfiguration">
-    <xs:sequence>
+    <xs:all>
       <xs:element minOccurs="0" name="outputFile" type="xs:string"/>
-      <xs:element default="true" minOccurs="0" name="enabled" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="enabled" type="xs:boolean"/>
       <xs:element minOccurs="0" name="title" type="xs:string"/>
       <xs:element minOccurs="0" name="author" type="xs:string"/>
-      <xs:element default="true" minOccurs="0" name="toc" type="xs:boolean"/>
-    </xs:sequence>
+      <xs:element minOccurs="0" name="toc" type="xs:boolean"/>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="pdfBuildConfiguration">
-    <xs:complexContent>
-      <xs:extension base="tns:buildConfiguration">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="fontFamily" type="xs:string"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
+    <xs:all>
+      <xs:element minOccurs="0" name="outputFile" type="xs:string"/>
+      <xs:element minOccurs="0" name="enabled" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="title" type="xs:string"/>
+      <xs:element minOccurs="0" name="author" type="xs:string"/>
+      <xs:element minOccurs="0" name="toc" type="xs:boolean"/>
+    </xs:all>
   </xs:complexType>
 
   <xs:complexType name="project">
@@ -44,7 +34,7 @@ This configuration can be loaded from xml using the [@link {@link XmlProjectPars
 
 (author): Thomas Biesaart]]></xs:documentation>
     </xs:annotation>
-    <xs:sequence>
+    <xs:all>
       <xs:element name="name" type="xs:string"/>
       <xs:element default="target" minOccurs="0" name="buildDir" type="xs:string"/>
       <xs:element default="src/main/docs" minOccurs="0" name="sourceDir" type="xs:string"/>
@@ -56,6 +46,6 @@ This configuration can be loaded from xml using the [@link {@link XmlProjectPars
         </xs:complexType>
       </xs:element>
       <xs:element minOccurs="0" name="configuration" type="tns:defaultsBuildConfiguration"/>
-    </xs:sequence>
+    </xs:all>
   </xs:complexType>
 </xs:schema>

@@ -67,8 +67,8 @@ public class Docs {
 
     public DocsProcess buildProcess(Project project, PandocCallback callback) {
         List<PandocProcess> processes = project.getBuild().stream()
-                .filter(conf -> conf.getEnabled() != null)
-                .filter(BuildConfiguration::getEnabled)
+                .filter(conf -> conf.isEnabled() != null)
+                .filter(BuildConfiguration::isEnabled)
                 .map(buildConfiguration -> pandocProcessFactory.buildProcess(project, buildConfiguration, callback))
                 .collect(Collectors.toCollection(ArrayList::new));
 

@@ -29,8 +29,9 @@ import java.util.List;
  *
  * @author Thomas Biesaart
  */
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement()
+@XmlAccessorOrder(XmlAccessOrder.UNDEFINED)
 public class Project {
     @XmlElement(required = true)
     private String name;

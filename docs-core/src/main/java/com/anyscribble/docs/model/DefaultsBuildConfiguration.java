@@ -21,9 +21,11 @@ import javax.xml.bind.annotation.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DefaultsBuildConfiguration extends BuildConfiguration {
+@XmlAccessorOrder(XmlAccessOrder.UNDEFINED)
+public class DefaultsBuildConfiguration extends AbstractBuildConfiguration {
+
     @Override
     public String defaultExtension() {
-        return "md";
+        return null;
     }
 }

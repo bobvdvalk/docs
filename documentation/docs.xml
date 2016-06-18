@@ -21,6 +21,10 @@
 <project xmlns="http://anyscribble.com/docs">
     <name>AnyScribble Docs Development</name>
     
+    <configuration>
+        <author>Thomas Biesaart</author>
+    </configuration>
+
     <build>
         <pdf>
         </pdf>
@@ -28,7 +32,4 @@
 		<title>Mock</title>
         </pdf>
     </build>
-    <configuration>
-        <author>Thomas Biesaart</author>
-    </configuration>
 </project>

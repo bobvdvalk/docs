@@ -19,26 +19,16 @@ package com.anyscribble.docs.model;
 
 import com.anyscribble.docs.core.process.PandocProcess;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PdfBuildConfiguration extends BuildConfiguration {
-    @XmlElement
-    private String fontFamily;
-
-    @Override
-    public String defaultExtension() {
-        return "pdf";
-    }
+@XmlAccessorOrder(XmlAccessOrder.UNDEFINED)
+public class PdfBuildConfiguration extends AbstractBuildConfiguration {
+    @XmlElement(defaultValue = "arev")
+    private String fontFamily = "arev";
 
     public String getFontFamily() {
-        if (fontFamily == null) {
-            return "arev";
-        }
         return fontFamily;
     }
 
@@ -49,12 +39,11 @@ public class PdfBuildConfiguration extends BuildConfiguration {
     @Override
     public void applyOptionsTo(PandocProcess process) {
         super.applyOptionsTo(process);
+        process.addMetadata("fontfamily", fontFamily);
+    }
 
-        process.addMetadata("fontfamily", getFontFamily());
-        process.addMetadata("margin-top", "100pt");
-        process.addMetadata("margin-bottom", "160pt");
-        process.addMetadata("margin-left", "60pt");
-        process.addMetadata("margin-right", "60pt");
-
+    @Override
+    public String defaultExtension() {
+        return "pdf";
     }
 }
