@@ -96,7 +96,7 @@ public class XmlProjectParser {
                 config.setTitle(project.getName());
             }
             if (config.getOutputFile() == null) {
-                config.setOutputFile(Paths.get(config.getTitle() + "." + config.defaultExtension()));
+                config.setOutputFile(Paths.get(config.getTitle().replaceAll("[^\\w]+", ".") + "." + config.defaultExtension()));
             }
 
             config.setOutputFile(

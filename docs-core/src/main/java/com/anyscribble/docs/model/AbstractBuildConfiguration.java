@@ -30,11 +30,11 @@ public abstract class AbstractBuildConfiguration implements BuildConfiguration {
     @XmlJavaTypeAdapter(XmlPathAdapter.class)
     private Path outputFile;
     @XmlElement(defaultValue = "true")
-    private Boolean enabled = true;
+    private Boolean enabled;
     private String title;
     private String author;
     @XmlElement(defaultValue = "true")
-    private Boolean toc = true;
+    private Boolean toc;
 
     @Override
     public Path getOutputFile() {

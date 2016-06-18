@@ -24,6 +24,11 @@ import javax.xml.bind.annotation.*;
 @XmlAccessorOrder(XmlAccessOrder.UNDEFINED)
 public class DefaultsBuildConfiguration extends AbstractBuildConfiguration {
 
+    public DefaultsBuildConfiguration() {
+        setEnabled(true);
+        setEnableToc(true);
+    }
+
     @Override
     public String defaultExtension() {
         return null;

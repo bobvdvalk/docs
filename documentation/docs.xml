@@ -20,10 +20,11 @@
 -->
 <project xmlns="http://anyscribble.com/docs">
     <name>AnyScribble Docs Demo</name>
+    <configuration>
+        <author>Thomas Biesaart</author>
+	<toc>false</toc>
+    </configuration>
     <build>
-        <pdf></pdf>
-        <pdf>
-           <title>Alternative</title>
-        </pdf>
+        <pdf/>
     </build>
 </project>
