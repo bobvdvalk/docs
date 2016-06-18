@@ -26,6 +26,7 @@ import com.anyscribble.docs.model.XmlProjectParser;
 import com.google.inject.Inject;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
@@ -60,6 +61,8 @@ public class Docs {
             throw new ConfigurationNotFoundException("No configuration file found at " + projectFile, e);
         } catch (IOException e) {
             throw new DocsException("IO Error while loading project configuration from " + projectFile, e);
+        } catch (UnmarshalException e) {
+            throw new DocsException(e.getCause().getMessage(), e);
         } catch (JAXBException e) {
             throw new DocsException(e.getMessage(), e);
         }

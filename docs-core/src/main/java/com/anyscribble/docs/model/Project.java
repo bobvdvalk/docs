@@ -47,11 +47,11 @@ public class Project {
     @XmlElements(
             @XmlElement(name = "pdf", type = PdfBuildConfiguration.class)
     )
-    @XmlElementWrapper
+    @XmlElementWrapper(required = true)
     private List<BuildConfiguration> build;
 
-    @XmlElement
-    private DefaultsBuildConfiguration configuration;
+    @XmlElement(nillable = false)
+    private DefaultsBuildConfiguration configuration = new DefaultsBuildConfiguration();
 
     public String getName() {
         return name;

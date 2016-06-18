@@ -18,17 +18,13 @@
 package com.anyscribble.docs.ide.controller;
 
 import com.anyscribble.docs.core.Docs;
-import com.anyscribble.docs.core.DocsException;
-import com.anyscribble.docs.core.DocsProcess;
-import com.anyscribble.docs.core.process.PandocCallback;
 import com.anyscribble.docs.ide.InjectionFXMLLoader;
 import com.anyscribble.docs.ide.Resource;
 import com.anyscribble.docs.ide.Setting;
 import com.anyscribble.docs.ide.editor.EditorTabFactory;
 import com.anyscribble.docs.ide.files.FileTree;
 import com.anyscribble.docs.ide.prefs.Preferences;
-import com.anyscribble.docs.model.BuildConfiguration;
-import com.anyscribble.docs.model.Project;
+import com.anyscribble.docs.ide.render.DocsRenderService;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -40,7 +36,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import me.biesaart.utils.IOUtils;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
 
@@ -49,8 +44,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -79,15 +75,15 @@ public class GlobalController implements Initializable {
     private final EditorTabFactory editorTabFactory;
     private final FileTree fileTree;
     private final DirectoryChooser openProjectDirectoryChooser;
-    private final Provider<Docs> docsProvider;
+    private final DocsRenderService docsRenderService;
 
     @Inject
-    GlobalController(Preferences preferences, InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory, FileTree fileTree, Provider<Docs> docsProvider) {
+    GlobalController(Preferences preferences, InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory, FileTree fileTree, Provider<Docs> docsProvider, DocsRenderService docsRenderService) {
         this.preferences = preferences;
         this.injectionFXMLLoader = injectionFXMLLoader;
         this.editorTabFactory = editorTabFactory;
         this.fileTree = fileTree;
-        this.docsProvider = docsProvider;
+        this.docsRenderService = docsRenderService;
         fileTree.setOpenFileConsumer(this::openTab);
         openProjectDirectoryChooser = new DirectoryChooser();
         openProjectDirectoryChooser.setTitle(Resource.PROJECT_NEW_TITLE);
@@ -263,61 +259,7 @@ public class GlobalController implements Initializable {
 
         choiceDialog.showAndWait().ifPresent(path -> {
             Path projectFile = path.resolve("docs.xml");
-            try {
-                showBuildDialog(projectFile);
-            } catch (DocsException e) {
-                LOGGER.error("Failed to build project", e);
-            }
+            docsRenderService.launchRenderFlow(projectFile);
         });
-    }
-
-    private void showBuildDialog(Path projectFile) throws DocsException {
-        Docs docs = docsProvider.get();
-
-        Project project = docs.loadProject(projectFile);
-        try (DocsProcess process = docs.buildProcess(project, new CallbackImpl())) {
-            process.start();
-
-            Files.walkFileTree(project.getSourceDir(), new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (file.getFileName().toString().endsWith("md")) {
-                        Files.copy(file, process.getOutputStream());
-                        IOUtils.write("\n", process.getOutputStream());
-                    }
-                    return super.visitFile(file, attrs);
-                }
-            });
-
-        } catch (IOException e) {
-            LOGGER.error("IO ERROR", e);
-        }
-    }
-
-
-    private class CallbackImpl implements PandocCallback {
-        @Override
-        public void onStart(BuildConfiguration buildConfiguration) {
-            try {
-                Files.createDirectories(buildConfiguration.getOutputFile().getParent());
-            } catch (IOException e) {
-                LOGGER.error("Failed to create directories", e);
-            }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            LOGGER.error("Callback Error", e);
-        }
-
-        @Override
-        public void onBatchComplete() {
-            LOGGER.info("Batch Complete");
-        }
-
-        @Override
-        public void onProcessComplete() {
-            LOGGER.info("Process Complete");
-        }
     }
 }

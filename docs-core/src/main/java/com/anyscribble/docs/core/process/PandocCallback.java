@@ -25,11 +25,11 @@ import com.anyscribble.docs.model.BuildConfiguration;
  * @author Thomas Biesaart
  */
 public interface PandocCallback {
-    void onStart(BuildConfiguration buildConfiguration);
+    void onStart(BuildConfiguration configuration);
 
     void onError(Throwable e);
 
     void onBatchComplete();
 
-    void onProcessComplete();
+    void onProcessComplete(BuildConfiguration configuration);
 }

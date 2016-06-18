@@ -74,7 +74,7 @@ public class PandocProcess extends Thread {
             process.destroyForcibly();
         }
 
-        callback.onProcessComplete();
+        callback.onProcessComplete(buildConfiguration);
     }
 
     private Process startProcess() {
