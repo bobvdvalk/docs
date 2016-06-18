@@ -43,6 +43,7 @@ public class PandocProcess extends Thread {
     private OutputStream outputStream;
 
     PandocProcess(ProcessBuilder processBuilder, PandocCallback callback, BuildConfiguration buildConfiguration) {
+        setName("Pandoc-" + buildConfiguration.getOutputFile().getFileName());
         this.processBuilder = processBuilder;
         this.callback = callback;
         this.buildConfiguration = buildConfiguration;

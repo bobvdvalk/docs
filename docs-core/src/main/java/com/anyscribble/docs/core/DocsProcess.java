@@ -37,6 +37,7 @@ public class DocsProcess extends Thread implements AutoCloseable {
     private final OutputStream outputStreamForwarder;
 
     public DocsProcess(List<PandocProcess> pandocProcess, PandocCallback pandocCallback) {
+        setName("DocsProcess");
         this.pandocProcess = pandocProcess;
         this.pandocCallback = pandocCallback;
         outputStreamForwarder = new DataForwarder();
