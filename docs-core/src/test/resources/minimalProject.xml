@@ -20,4 +20,7 @@
 -->
 <project xmlns="http://anyscribble.com/docs">
     <name>Test Project</name>
+    <build>
+        <pdf></pdf>
+    </build>
 </project>
