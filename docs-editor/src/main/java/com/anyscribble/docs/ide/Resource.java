@@ -18,7 +18,7 @@
 package com.anyscribble.docs.ide;
 
 
-import com.anyscribble.docs.core.AnyScribble;
+import com.anyscribble.docs.core.Docs;
 import com.google.common.base.CaseFormat;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
@@ -46,12 +46,18 @@ public class Resource {
     public static final String MENU_FILE_CLOSE_PROJECT = getString("menu.file.closeproject");
     public static final String MENU_FILE_EXIT = getString("menu.file.exit");
     public static final String MENU_FILE_PREFERENCES = getString("menu.file.preferences");
+    public static final String MENU_PROJECT = getString("menu.project");
+    public static final String MENU_PROJECT_GENERATE = getString("menu.project.generate");
+    public static final String MENU_PROJECT_CLEAN = getString("menu.project.clean");
     public static final String MENU_HELP = getString("menu.help");
     public static final String MENU_HELP_ABOUT = getString("menu.help.about");
     public static final String MENU_HELP_CONTACT = getString("menu.help.contact");
     public static final MessageProvider ERROR_INVALID_PROJECT_ROOT = new MessageProvider("error.project.invalidroot");
     public static final MessageProvider CONFIRM_DELETE_PROJECT = new MessageProvider("confirm.delete.project");
     public static final String PROJECT_NEW_TITLE = getString("project.new.title");
+    public static final String ERROR_PANDOC_NOT_FOUND = getString("error.pandoc.notfound");
+    public static final String DIALOG_BUILD_PROJECT_TITLE = getString("dialog.build.project.title");
+    public static final String DIALOG_BUILD_PROJECT_CONTENT = getString("dialog.build.project.content");
 
     private Resource() {
         throw new IllegalAccessError("Do not make instances of utilities");
@@ -78,7 +84,7 @@ public class Resource {
     }
 
     private static String getVersion() {
-        String version = AnyScribble.class.getPackage().getImplementationVersion();
+        String version = Docs.class.getPackage().getImplementationVersion();
         if (version == null) {
             version = "Development Version";
         }

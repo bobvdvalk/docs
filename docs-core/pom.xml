@@ -42,14 +42,6 @@
             <artifactId>commons</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <scope>test</scope>
@@ -75,6 +67,27 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <sources>
+                        <source>src/main/java/com/anyscribble/docs/model/Project.java</source>
+                        <source>src/main/java/com/anyscribble/docs/model/PdfBuildConfiguration.java</source>
+                        <source>src/main/java/com/anyscribble/docs/model/DefaultsBuildConfiguration.java</source>
+                        <source>src/main/java/com/anyscribble/docs/model/MarkdownBuildConfiguration.java</source>
+                    </sources>
+                    <outputDirectory>src/main/resources</outputDirectory>
+                    <clearOutputDir>true</clearOutputDir>
+                    <transformSchemas>
+                        <transformSchema>
+                            <uri>http://anyscribble.com/docs</uri>
+                            <toFile>docs-1.0.0.xsd</toFile>
+                        </transformSchema>
+                    </transformSchemas>
+                </configuration>
             </plugin>
         </plugins>
     </build>

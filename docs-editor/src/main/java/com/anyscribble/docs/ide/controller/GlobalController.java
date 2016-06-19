@@ -17,27 +17,28 @@
  */
 package com.anyscribble.docs.ide.controller;
 
-import com.anyscribble.docs.ide.Setting;
-import com.anyscribble.docs.ide.files.FileTree;
-import com.anyscribble.docs.ide.prefs.Preferences;
+import com.anyscribble.docs.core.Docs;
 import com.anyscribble.docs.ide.InjectionFXMLLoader;
 import com.anyscribble.docs.ide.Resource;
+import com.anyscribble.docs.ide.Setting;
 import com.anyscribble.docs.ide.editor.EditorTabFactory;
+import com.anyscribble.docs.ide.files.FileTree;
+import com.anyscribble.docs.ide.prefs.Preferences;
+import com.anyscribble.docs.ide.render.DocsRenderService;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import me.biesaart.utils.Log;
 import org.slf4j.Logger;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -46,7 +47,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
  * This class represents the controller for the highest level of the interface.
@@ -57,6 +60,8 @@ import java.util.ResourceBundle;
 @Singleton
 public class GlobalController implements Initializable {
     private static final Logger LOGGER = Log.get();
+    @FXML
+    private Menu projectMenu;
     @FXML
     private MenuItem closeProjectMenuItem;
     @FXML
@@ -70,13 +75,15 @@ public class GlobalController implements Initializable {
     private final EditorTabFactory editorTabFactory;
     private final FileTree fileTree;
     private final DirectoryChooser openProjectDirectoryChooser;
+    private final DocsRenderService docsRenderService;
 
     @Inject
-    GlobalController(Preferences preferences, InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory, FileTree fileTree) {
+    GlobalController(Preferences preferences, InjectionFXMLLoader injectionFXMLLoader, EditorTabFactory editorTabFactory, FileTree fileTree, Provider<Docs> docsProvider, DocsRenderService docsRenderService) {
         this.preferences = preferences;
         this.injectionFXMLLoader = injectionFXMLLoader;
         this.editorTabFactory = editorTabFactory;
         this.fileTree = fileTree;
+        this.docsRenderService = docsRenderService;
         fileTree.setOpenFileConsumer(this::openTab);
         openProjectDirectoryChooser = new DirectoryChooser();
         openProjectDirectoryChooser.setTitle(Resource.PROJECT_NEW_TITLE);
@@ -107,8 +114,9 @@ public class GlobalController implements Initializable {
         );
 
         // Disable close project menu item when no node is selected
-        fileTree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-                closeProjectMenuItem.setDisable(newValue == null)
+        fileTree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                    closeProjectMenuItem.setDisable(newValue == null);
+                }
         );
 
         // Open all previously open tabs
@@ -208,7 +216,7 @@ public class GlobalController implements Initializable {
     }
 
     public void closeCurrentProject() {
-        fileTree.closeProject();
+        fileTree.closeCurrentProject();
     }
 
     public void openContact() {
@@ -229,11 +237,20 @@ public class GlobalController implements Initializable {
 
     private void browseToChat() {
         try {
-            Desktop.getDesktop().browse(
+            java.awt.Desktop.getDesktop().browse(
                     new URI("https://gitter.im/thomasbiesaart/anyscribble")
             );
         } catch (URISyntaxException | UnsupportedOperationException | IOException e) {
             LOGGER.info("Could not open contact url", e);
         }
+    }
+
+    public void buildProject() {
+        List<Path> choices = fileTree.getProjects().stream()
+                .map(TreeItem::getValue)
+                .collect(Collectors.toList());
+
+        TreeItem<Path> project = fileTree.getCurrentProject();
+        docsRenderService.startRenderFlow(project == null ? null : project.getValue(), choices);
     }
 }

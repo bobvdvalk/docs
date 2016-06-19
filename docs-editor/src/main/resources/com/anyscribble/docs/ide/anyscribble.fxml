@@ -66,6 +66,21 @@
             </Menu>
             <Menu>
                 <text>
+                    <Resource fx:constant="MENU_PROJECT"/>
+                </text>
+                <MenuItem accelerator="F5" onAction="#buildProject">
+                    <text>
+                        <Resource fx:constant="MENU_PROJECT_GENERATE"/>
+                    </text>
+                </MenuItem>
+                <MenuItem accelerator="SHIFT+F5">
+                    <text>
+                        <Resource fx:constant="MENU_PROJECT_CLEAN"/>
+                    </text>
+                </MenuItem>
+            </Menu>
+            <Menu>
+                <text>
                     <Resource fx:constant="MENU_HELP"/>
                 </text>
                 <MenuItem accelerator="F1" onAction="#openContact">

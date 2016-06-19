@@ -80,9 +80,18 @@ public class FileTree extends TreeView<Path> {
         saveProjectsToPreferences();
     }
 
-    public void closeProject() {
+    public TreeItem<Path> getCurrentProject() {
+        TreeItem<Path> item = getSelectionModel().getSelectedItem();
+        return getProjectFor(item);
+    }
+
+    public void closeCurrentProject() {
         TreeItem<Path> item = getSelectionModel().getSelectedItem();
         closeProject(item);
+    }
+
+    public List<TreeItem<Path>> getProjects() {
+        return new ArrayList<>(rootNode.getChildren());
     }
 
     public void closeProject(TreeItem<Path> node) {
@@ -91,10 +100,7 @@ public class FileTree extends TreeView<Path> {
         }
 
         // Find the project node
-        TreeItem<Path> projectItem = node;
-        while (projectItem.getParent() != null && projectItem.getParent().getParent() != null) {
-            projectItem = projectItem.getParent();
-        }
+        TreeItem<Path> projectItem = getProjectFor(node);
 
         Path project = projectItem.getValue();
 
@@ -113,6 +119,17 @@ public class FileTree extends TreeView<Path> {
             getSelectionModel().clearSelection();
             saveProjectsToPreferences();
         }
+    }
+
+    private TreeItem<Path> getProjectFor(TreeItem<Path> node) {
+        if (node == null) {
+            return null;
+        }
+        TreeItem<Path> projectItem = node;
+        while (projectItem.getParent() != null && projectItem.getParent().getParent() != null) {
+            projectItem = projectItem.getParent();
+        }
+        return projectItem;
     }
 
     private void saveProjectsToPreferences() {
