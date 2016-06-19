@@ -130,7 +130,8 @@ public class PandocProcess extends Thread {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                callback.onError(e);
+                Thread.currentThread().interrupt();
             }
         }
         return outputStream;
