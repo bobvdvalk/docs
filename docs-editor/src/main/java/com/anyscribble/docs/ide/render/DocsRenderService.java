@@ -3,12 +3,14 @@ package com.anyscribble.docs.ide.render;
 import com.anyscribble.docs.core.Docs;
 import com.anyscribble.docs.core.DocsException;
 import com.anyscribble.docs.core.DocsProcess;
+import com.anyscribble.docs.ide.Resource;
 import com.anyscribble.docs.model.Project;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.layout.VBox;
 import me.biesaart.utils.IOUtils;
 import me.biesaart.utils.Log;
@@ -45,7 +47,20 @@ public class DocsRenderService {
         this.docsProvider = docsProvider;
     }
 
-    public void launchRenderFlow(Path projectFile) {
+    public void startRenderFlow(Path currentSelection, List<Path> choices) {
+        ChoiceDialog<Path> choiceDialog = new ChoiceDialog<>(currentSelection, choices);
+
+        choiceDialog.setHeaderText(Resource.DIALOG_BUILD_PROJECT_TITLE);
+        choiceDialog.setTitle(Resource.DIALOG_BUILD_PROJECT_TITLE);
+        choiceDialog.setContentText(Resource.DIALOG_BUILD_PROJECT_CONTENT);
+
+        choiceDialog.showAndWait().ifPresent(path -> {
+            Path projectFile = path.resolve("docs.xml");
+            launchRenderFlow(projectFile);
+        });
+    }
+
+    private void launchRenderFlow(Path projectFile) {
         try {
             Project project = getDocs().loadProject(projectFile);
             launchRenderFlow(project);

@@ -1,13 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+
+    AnyScribble Docs Core - Writing for Developers by Developers
+    Copyright © 2016 AnyScribble (thomas.biesaart@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://anyscribble.com/docs" elementFormDefault="qualified" targetNamespace="http://anyscribble.com/docs" version="1.0">
 
   <xs:element name="defaultsBuildConfiguration" type="tns:defaultsBuildConfiguration"/>
+
+  <xs:element name="markdownBuildConfiguration" type="tns:markdownBuildConfiguration"/>
 
   <xs:element name="pdfBuildConfiguration" type="tns:pdfBuildConfiguration"/>
 
   <xs:element name="project" type="tns:project"/>
 
   <xs:complexType name="defaultsBuildConfiguration">
+    <xs:all>
+      <xs:element minOccurs="0" name="outputFile" type="xs:string"/>
+      <xs:element default="true" minOccurs="0" name="enabled" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="title" type="xs:string"/>
+      <xs:element minOccurs="0" name="author" type="xs:string"/>
+      <xs:element default="true" minOccurs="0" name="toc" type="xs:boolean"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="markdownBuildConfiguration">
     <xs:all>
       <xs:element minOccurs="0" name="outputFile" type="xs:string"/>
       <xs:element default="true" minOccurs="0" name="enabled" type="xs:boolean"/>

@@ -251,15 +251,6 @@ public class GlobalController implements Initializable {
                 .collect(Collectors.toList());
 
         TreeItem<Path> project = fileTree.getCurrentProject();
-        ChoiceDialog<Path> choiceDialog = new ChoiceDialog<>(project == null ? null : project.getValue(), choices);
-
-        choiceDialog.setHeaderText(Resource.DIALOG_BUILD_PROJECT_TITLE);
-        choiceDialog.setTitle(Resource.DIALOG_BUILD_PROJECT_TITLE);
-        choiceDialog.setContentText(Resource.DIALOG_BUILD_PROJECT_CONTENT);
-
-        choiceDialog.showAndWait().ifPresent(path -> {
-            Path projectFile = path.resolve("docs.xml");
-            docsRenderService.launchRenderFlow(projectFile);
-        });
+        docsRenderService.startRenderFlow(project == null ? null : project.getValue(), choices);
     }
 }
